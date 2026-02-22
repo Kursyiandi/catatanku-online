@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catatan Harian Pribadi</title>
+    <title>Aplikasi Pribadiku</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #e9ecef; margin: 0; }
         .container { max-width: 1200px; margin: 0 auto; }
         
-        .kotak-utama { max-width: 500px; margin: 0 auto 30px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+        .kotak-utama { max-width: 600px; margin: 0 auto 30px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
         h2 { text-align: center; color: #333; margin-top: 0; font-size: 24px; }
         
         #areaLogin { text-align: center; padding: 10px 0; }
@@ -16,9 +16,15 @@
         
         .btn-google { background: #db4437; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; margin-bottom: 10px; transition: 0.3s; }
         .btn-google:hover { background: #c53929; }
-        .btn-logout { background: #6c757d; color: white; border: none; padding: 6px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; float: right; margin-bottom: 15px; }
         
-        .info-user { clear: both; margin-bottom: 15px; font-weight: bold; color: #495057; border-bottom: 2px solid #f1f3f5; padding-bottom: 10px;}
+        /* --- DESAIN MENU TABS --- */
+        .nav-menu { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; padding-bottom: 10px; align-items: center; justify-content: space-between; }
+        .grup-tab { display: flex; gap: 10px; }
+        .btn-tab { background: #f8f9fa; color: #495057; border: 1px solid #ced4da; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-tab.aktif { background: #4dabf7; color: white; border-color: #4dabf7; }
+        .btn-logout { background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        
+        .info-user { margin-bottom: 15px; font-weight: bold; color: #495057; text-align: center; }
         
         .input-group { display: flex; gap: 10px; margin-bottom: 10px; }
         input { flex: 1; padding: 14px; border: 1px solid #ced4da; border-radius: 8px; outline: none; font-size: 15px; transition: 0.3s; }
@@ -28,56 +34,35 @@
         .btn-simpan { background: #4dabf7; color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: bold; flex-shrink: 0; }
         .btn-simpan:hover { background: #3bc9db; }
         
-        ul { 
-            list-style: none; 
-            padding: 0; 
-            margin: 0; 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 20px; 
-            align-items: start; 
-        }
-        
-        li { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 12px; 
-            border-top: 5px solid #4dabf7; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.04);
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-between;
-            gap: 10px; 
-            transition: all 0.2s ease-in-out;
-        }
+        /* Desain Grid Universal (Bisa untuk Catatan & Pengeluaran) */
+        ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; align-items: start; }
+        li { background: white; padding: 20px; border-radius: 12px; border-top: 5px solid #4dabf7; box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: all 0.2s ease-in-out; }
         li:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
         
-        /* --- DESAIN UNTUK TANGGAL & JAM --- */
-        .waktu-teks {
-            font-size: 11px;
-            color: #adb5bd;
-            border-bottom: 1px dashed #f1f3f5;
-            padding-bottom: 8px;
-            margin-bottom: 5px;
-        }
-        
+        .waktu-teks { font-size: 11px; color: #adb5bd; border-bottom: 1px dashed #f1f3f5; padding-bottom: 8px; margin-bottom: 5px; }
         .isi-teks { width: 100%; word-break: break-word; white-space: pre-wrap; line-height: 1.6; color: #495057; font-size: 15px; }
-        
-        .grup-tombol { 
-            display: flex; gap: 8px; align-self: flex-end; border-top: 1px solid #f1f3f5; padding-top: 15px; margin-top: 5px; width: 100%; justify-content: flex-end;
-        }
-        
+        .grup-tombol { display: flex; gap: 8px; align-self: flex-end; border-top: 1px solid #f1f3f5; padding-top: 15px; margin-top: 5px; width: 100%; justify-content: flex-end; }
         .btn-aksi { padding: 6px 15px; font-size: 12px; border-radius: 6px; border: none; font-weight: bold; }
         .btn-edit { background: #fcc419; color: #333; }
-        .btn-edit:hover { background: #fab005; }
         .btn-hapus { background: #ff6b6b; color: white; }
-        .btn-hapus:hover { background: #fa5252; }
+        
+        /* Desain Khusus Pengeluaran */
+        .item-pengeluaran { border-top-color: #ff8787; } /* Garis atas warna merah muda */
+        .nominal-teks { font-size: 20px; font-weight: bold; color: #e03131; margin-top: 5px; }
+        .kotak-total { background: #fff5f5; border: 2px dashed #ff8787; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+        .total-angka { font-size: 28px; font-weight: bold; color: #e03131; }
+
+        /* Sembunyikan bagian yang tidak aktif */
+        .bagian-aplikasi { display: none; }
+        .bagian-aplikasi.aktif { display: block; }
 
         @media (max-width: 500px) {
             body { padding: 10px; }
             .kotak-utama { padding: 20px; margin-bottom: 20px; }
             .input-group { flex-direction: column; }
             .btn-simpan { padding: 14px; }
+            .nav-menu { flex-direction: column; gap: 15px; }
+            .btn-logout { width: 100%; }
         }
     </style>
 </head>
@@ -85,23 +70,44 @@
 
 <div class="container">
     <div id="areaLogin" class="kotak-utama">
-        <h2>Catatan Rahasia 🔒</h2>
-        <p>Silakan masuk untuk melihat catatan Anda.</p>
+        <h2>Aplikasi Pribadiku 🔒</h2>
+        <p>Silakan masuk untuk melanjutkan.</p>
         <button id="btnLogin" class="btn-google">Masuk dengan Google</button>
     </div>
 
     <div id="areaApp">
         <div class="kotak-utama">
-            <button id="btnLogout" class="btn-logout">Keluar</button>
             <div id="infoUser" class="info-user"></div>
             
-            <div class="input-group">
-                <input type="text" id="inputCatatan" placeholder="Tulis catatan rahasia hari ini...">
-                <button id="btnSimpan" class="btn-simpan">Simpan</button>
+            <div class="nav-menu">
+                <div class="grup-tab">
+                    <button id="btnMenuCatatan" class="btn-tab aktif">📝 Catatan</button>
+                    <button id="btnMenuPengeluaran" class="btn-tab">💰 Pengeluaran</button>
+                </div>
+                <button id="btnLogout" class="btn-logout">Keluar</button>
+            </div>
+            
+            <div id="halamanCatatan" class="bagian-aplikasi aktif">
+                <div class="input-group">
+                    <input type="text" id="inputCatatan" placeholder="Tulis catatan rahasia hari ini...">
+                    <button id="btnSimpanCatatan" class="btn-simpan">Simpan</button>
+                </div>
+            </div>
+
+            <div id="halamanPengeluaran" class="bagian-aplikasi">
+                <div class="kotak-total">
+                    <div>Total Pengeluaran:</div>
+                    <div id="totalPengeluaranAngka" class="total-angka">Rp 0</div>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="inputNamaPengeluaran" placeholder="Beli apa hari ini? (Misal: Makan Nasi)">
+                    <input type="number" id="inputNominalPengeluaran" placeholder="Berapa harganya? (Misal: 15000)">
+                </div>
+                <button id="btnSimpanPengeluaran" class="btn-simpan" style="width: 100%; padding: 14px; margin-bottom: 10px;">Catat Pengeluaran</button>
             </div>
         </div>
 
-        <ul id="daftarCatatan"></ul>
+        <ul id="daftarItem"></ul>
     </div>
 </div>
 
@@ -125,7 +131,9 @@
   const provider = new GoogleAuthProvider();
 
   let currentUser = null;
+  let modeAktif = "catatan"; // Bisa 'catatan' atau 'pengeluaran'
 
+  // --- LOGIKA LOGIN & LOGOUT ---
   document.getElementById('btnLogin').addEventListener('click', () => {
       signInWithPopup(auth, provider).catch((error) => alert("Gagal login: " + error.message));
   });
@@ -140,97 +148,155 @@
           document.getElementById('areaLogin').style.display = 'none';
           document.getElementById('areaApp').style.display = 'block';
           document.getElementById('infoUser').innerText = `Halo, ${user.displayName}!`;
-          muatCatatan(); 
+          muatData(); 
       } else {
           currentUser = null;
           document.getElementById('areaLogin').style.display = 'block';
           document.getElementById('areaApp').style.display = 'none';
-          document.getElementById('daftarCatatan').innerHTML = ""; 
+          document.getElementById('daftarItem').innerHTML = ""; 
       }
   });
 
-  // --- FUNGSI BARU: MENGAMBIL WAKTU SAAT INI ---
-  function dapatkanWaktuSekarang() {
-      const sekarang = new Date();
-      // Format ala Indonesia (Misal: 22 Februari 2026, 22:30)
-      return sekarang.toLocaleDateString('id-ID', { 
-          day: 'numeric', month: 'long', year: 'numeric', 
-          hour: '2-digit', minute: '2-digit' 
-      });
-  }
+  // --- LOGIKA MENU TABS (Berpindah Halaman tanpa Loading) ---
+  const btnCatatan = document.getElementById('btnMenuCatatan');
+  const btnPengeluaran = document.getElementById('btnMenuPengeluaran');
+  const halCatatan = document.getElementById('halamanCatatan');
+  const halPengeluaran = document.getElementById('halamanPengeluaran');
 
-  function simpanCatatan() {
-    const teks = document.getElementById('inputCatatan').value;
-    if (teks !== "" && currentUser !== null) {
-        // Mengirim teks DAN waktu saat ini ke Firebase
-        push(ref(database, 'catatan_pribadi/' + currentUser.uid), { 
-            isi: teks,
-            waktu: dapatkanWaktuSekarang()
-        });
-        document.getElementById('inputCatatan').value = ""; 
-    }
-  }
-
-  document.getElementById('btnSimpan').addEventListener('click', simpanCatatan);
-  document.getElementById('inputCatatan').addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') simpanCatatan();
+  btnCatatan.addEventListener('click', () => {
+      modeAktif = "catatan";
+      btnCatatan.classList.add('aktif');
+      btnPengeluaran.classList.remove('aktif');
+      halCatatan.classList.add('aktif');
+      halPengeluaran.classList.remove('aktif');
+      muatData(); // Muat ulang data sesuai tab
   });
 
+  btnPengeluaran.addEventListener('click', () => {
+      modeAktif = "pengeluaran";
+      btnPengeluaran.classList.add('aktif');
+      btnCatatan.classList.remove('aktif');
+      halPengeluaran.classList.add('aktif');
+      halCatatan.classList.remove('aktif');
+      muatData(); // Muat ulang data sesuai tab
+  });
+
+  // --- ALAT BANTU ---
+  function dapatkanWaktuSekarang() {
+      const sekarang = new Date();
+      return sekarang.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+  
   function bersihkanTeks(teksKotor) {
       const div = document.createElement('div');
       div.innerText = teksKotor;
       return div.innerHTML; 
   }
 
-  function muatCatatan() {
-      const referensiCatatan = ref(database, 'catatan_pribadi/' + currentUser.uid);
-      
-      onValue(referensiCatatan, (snapshot) => {
-        const daftar = document.getElementById('daftarCatatan');
-        daftar.innerHTML = ""; 
-        
-        snapshot.forEach((dataAnak) => {
-            const idCatatan = dataAnak.key; 
-            const data = dataAnak.val();
-            
-            const teksAman = bersihkanTeks(data.isi);
-            
-            // Mengecek apakah catatan ini punya data waktu (antisipasi catatan lama)
-            const waktuTampil = data.waktu ? data.waktu : "Waktu tidak tercatat";
-            
-            // Menambahkan elemen <div class="waktu-teks"> di atas isi catatan
-            daftar.innerHTML += `
-                <li>
-                    <div class="waktu-teks">🕒 ${waktuTampil}</div>
-                    <span class="isi-teks">${teksAman}</span>
-                    <div class="grup-tombol">
-                        <button class="btn-aksi btn-edit" data-id="${idCatatan}">Edit</button>
-                        <button class="btn-aksi btn-hapus" data-id="${idCatatan}">Hapus</button>
-                    </div>
-                </li>
-            `;
-        });
-      });
+  function formatRupiah(angka) {
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
   }
 
-  document.getElementById('daftarCatatan').addEventListener('click', function(e) {
+  // --- LOGIKA SIMPAN DATA ---
+  document.getElementById('btnSimpanCatatan').addEventListener('click', () => {
+      const teks = document.getElementById('inputCatatan').value;
+      if (teks !== "" && currentUser) {
+          push(ref(database, 'catatan_pribadi/' + currentUser.uid), { isi: teks, waktu: dapatkanWaktuSekarang() });
+          document.getElementById('inputCatatan').value = ""; 
+      }
+  });
+
+  document.getElementById('btnSimpanPengeluaran').addEventListener('click', () => {
+      const nama = document.getElementById('inputNamaPengeluaran').value;
+      const nominal = document.getElementById('inputNominalPengeluaran').value;
+      
+      if (nama !== "" && nominal !== "" && currentUser) {
+          push(ref(database, 'pengeluaran_pribadi/' + currentUser.uid), { 
+              nama_item: nama, 
+              harga: Number(nominal), 
+              waktu: dapatkanWaktuSekarang() 
+          });
+          document.getElementById('inputNamaPengeluaran').value = ""; 
+          document.getElementById('inputNominalPengeluaran').value = ""; 
+      }
+  });
+
+  // --- LOGIKA TAMPIL DATA (Menyesuaikan Tab yang Aktif) ---
+  function muatData() {
+      if (!currentUser) return;
+      
+      const daftar = document.getElementById('daftarItem');
+      daftar.innerHTML = ""; 
+      
+      if (modeAktif === "catatan") {
+          // MODE CATATAN
+          onValue(ref(database, 'catatan_pribadi/' + currentUser.uid), (snapshot) => {
+              if(modeAktif !== "catatan") return; // Cegah bentrok jika tab sudah pindah
+              daftar.innerHTML = ""; 
+              snapshot.forEach((dataAnak) => {
+                  const data = dataAnak.val();
+                  const teksAman = bersihkanTeks(data.isi);
+                  const waktuTampil = data.waktu ? data.waktu : "Waktu tidak tercatat";
+                  
+                  daftar.innerHTML += `
+                      <li>
+                          <div class="waktu-teks">🕒 ${waktuTampil}</div>
+                          <span class="isi-teks">${teksAman}</span>
+                          <div class="grup-tombol">
+                              <button class="btn-aksi btn-edit" data-id="${dataAnak.key}" data-jenis="catatan">Edit</button>
+                              <button class="btn-aksi btn-hapus" data-id="${dataAnak.key}" data-jenis="catatan">Hapus</button>
+                          </div>
+                      </li>`;
+              });
+          });
+      } else if (modeAktif === "pengeluaran") {
+          // MODE PENGELUARAN
+          onValue(ref(database, 'pengeluaran_pribadi/' + currentUser.uid), (snapshot) => {
+              if(modeAktif !== "pengeluaran") return; 
+              daftar.innerHTML = ""; 
+              let total = 0;
+              
+              snapshot.forEach((dataAnak) => {
+                  const data = dataAnak.val();
+                  const namaAman = bersihkanTeks(data.nama_item);
+                  const hargaFormat = formatRupiah(data.harga);
+                  const waktuTampil = data.waktu ? data.waktu : "Waktu tidak tercatat";
+                  total += data.harga; // Menghitung total
+                  
+                  daftar.innerHTML += `
+                      <li class="item-pengeluaran">
+                          <div class="waktu-teks">🕒 ${waktuTampil}</div>
+                          <span class="isi-teks">${namaAman}</span>
+                          <div class="nominal-teks">${hargaFormat}</div>
+                          <div class="grup-tombol">
+                              <button class="btn-aksi btn-hapus" data-id="${dataAnak.key}" data-jenis="pengeluaran">Hapus</button>
+                          </div>
+                      </li>`;
+              });
+              
+              // Tampilkan total di layar
+              document.getElementById('totalPengeluaranAngka').innerText = formatRupiah(total);
+          });
+      }
+  }
+
+  // --- LOGIKA KLIK TOMBOL EDIT & HAPUS ---
+  document.getElementById('daftarItem').addEventListener('click', function(e) {
       const target = e.target;
+      const idItem = target.getAttribute('data-id');
+      const jenis = target.getAttribute('data-jenis'); // 'catatan' atau 'pengeluaran'
       
       if(target.classList.contains('btn-hapus')) {
-          const idYangDihapus = target.getAttribute('data-id');
-          remove(ref(database, `catatan_pribadi/${currentUser.uid}/${idYangDihapus}`));
+          const folder = jenis === 'catatan' ? 'catatan_pribadi/' : 'pengeluaran_pribadi/';
+          remove(ref(database, folder + currentUser.uid + '/' + idItem));
       }
       
-      if(target.classList.contains('btn-edit')) {
-          const idYangDiedit = target.getAttribute('data-id');
+      if(target.classList.contains('btn-edit') && jenis === 'catatan') {
           const teksLama = target.closest('li').querySelector('.isi-teks').innerText;
           const teksBaru = prompt("Ubah catatan rahasia Anda:", teksLama);
-          
           if (teksBaru !== null && teksBaru.trim() !== "") {
-              // Memperbarui teks DAN memperbarui waktunya (menambahkan label "Diedit")
-              update(ref(database, `catatan_pribadi/${currentUser.uid}/${idYangDiedit}`), { 
-                  isi: teksBaru,
-                  waktu: dapatkanWaktuSekarang() + " (Diedit)"
+              update(ref(database, `catatan_pribadi/${currentUser.uid}/${idItem}`), { 
+                  isi: teksBaru, waktu: dapatkanWaktuSekarang() + " (Diedit)"
               });
           }
       }
