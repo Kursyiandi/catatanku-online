@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Pribadiku</title>
+    <title>Self Apps</title>
     <style>
         * { box-sizing: border-box; } 
 
@@ -16,12 +16,11 @@
         #areaLogin { text-align: center; padding: 20px 0; }
         #areaApp { display: none; } 
         
-        /* --- PERBAIKAN TOMBOL GOOGLE DI SINI --- */
         .btn-google { 
             background: #db4437; 
             color: white; 
             border: none; 
-            padding: 12px 35px; /* Mengatur jarak teks ke tepi tombol agar pas */
+            padding: 12px 35px; 
             border-radius: 8px; 
             font-weight: bold; 
             cursor: pointer; 
@@ -29,7 +28,6 @@
             margin-top: 10px;
             margin-bottom: 10px; 
             transition: 0.3s; 
-            /* width: 100%; dihapus agar tidak memanjang penuhi kotak */
         }
         .btn-google:hover { background: #c53929; box-shadow: 0 4px 8px rgba(219,68,55,0.3); transform: translateY(-2px); }
         
@@ -93,7 +91,7 @@
 
 <div class="container">
     <div id="areaLogin" class="kotak-utama">
-        <h2>Aplikasi Pribadiku 🔒</h2>
+        <h2>Self Apps 🔒</h2>
         <p style="color: #6c757d; margin-bottom: 20px;">Silakan masuk untuk melanjutkan.</p>
         <button id="btnLogin" class="btn-google">Masuk dengan Google</button>
     </div>
@@ -114,7 +112,7 @@
             
             <div id="halamanCatatan" class="bagian-aplikasi aktif">
                 <div class="input-group">
-                    <input type="text" id="inputCatatan" placeholder="Tulis catatan di hari ini...">
+                    <input type="text" id="inputCatatan" placeholder="Tulis Catatan...">
                     <button id="btnSimpanCatatan" class="btn-simpan">Simpan Catatan</button>
                 </div>
             </div>
@@ -122,11 +120,11 @@
             <div id="halamanPengeluaran" class="bagian-aplikasi">
                 <div class="area-ringkasan">
                     <div class="kotak-ringkasan kotak-hari">
-                        <div class="label-ringkasan">Total Hari Ini</div>
+                        <div class="label-ringkasan">Pengeluaran Hari Ini</div>
                         <div id="angkaTotalHari" class="angka-ringkasan">Rp 0</div>
                     </div>
                     <div class="kotak-ringkasan kotak-bulan">
-                        <div class="label-ringkasan">Total Bulan Ini</div>
+                        <div class="label-ringkasan">Pengeluaran Bulan Ini</div>
                         <div id="angkaTotalBulan" class="angka-ringkasan">Rp 0</div>
                     </div>
                 </div>
