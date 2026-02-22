@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Pribadiku</title>
+    <title>Self Apps</title>
     <style>
-        /* MANTRA AJAIB: Mencegah semua kotak tumpah ke samping */
         * { box-sizing: border-box; } 
 
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #e9ecef; margin: 0; }
@@ -14,11 +13,25 @@
         .kotak-utama { max-width: 600px; margin: 0 auto 30px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
         h2 { text-align: center; color: #333; margin-top: 0; font-size: 24px; }
         
-        #areaLogin { text-align: center; padding: 10px 0; }
+        #areaLogin { text-align: center; padding: 20px 0; }
         #areaApp { display: none; } 
         
-        .btn-google { background: #db4437; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; margin-bottom: 10px; transition: 0.3s; }
-        .btn-google:hover { background: #c53929; }
+        /* --- PERBAIKAN TOMBOL GOOGLE DI SINI --- */
+        .btn-google { 
+            background: #db4437; 
+            color: white; 
+            border: none; 
+            padding: 12px 35px; /* Mengatur jarak teks ke tepi tombol agar pas */
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-size: 16px; 
+            margin-top: 10px;
+            margin-bottom: 10px; 
+            transition: 0.3s; 
+            /* width: 100%; dihapus agar tidak memanjang penuhi kotak */
+        }
+        .btn-google:hover { background: #c53929; box-shadow: 0 4px 8px rgba(219,68,55,0.3); transform: translateY(-2px); }
         
         .nav-menu { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; align-items: center; justify-content: space-between; }
         .grup-tab { display: flex; gap: 10px; }
@@ -58,7 +71,6 @@
         .label-ringkasan { font-size: 13px; font-weight: bold; margin-bottom: 5px; }
         .angka-ringkasan { font-size: 22px; font-weight: bold; }
         
-        /* DESAIN KALENDER (Sudah pas dan presisi) */
         .pilih-tanggal { width: 100%; padding: 12px; border: 2px solid #ced4da; border-radius: 8px; font-size: 16px; margin-bottom: 20px; text-align: center; color: #495057; font-weight: bold; cursor: pointer; background-color: #f8f9fa;}
         .pilih-tanggal:focus { border-color: #4dabf7; outline: none; background-color: white;}
 
@@ -81,8 +93,8 @@
 
 <div class="container">
     <div id="areaLogin" class="kotak-utama">
-        <h2>Aplikasi Pribadiku 🔒</h2>
-        <p>Silakan masuk untuk melanjutkan.</p>
+        <h2>Self Apps</h2>
+        <p style="color: #6c757d; margin-bottom: 20px;">Silakan masuk untuk melanjutkan.</p>
         <button id="btnLogin" class="btn-google">Masuk dengan Google</button>
     </div>
 
