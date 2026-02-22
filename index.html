@@ -5,78 +5,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catatan Harian Pribadi</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #e9ecef; }
-        .container { max-width: 400px; margin: 40px auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #333; margin-top: 0; }
+        /* Desain Latar Belakang */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #e9ecef; margin: 0; }
+        .container { max-width: 1200px; margin: 0 auto; }
         
-        #areaLogin { text-align: center; padding: 20px 0; }
+        /* Kotak Input di Tengah (Lebih Elegan) */
+        .kotak-utama { max-width: 500px; margin: 0 auto 30px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+        h2 { text-align: center; color: #333; margin-top: 0; font-size: 24px; }
+        
+        #areaLogin { text-align: center; padding: 10px 0; }
         #areaApp { display: none; } 
         
-        .btn-google { background: #db4437; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; margin-bottom: 10px; }
-        .btn-logout { background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; float: right; margin-bottom: 15px; }
+        /* Tombol & Input */
+        .btn-google { background: #db4437; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; margin-bottom: 10px; transition: 0.3s; }
+        .btn-google:hover { background: #c53929; }
+        .btn-logout { background: #6c757d; color: white; border: none; padding: 6px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; float: right; margin-bottom: 15px; }
         
-        .info-user { clear: both; margin-bottom: 15px; font-weight: bold; color: #495057; border-bottom: 2px solid #eee; padding-bottom: 10px;}
+        .info-user { clear: both; margin-bottom: 15px; font-weight: bold; color: #495057; border-bottom: 2px solid #f1f3f5; padding-bottom: 10px;}
         
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px; outline: none; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 10px; }
+        input { flex: 1; padding: 14px; border: 1px solid #ced4da; border-radius: 8px; outline: none; font-size: 15px; transition: 0.3s; }
+        input:focus { border-color: #4dabf7; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
+        
         button { cursor: pointer; transition: 0.3s; }
-        .btn-simpan { background: #4dabf7; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; }
+        .btn-simpan { background: #4dabf7; color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: bold; flex-shrink: 0; }
         .btn-simpan:hover { background: #3bc9db; }
         
-        ul { list-style: none; padding: 0; margin: 0; }
+        /* --- KEAJAIBAN RESPONSIVE GRID DI SINI --- */
+        ul { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+            display: grid; 
+            /* Grid ajaib: Lebar minimal 280px, sisanya penuhi layar otomatis */
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 20px; 
+            align-items: start; /* Biarkan tinggi kartu menyesuaikan isinya */
+        }
         
+        /* Desain Kartu Catatan ala Google Keep */
         li { 
-            background: #f8f9fa; 
-            margin-bottom: 12px; 
-            padding: 15px; 
-            border-radius: 6px; 
-            border-left: 4px solid #4dabf7; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 12px; 
+            border-top: 5px solid #4dabf7; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.04);
             display: flex; 
             flex-direction: column; 
-            gap: 12px; 
+            justify-content: space-between;
+            gap: 15px; 
+            transition: all 0.2s ease-in-out;
         }
+        li:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
         
-        .isi-teks { 
-            width: 100%; 
-            word-break: break-word; 
-            white-space: pre-wrap; 
-            line-height: 1.6; 
-            color: #495057; 
-        }
+        .isi-teks { width: 100%; word-break: break-word; white-space: pre-wrap; line-height: 1.6; color: #495057; font-size: 15px; }
         
         .grup-tombol { 
-            display: flex; 
-            gap: 8px; 
-            align-self: flex-end; 
-            border-top: 1px dashed #ddd; 
-            padding-top: 10px;
-            width: 100%;
-            justify-content: flex-end;
+            display: flex; gap: 8px; align-self: flex-end; border-top: 1px solid #f1f3f5; padding-top: 15px; width: 100%; justify-content: flex-end;
         }
         
-        .btn-aksi { padding: 6px 15px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
+        .btn-aksi { padding: 6px 15px; font-size: 12px; border-radius: 6px; border: none; font-weight: bold; }
         .btn-edit { background: #fcc419; color: #333; }
+        .btn-edit:hover { background: #fab005; }
         .btn-hapus { background: #ff6b6b; color: white; }
+        .btn-hapus:hover { background: #fa5252; }
+
+        /* Khusus layar HP Kecil */
+        @media (max-width: 500px) {
+            body { padding: 10px; }
+            .kotak-utama { padding: 20px; margin-bottom: 20px; }
+            .input-group { flex-direction: column; }
+            .btn-simpan { padding: 14px; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Catatan Rahasia 🔒</h2>
     
-    <div id="areaLogin">
+    <div id="areaLogin" class="kotak-utama">
+        <h2>Catatan Rahasia 🔒</h2>
         <p>Silakan masuk untuk melihat catatan Anda.</p>
         <button id="btnLogin" class="btn-google">Masuk dengan Google</button>
     </div>
 
     <div id="areaApp">
-        <button id="btnLogout" class="btn-logout">Keluar</button>
-        <div id="infoUser" class="info-user"></div>
-        
-        <div class="input-group">
-            <input type="text" id="inputCatatan" placeholder="Tulis catatan rahasia hari ini...">
-            <button id="btnSimpan" class="btn-simpan">Simpan</button>
+        <div class="kotak-utama">
+            <button id="btnLogout" class="btn-logout">Keluar</button>
+            <div id="infoUser" class="info-user"></div>
+            
+            <div class="input-group">
+                <input type="text" id="inputCatatan" placeholder="Tulis catatan rahasia hari ini...">
+                <button id="btnSimpan" class="btn-simpan">Simpan</button>
+            </div>
         </div>
+
         <ul id="daftarCatatan"></ul>
     </div>
 </div>
@@ -138,11 +161,10 @@
       if (e.key === 'Enter') simpanCatatan();
   });
 
-  // --- FUNGSI BARU: PEMBERSIH TEKS ANTI-BUG ---
   function bersihkanTeks(teksKotor) {
       const div = document.createElement('div');
       div.innerText = teksKotor;
-      return div.innerHTML; // Mengubah <script> menjadi aman
+      return div.innerHTML; 
   }
 
   function muatCatatan() {
@@ -156,7 +178,6 @@
             const idCatatan = dataAnak.key; 
             const data = dataAnak.val();
             
-            // Teks dibersihkan dulu sebelum dicetak ke layar
             const teksAman = bersihkanTeks(data.isi);
             
             daftar.innerHTML += `
