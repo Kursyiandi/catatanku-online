@@ -26,15 +26,15 @@
         
         .info-user { margin-bottom: 15px; font-weight: bold; color: #495057; text-align: center; }
         
-        .input-group { display: flex; gap: 10px; margin-bottom: 10px; }
-        input { flex: 1; padding: 14px; border: 1px solid #ced4da; border-radius: 8px; outline: none; font-size: 15px; transition: 0.3s; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        input { flex: 1; padding: 12px; border: 1px solid #ced4da; border-radius: 8px; outline: none; font-size: 15px; transition: 0.3s; }
         input:focus { border-color: #4dabf7; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
         
         button { cursor: pointer; transition: 0.3s; }
         .btn-simpan { background: #4dabf7; color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: bold; flex-shrink: 0; }
         .btn-simpan:hover { background: #3bc9db; }
         
-        /* Desain Grid Universal (Bisa untuk Catatan & Pengeluaran) */
+        /* Desain Grid Universal */
         ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; align-items: start; }
         li { background: white; padding: 20px; border-radius: 12px; border-top: 5px solid #4dabf7; box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: all 0.2s ease-in-out; }
         li:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
@@ -46,15 +46,24 @@
         .btn-edit { background: #fcc419; color: #333; }
         .btn-hapus { background: #ff6b6b; color: white; }
         
-        /* Desain Khusus Pengeluaran */
-        .item-pengeluaran { border-top-color: #ff8787; } /* Garis atas warna merah muda */
+        /* --- DESAIN KHUSUS PENGELUARAN BARU --- */
+        .item-pengeluaran { border-top-color: #ff8787; } 
         .nominal-teks { font-size: 20px; font-weight: bold; color: #e03131; margin-top: 5px; }
-        .kotak-total { background: #fff5f5; border: 2px dashed #ff8787; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
-        .total-angka { font-size: 28px; font-weight: bold; color: #e03131; }
+        
+        .area-ringkasan { display: flex; gap: 15px; margin-bottom: 20px; }
+        .kotak-ringkasan { flex: 1; padding: 15px; border-radius: 8px; text-align: center; border: 2px solid transparent; }
+        .kotak-bulan { background: #e7f5ff; border-color: #74c0fc; color: #1864ab; }
+        .kotak-hari { background: #fff5f5; border-color: #ff8787; color: #e03131; }
+        
+        .label-ringkasan { font-size: 13px; font-weight: bold; margin-bottom: 5px; }
+        .angka-ringkasan { font-size: 22px; font-weight: bold; }
+        
+        .pilih-tanggal { width: 100%; padding: 12px; border: 2px solid #ced4da; border-radius: 8px; font-size: 16px; margin-bottom: 20px; text-align: center; color: #495057; font-weight: bold; cursor: pointer; }
+        .pilih-tanggal:focus { border-color: #ff8787; outline: none; }
 
-        /* Sembunyikan bagian yang tidak aktif */
         .bagian-aplikasi { display: none; }
         .bagian-aplikasi.aktif { display: block; }
+        .pesan-kosong { text-align: center; color: #868e96; font-style: italic; width: 100%; grid-column: 1 / -1; margin-top: 20px; }
 
         @media (max-width: 500px) {
             body { padding: 10px; }
@@ -63,6 +72,7 @@
             .btn-simpan { padding: 14px; }
             .nav-menu { flex-direction: column; gap: 15px; }
             .btn-logout { width: 100%; }
+            .area-ringkasan { flex-direction: column; }
         }
     </style>
 </head>
@@ -95,15 +105,25 @@
             </div>
 
             <div id="halamanPengeluaran" class="bagian-aplikasi">
-                <div class="kotak-total">
-                    <div>Total Pengeluaran:</div>
-                    <div id="totalPengeluaranAngka" class="total-angka">Rp 0</div>
+                
+                <input type="date" id="inputTanggalPilih" class="pilih-tanggal" title="Pilih hari untuk melihat/mencatat pengeluaran">
+
+                <div class="area-ringkasan">
+                    <div class="kotak-ringkasan kotak-bulan">
+                        <div class="label-ringkasan">Total Bulan Ini</div>
+                        <div id="angkaTotalBulan" class="angka-ringkasan">Rp 0</div>
+                    </div>
+                    <div class="kotak-ringkasan kotak-hari">
+                        <div class="label-ringkasan">Total Hari Ini</div>
+                        <div id="angkaTotalHari" class="angka-ringkasan">Rp 0</div>
+                    </div>
                 </div>
+
                 <div class="input-group">
-                    <input type="text" id="inputNamaPengeluaran" placeholder="Beli apa hari ini? (Misal: Makan Nasi)">
-                    <input type="number" id="inputNominalPengeluaran" placeholder="Berapa harganya? (Misal: 15000)">
+                    <input type="text" id="inputNamaPengeluaran" placeholder="Nama Barang (Misal: Kopi)">
+                    <input type="number" id="inputNominalPengeluaran" placeholder="Harga (Misal: 15000)">
                 </div>
-                <button id="btnSimpanPengeluaran" class="btn-simpan" style="width: 100%; padding: 14px; margin-bottom: 10px;">Catat Pengeluaran</button>
+                <button id="btnSimpanPengeluaran" class="btn-simpan" style="width: 100%; padding: 14px; margin-bottom: 10px; background-color:#ff8787;">Catat di Hari Terpilih</button>
             </div>
         </div>
 
@@ -131,16 +151,25 @@
   const provider = new GoogleAuthProvider();
 
   let currentUser = null;
-  let modeAktif = "catatan"; // Bisa 'catatan' atau 'pengeluaran'
+  let modeAktif = "catatan"; 
+  
+  // Variabel untuk menyimpan data mentah dari database
+  let dataCatatanPribadi = [];
+  let dataPengeluaranPribadi = [];
 
-  // --- LOGIKA LOGIN & LOGOUT ---
-  document.getElementById('btnLogin').addEventListener('click', () => {
-      signInWithPopup(auth, provider).catch((error) => alert("Gagal login: " + error.message));
+  // Setelan Tanggal Default (Hari Ini)
+  const inputTanggal = document.getElementById('inputTanggalPilih');
+  const tzoffset = (new Date()).getTimezoneOffset() * 60000; 
+  const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
+  inputTanggal.value = localISOTime;
+
+  // Jika tanggal diubah, otomatis muat ulang daftar pengeluaran
+  inputTanggal.addEventListener('change', () => {
+      if(modeAktif === "pengeluaran") renderLayar();
   });
 
-  document.getElementById('btnLogout').addEventListener('click', () => {
-      signOut(auth);
-  });
+  document.getElementById('btnLogin').addEventListener('click', () => signInWithPopup(auth, provider));
+  document.getElementById('btnLogout').addEventListener('click', () => signOut(auth));
 
   onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -148,60 +177,121 @@
           document.getElementById('areaLogin').style.display = 'none';
           document.getElementById('areaApp').style.display = 'block';
           document.getElementById('infoUser').innerText = `Halo, ${user.displayName}!`;
-          muatData(); 
+          
+          // Mengambil data Catatan dari Firebase (Otomatis Update)
+          onValue(ref(database, 'catatan_pribadi/' + user.uid), (snapshot) => {
+              dataCatatanPribadi = [];
+              snapshot.forEach(child => { dataCatatanPribadi.push({ id: child.key, ...child.val() }) });
+              if(modeAktif === "catatan") renderLayar();
+          });
+
+          // Mengambil data Pengeluaran dari Firebase (Otomatis Update)
+          onValue(ref(database, 'pengeluaran_pribadi/' + user.uid), (snapshot) => {
+              dataPengeluaranPribadi = [];
+              snapshot.forEach(child => { dataPengeluaranPribadi.push({ id: child.key, ...child.val() }) });
+              if(modeAktif === "pengeluaran") renderLayar();
+          });
+
       } else {
           currentUser = null;
           document.getElementById('areaLogin').style.display = 'block';
           document.getElementById('areaApp').style.display = 'none';
-          document.getElementById('daftarItem').innerHTML = ""; 
       }
   });
 
-  // --- LOGIKA MENU TABS (Berpindah Halaman tanpa Loading) ---
-  const btnCatatan = document.getElementById('btnMenuCatatan');
-  const btnPengeluaran = document.getElementById('btnMenuPengeluaran');
-  const halCatatan = document.getElementById('halamanCatatan');
-  const halPengeluaran = document.getElementById('halamanPengeluaran');
+  // Ganti Tab
+  document.getElementById('btnMenuCatatan').addEventListener('click', () => gantiTab('catatan'));
+  document.getElementById('btnMenuPengeluaran').addEventListener('click', () => gantiTab('pengeluaran'));
 
-  btnCatatan.addEventListener('click', () => {
-      modeAktif = "catatan";
-      btnCatatan.classList.add('aktif');
-      btnPengeluaran.classList.remove('aktif');
-      halCatatan.classList.add('aktif');
-      halPengeluaran.classList.remove('aktif');
-      muatData(); // Muat ulang data sesuai tab
-  });
-
-  btnPengeluaran.addEventListener('click', () => {
-      modeAktif = "pengeluaran";
-      btnPengeluaran.classList.add('aktif');
-      btnCatatan.classList.remove('aktif');
-      halPengeluaran.classList.add('aktif');
-      halCatatan.classList.remove('aktif');
-      muatData(); // Muat ulang data sesuai tab
-  });
-
-  // --- ALAT BANTU ---
-  function dapatkanWaktuSekarang() {
-      const sekarang = new Date();
-      return sekarang.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-  }
-  
-  function bersihkanTeks(teksKotor) {
-      const div = document.createElement('div');
-      div.innerText = teksKotor;
-      return div.innerHTML; 
+  function gantiTab(tab) {
+      modeAktif = tab;
+      document.getElementById('btnMenuCatatan').classList.toggle('aktif', tab === 'catatan');
+      document.getElementById('btnMenuPengeluaran').classList.toggle('aktif', tab === 'pengeluaran');
+      document.getElementById('halamanCatatan').classList.toggle('aktif', tab === 'catatan');
+      document.getElementById('halamanPengeluaran').classList.toggle('aktif', tab === 'pengeluaran');
+      renderLayar();
   }
 
   function formatRupiah(angka) {
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
   }
+  function bersihkanTeks(teks) { const d = document.createElement('div'); d.innerText = teks; return d.innerHTML; }
+  function formatWaktuDetail() { return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }); }
 
-  // --- LOGIKA SIMPAN DATA ---
+  // Fungsi Utama Menggambar Layar (UI)
+  function renderLayar() {
+      const daftar = document.getElementById('daftarItem');
+      daftar.innerHTML = "";
+
+      if (modeAktif === "catatan") {
+          // --- RENDER CATATAN ---
+          if(dataCatatanPribadi.length === 0) {
+              daftar.innerHTML = "<div class='pesan-kosong'>Belum ada catatan.</div>"; return;
+          }
+          dataCatatanPribadi.forEach(data => {
+              const teksAman = bersihkanTeks(data.isi);
+              daftar.innerHTML += `
+                  <li>
+                      <div class="waktu-teks">🕒 ${data.waktu || 'Tidak tercatat'}</div>
+                      <span class="isi-teks">${teksAman}</span>
+                      <div class="grup-tombol">
+                          <button class="btn-aksi btn-edit" data-id="${data.id}" data-jenis="catatan">Edit</button>
+                          <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="catatan">Hapus</button>
+                      </div>
+                  </li>`;
+          });
+      } else {
+          // --- RENDER PENGELUARAN ---
+          const tglPilih = inputTanggal.value; // Misal: "2026-02-22"
+          const blnPilih = tglPilih.substring(0, 7); // Misal: "2026-02"
+          
+          let totalBulan = 0;
+          let totalHari = 0;
+          let htmlHariIni = "";
+          let adaDataHariIni = false;
+
+          dataPengeluaranPribadi.forEach(data => {
+              // Menghitung Total Bulan (Jika awalan tanggalnya sama)
+              if (data.tanggal_db && data.tanggal_db.startsWith(blnPilih)) {
+                  totalBulan += data.harga;
+              }
+
+              // Menghitung & Menggambar List KHUSUS HARI INI
+              if (data.tanggal_db === tglPilih) {
+                  adaDataHariIni = true;
+                  totalHari += data.harga;
+                  htmlHariIni += `
+                      <li class="item-pengeluaran">
+                          <div class="waktu-teks">🕒 Jam Input: ${data.jam_input || '-'}</div>
+                          <span class="isi-teks">${bersihkanTeks(data.nama_item)}</span>
+                          <div class="nominal-teks">${formatRupiah(data.harga)}</div>
+                          <div class="grup-tombol">
+                              <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="pengeluaran">Hapus</button>
+                          </div>
+                      </li>`;
+              }
+          });
+
+          // Update Kotak Ringkasan
+          document.getElementById('angkaTotalBulan').innerText = formatRupiah(totalBulan);
+          document.getElementById('angkaTotalHari').innerText = formatRupiah(totalHari);
+          
+          if (!adaDataHariIni) {
+              daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada pengeluaran di tanggal ${tglPilih}.</div>`;
+          } else {
+              daftar.innerHTML = htmlHariIni;
+          }
+      }
+  }
+
+  // --- SIMPAN DATA BARU ---
   document.getElementById('btnSimpanCatatan').addEventListener('click', () => {
       const teks = document.getElementById('inputCatatan').value;
-      if (teks !== "" && currentUser) {
-          push(ref(database, 'catatan_pribadi/' + currentUser.uid), { isi: teks, waktu: dapatkanWaktuSekarang() });
+      if (teks && currentUser) {
+          push(ref(database, 'catatan_pribadi/' + currentUser.uid), { 
+              isi: teks, 
+              waktu: new Date().toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' }) 
+          });
           document.getElementById('inputCatatan').value = ""; 
       }
   });
@@ -209,82 +299,25 @@
   document.getElementById('btnSimpanPengeluaran').addEventListener('click', () => {
       const nama = document.getElementById('inputNamaPengeluaran').value;
       const nominal = document.getElementById('inputNominalPengeluaran').value;
+      const tanggalDipilih = document.getElementById('inputTanggalPilih').value;
       
-      if (nama !== "" && nominal !== "" && currentUser) {
+      if (nama && nominal && currentUser) {
           push(ref(database, 'pengeluaran_pribadi/' + currentUser.uid), { 
               nama_item: nama, 
               harga: Number(nominal), 
-              waktu: dapatkanWaktuSekarang() 
+              tanggal_db: tanggalDipilih, // Ini kunci untuk filter kalender (Format: YYYY-MM-DD)
+              jam_input: formatWaktuDetail()
           });
           document.getElementById('inputNamaPengeluaran').value = ""; 
           document.getElementById('inputNominalPengeluaran').value = ""; 
       }
   });
 
-  // --- LOGIKA TAMPIL DATA (Menyesuaikan Tab yang Aktif) ---
-  function muatData() {
-      if (!currentUser) return;
-      
-      const daftar = document.getElementById('daftarItem');
-      daftar.innerHTML = ""; 
-      
-      if (modeAktif === "catatan") {
-          // MODE CATATAN
-          onValue(ref(database, 'catatan_pribadi/' + currentUser.uid), (snapshot) => {
-              if(modeAktif !== "catatan") return; // Cegah bentrok jika tab sudah pindah
-              daftar.innerHTML = ""; 
-              snapshot.forEach((dataAnak) => {
-                  const data = dataAnak.val();
-                  const teksAman = bersihkanTeks(data.isi);
-                  const waktuTampil = data.waktu ? data.waktu : "Waktu tidak tercatat";
-                  
-                  daftar.innerHTML += `
-                      <li>
-                          <div class="waktu-teks">🕒 ${waktuTampil}</div>
-                          <span class="isi-teks">${teksAman}</span>
-                          <div class="grup-tombol">
-                              <button class="btn-aksi btn-edit" data-id="${dataAnak.key}" data-jenis="catatan">Edit</button>
-                              <button class="btn-aksi btn-hapus" data-id="${dataAnak.key}" data-jenis="catatan">Hapus</button>
-                          </div>
-                      </li>`;
-              });
-          });
-      } else if (modeAktif === "pengeluaran") {
-          // MODE PENGELUARAN
-          onValue(ref(database, 'pengeluaran_pribadi/' + currentUser.uid), (snapshot) => {
-              if(modeAktif !== "pengeluaran") return; 
-              daftar.innerHTML = ""; 
-              let total = 0;
-              
-              snapshot.forEach((dataAnak) => {
-                  const data = dataAnak.val();
-                  const namaAman = bersihkanTeks(data.nama_item);
-                  const hargaFormat = formatRupiah(data.harga);
-                  const waktuTampil = data.waktu ? data.waktu : "Waktu tidak tercatat";
-                  total += data.harga; // Menghitung total
-                  
-                  daftar.innerHTML += `
-                      <li class="item-pengeluaran">
-                          <div class="waktu-teks">🕒 ${waktuTampil}</div>
-                          <span class="isi-teks">${namaAman}</span>
-                          <div class="nominal-teks">${hargaFormat}</div>
-                          <div class="grup-tombol">
-                              <button class="btn-aksi btn-hapus" data-id="${dataAnak.key}" data-jenis="pengeluaran">Hapus</button>
-                          </div>
-                      </li>`;
-              });
-              
-              // Tampilkan total di layar
-              document.getElementById('totalPengeluaranAngka').innerText = formatRupiah(total);
-          });
-      }
-  }
-
-  // --- LOGIKA KLIK TOMBOL EDIT & HAPUS ---
+  // --- KLIK EDIT / HAPUS ---
   document.getElementById('daftarItem').addEventListener('click', function(e) {
       const target = e.target;
       const idItem = target.getAttribute('data-id');
-      const jenis = target.getAttribute('data-jenis'); // 'catatan' atau 'pengeluaran'
+      const jenis = target.getAttribute('data-jenis'); 
       
       if(target.classList.contains('btn-hapus')) {
           const folder = jenis === 'catatan' ? 'catatan_pribadi/' : 'pengeluaran_pribadi/';
@@ -293,11 +326,10 @@
       
       if(target.classList.contains('btn-edit') && jenis === 'catatan') {
           const teksLama = target.closest('li').querySelector('.isi-teks').innerText;
-          const teksBaru = prompt("Ubah catatan rahasia Anda:", teksLama);
+          const teksBaru = prompt("Ubah catatan:", teksLama);
           if (teksBaru !== null && teksBaru.trim() !== "") {
-              update(ref(database, `catatan_pribadi/${currentUser.uid}/${idItem}`), { 
-                  isi: teksBaru, waktu: dapatkanWaktuSekarang() + " (Diedit)"
-              });
+              const waktuBaru = new Date().toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' }) + " (Diedit)";
+              update(ref(database, `catatan_pribadi/${currentUser.uid}/${idItem}`), { isi: teksBaru, waktu: waktuBaru });
           }
       }
   });
