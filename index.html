@@ -25,16 +25,29 @@
         
         ul { list-style: none; padding: 0; margin: 0; }
         
-        /* PERBAIKAN BUG: align-items diubah ke flex-start agar tombol tetap di atas, ditambah gap */
         li { background: #f8f9fa; margin-bottom: 10px; padding: 12px 15px; border-radius: 6px; border-left: 4px solid #4dabf7; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
         
-        /* PERBAIKAN BUG: line-height agar teks panjang nyaman dibaca */
-        .isi-teks { flex: 1; word-break: break-word; line-height: 1.5; color: #495057; }
+        /* --- PERBAIKAN PAMUNGKAS DI SINI --- */
+        .isi-teks { 
+            flex: 1; /* Ambil sisa ruang */
+            margin-right: 10px;
+            /* Kombinasi maut untuk memaksa teks panjang pindah baris */
+            min-width: 0; /* Penting agar flex item bisa mengecil */
+            word-wrap: break-word; /* Untuk browser lama */
+            word-break: break-word; /* Memutus kata yang kepanjangan */
+            overflow-wrap: break-word; /* Standar modern untuk memutus kata */
+            line-height: 1.5;
+            color: #495057;
+        }
         
-        /* PERBAIKAN BUG: flex-shrink: 0 MENCEGAH TOMBOL TERGENCET MENGHILANG */
-        .grup-tombol { display: flex; gap: 5px; flex-shrink: 0; margin-top: 2px; }
+        .grup-tombol { 
+            display: flex; 
+            gap: 5px; 
+            flex-shrink: 0; /* JANGAN BIARKAN TOMBOL MENGECIL */
+            margin-top: 2px; 
+        }
         
-        .btn-aksi { padding: 6px 10px; font-size: 12px; border-radius: 4px; border: none; color: white; }
+        .btn-aksi { padding: 6px 10px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; color: white; }
         .btn-edit { background: #fcc419; }
         .btn-hapus { background: #ff6b6b; }
     </style>
