@@ -20,36 +20,45 @@
         .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
         input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px; outline: none; }
         button { cursor: pointer; transition: 0.3s; }
-        .btn-simpan { background: #4dabf7; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; flex-shrink: 0; }
+        .btn-simpan { background: #4dabf7; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; }
         .btn-simpan:hover { background: #3bc9db; }
         
         ul { list-style: none; padding: 0; margin: 0; }
         
-        li { background: #f8f9fa; margin-bottom: 10px; padding: 12px 15px; border-radius: 6px; border-left: 4px solid #4dabf7; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-        
-        /* --- PERBAIKAN PAMUNGKAS DI SINI --- */
-        .isi-teks { 
-            flex: 1; /* Ambil sisa ruang */
-            margin-right: 10px;
-            /* Kombinasi maut untuk memaksa teks panjang pindah baris */
-            min-width: 0; /* Penting agar flex item bisa mengecil */
-            word-wrap: break-word; /* Untuk browser lama */
-            word-break: break-word; /* Memutus kata yang kepanjangan */
-            overflow-wrap: break-word; /* Standar modern untuk memutus kata */
-            line-height: 1.5;
-            color: #495057;
+        /* DESAIN BARU: Flex-direction kolom (atas-bawah) */
+        li { 
+            background: #f8f9fa; 
+            margin-bottom: 12px; 
+            padding: 15px; 
+            border-radius: 6px; 
+            border-left: 4px solid #4dabf7; 
+            display: flex; 
+            flex-direction: column; /* Mengubah susunan menjadi atas ke bawah */
+            gap: 12px; /* Jarak antara teks dan tombol */
         }
         
+        .isi-teks { 
+            width: 100%; 
+            word-break: break-word; 
+            white-space: pre-wrap; /* Menghormati enter/baris baru */
+            line-height: 1.6; 
+            color: #495057; 
+        }
+        
+        /* Mendorong grup tombol ke pojok kanan bawah */
         .grup-tombol { 
             display: flex; 
-            gap: 5px; 
-            flex-shrink: 0; /* JANGAN BIARKAN TOMBOL MENGECIL */
-            margin-top: 2px; 
+            gap: 8px; 
+            align-self: flex-end; 
+            border-top: 1px dashed #ddd; /* Garis pemisah tipis */
+            padding-top: 10px;
+            width: 100%;
+            justify-content: flex-end;
         }
         
-        .btn-aksi { padding: 6px 10px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; color: white; }
-        .btn-edit { background: #fcc419; }
-        .btn-hapus { background: #ff6b6b; }
+        .btn-aksi { padding: 6px 15px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
+        .btn-edit { background: #fcc419; color: #333; }
+        .btn-hapus { background: #ff6b6b; color: white; }
     </style>
 </head>
 <body>
