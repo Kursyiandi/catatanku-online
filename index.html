@@ -10,10 +10,15 @@
         h2 { text-align: center; color: #333; margin-top: 0; }
         .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
         input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px; outline: none; }
-        button { padding: 12px 20px; cursor: pointer; background: #ff6b6b; color: white; border: none; border-radius: 6px; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #fa5252; }
+        button { padding: 12px 20px; cursor: pointer; background: #4dabf7; color: white; border: none; border-radius: 6px; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #3bc9db; }
+        
         ul { list-style: none; padding: 0; margin: 0; }
-        li { background: #f8f9fa; margin-bottom: 10px; padding: 15px; border-radius: 6px; border-left: 4px solid #ff6b6b; color: #495057; }
+        li { background: #f8f9fa; margin-bottom: 10px; padding: 12px 15px; border-radius: 6px; border-left: 4px solid #4dabf7; color: #495057; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Desain untuk tombol hapus */
+        .btn-hapus { background: #ff6b6b; padding: 6px 12px; font-size: 12px; margin-left: 10px; }
+        .btn-hapus:hover { background: #fa5252; }
     </style>
 </head>
 <body>
@@ -28,54 +33,67 @@
 </div>
 
 <script type="module">
-  // 1. Mengimpor alat dari Firebase
+  // 1. TAMBAHAN: Kita mengimpor alat 'remove' dari Firebase
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-  import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+  import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-  // 2. Kunci Firebase milik Anda (Kurniawan)
+  // 2. Kunci Firebase Anda (Tidak berubah)
   const firebaseConfig = {
     apiKey: "AIzaSyDsRTS_VwqllFKsMqzb_v7iwfH6DL7Lma0",
     authDomain: "catatanku-bfa2a.firebaseapp.com",
     projectId: "catatanku-bfa2a",
     storageBucket: "catatanku-bfa2a.firebasestorage.app",
     messagingSenderId: "661605719763",
-    appId: "1:661605719763:web:0f1f1cac9c7f782ff83e26",
-    measurementId: "G-57CH6KB32B"
+    appId: "1:661605719763:web:0f1f1cac9c7f782ff83e26"
   };
 
-  // 3. Menyalakan Mesin Firebase
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
 
-  // 4. Fungsi untuk Menyimpan Data
+  // 3. Fungsi Simpan (Tidak berubah)
   function simpanCatatan() {
     const teks = document.getElementById('inputCatatan').value;
     if (teks !== "") {
-        // Mendorong (push) teks ke database di folder 'catatan'
         push(ref(database, 'catatan/'), { isi: teks });
-        document.getElementById('inputCatatan').value = ""; // Mengosongkan kolom ketik
+        document.getElementById('inputCatatan').value = ""; 
     }
   }
 
-  // Menghubungkan tombol "Simpan" dengan fungsi di atas
   document.getElementById('btnSimpan').addEventListener('click', simpanCatatan);
-
-  // Menambahkan fitur simpan saat menekan tombol "Enter" di keyboard
   document.getElementById('inputCatatan').addEventListener('keypress', function (e) {
       if (e.key === 'Enter') simpanCatatan();
   });
 
-  // 5. Fungsi untuk Menampilkan Data secara Langsung (Realtime)
+  // 4. Fungsi Tampil Data (DITAMBAHKAN TOMBOL HAPUS)
   const referensiCatatan = ref(database, 'catatan/');
   onValue(referensiCatatan, (snapshot) => {
     const daftar = document.getElementById('daftarCatatan');
-    daftar.innerHTML = ""; // Bersihkan layar sebelum memuat ulang data terbaru
+    daftar.innerHTML = ""; 
     
     snapshot.forEach((dataAnak) => {
+        const idCatatan = dataAnak.key; // Mengambil ID Unik catatan
         const data = dataAnak.val();
-        daftar.innerHTML += `<li>${data.isi}</li>`;
+        
+        // Menambahkan tombol hapus di sebelah teks
+        daftar.innerHTML += `
+            <li>
+                <span>${data.isi}</span>
+                <button class="btn-hapus" data-id="${idCatatan}">Hapus</button>
+            </li>
+        `;
     });
   });
+
+  // 5. FUNGSI BARU: Menghapus Catatan saat tombol ditekan
+  document.getElementById('daftarCatatan').addEventListener('click', function(e) {
+      // Mengecek apakah yang diklik adalah tombol hapus
+      if(e.target.classList.contains('btn-hapus')) {
+          const idYangDihapus = e.target.getAttribute('data-id');
+          // Perintah ke Firebase untuk menghapus data berdasarkan ID
+          remove(ref(database, 'catatan/' + idYangDihapus));
+      }
+  });
+
 </script>
 
 </body>
