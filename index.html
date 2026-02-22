@@ -138,6 +138,13 @@
       if (e.key === 'Enter') simpanCatatan();
   });
 
+  // --- FUNGSI BARU: PEMBERSIH TEKS ANTI-BUG ---
+  function bersihkanTeks(teksKotor) {
+      const div = document.createElement('div');
+      div.innerText = teksKotor;
+      return div.innerHTML; // Mengubah <script> menjadi aman
+  }
+
   function muatCatatan() {
       const referensiCatatan = ref(database, 'catatan_pribadi/' + currentUser.uid);
       
@@ -149,10 +156,12 @@
             const idCatatan = dataAnak.key; 
             const data = dataAnak.val();
             
-            // PERBAIKAN BUG: Tidak lagi menempelkan data-isi di dalam tombol!
+            // Teks dibersihkan dulu sebelum dicetak ke layar
+            const teksAman = bersihkanTeks(data.isi);
+            
             daftar.innerHTML += `
                 <li>
-                    <span class="isi-teks">${data.isi}</span>
+                    <span class="isi-teks">${teksAman}</span>
                     <div class="grup-tombol">
                         <button class="btn-aksi btn-edit" data-id="${idCatatan}">Edit</button>
                         <button class="btn-aksi btn-hapus" data-id="${idCatatan}">Hapus</button>
@@ -173,10 +182,7 @@
       
       if(target.classList.contains('btn-edit')) {
           const idYangDiedit = target.getAttribute('data-id');
-          
-          // PERBAIKAN BUG: Sistem disuruh mengambil teks langsung dari layar
           const teksLama = target.closest('li').querySelector('.isi-teks').innerText;
-          
           const teksBaru = prompt("Ubah catatan rahasia Anda:", teksLama);
           
           if (teksBaru !== null && teksBaru.trim() !== "") {
