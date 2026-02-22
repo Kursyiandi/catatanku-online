@@ -5,18 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catatan Harian Pribadi</title>
     <style>
-        /* Desain Latar Belakang */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #e9ecef; margin: 0; }
         .container { max-width: 1200px; margin: 0 auto; }
         
-        /* Kotak Input di Tengah (Lebih Elegan) */
         .kotak-utama { max-width: 500px; margin: 0 auto 30px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
         h2 { text-align: center; color: #333; margin-top: 0; font-size: 24px; }
         
         #areaLogin { text-align: center; padding: 10px 0; }
         #areaApp { display: none; } 
         
-        /* Tombol & Input */
         .btn-google { background: #db4437; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; margin-bottom: 10px; transition: 0.3s; }
         .btn-google:hover { background: #c53929; }
         .btn-logout { background: #6c757d; color: white; border: none; padding: 6px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; float: right; margin-bottom: 15px; }
@@ -31,19 +28,16 @@
         .btn-simpan { background: #4dabf7; color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: bold; flex-shrink: 0; }
         .btn-simpan:hover { background: #3bc9db; }
         
-        /* --- KEAJAIBAN RESPONSIVE GRID DI SINI --- */
         ul { 
             list-style: none; 
             padding: 0; 
             margin: 0; 
             display: grid; 
-            /* Grid ajaib: Lebar minimal 280px, sisanya penuhi layar otomatis */
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
             gap: 20px; 
-            align-items: start; /* Biarkan tinggi kartu menyesuaikan isinya */
+            align-items: start; 
         }
         
-        /* Desain Kartu Catatan ala Google Keep */
         li { 
             background: white; 
             padding: 20px; 
@@ -53,15 +47,24 @@
             display: flex; 
             flex-direction: column; 
             justify-content: space-between;
-            gap: 15px; 
+            gap: 10px; 
             transition: all 0.2s ease-in-out;
         }
         li:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
         
+        /* --- DESAIN UNTUK TANGGAL & JAM --- */
+        .waktu-teks {
+            font-size: 11px;
+            color: #adb5bd;
+            border-bottom: 1px dashed #f1f3f5;
+            padding-bottom: 8px;
+            margin-bottom: 5px;
+        }
+        
         .isi-teks { width: 100%; word-break: break-word; white-space: pre-wrap; line-height: 1.6; color: #495057; font-size: 15px; }
         
         .grup-tombol { 
-            display: flex; gap: 8px; align-self: flex-end; border-top: 1px solid #f1f3f5; padding-top: 15px; width: 100%; justify-content: flex-end;
+            display: flex; gap: 8px; align-self: flex-end; border-top: 1px solid #f1f3f5; padding-top: 15px; margin-top: 5px; width: 100%; justify-content: flex-end;
         }
         
         .btn-aksi { padding: 6px 15px; font-size: 12px; border-radius: 6px; border: none; font-weight: bold; }
@@ -70,7 +73,6 @@
         .btn-hapus { background: #ff6b6b; color: white; }
         .btn-hapus:hover { background: #fa5252; }
 
-        /* Khusus layar HP Kecil */
         @media (max-width: 500px) {
             body { padding: 10px; }
             .kotak-utama { padding: 20px; margin-bottom: 20px; }
@@ -82,7 +84,6 @@
 <body>
 
 <div class="container">
-    
     <div id="areaLogin" class="kotak-utama">
         <h2>Catatan Rahasia 🔒</h2>
         <p>Silakan masuk untuk melihat catatan Anda.</p>
@@ -148,10 +149,24 @@
       }
   });
 
+  // --- FUNGSI BARU: MENGAMBIL WAKTU SAAT INI ---
+  function dapatkanWaktuSekarang() {
+      const sekarang = new Date();
+      // Format ala Indonesia (Misal: 22 Februari 2026, 22:30)
+      return sekarang.toLocaleDateString('id-ID', { 
+          day: 'numeric', month: 'long', year: 'numeric', 
+          hour: '2-digit', minute: '2-digit' 
+      });
+  }
+
   function simpanCatatan() {
     const teks = document.getElementById('inputCatatan').value;
     if (teks !== "" && currentUser !== null) {
-        push(ref(database, 'catatan_pribadi/' + currentUser.uid), { isi: teks });
+        // Mengirim teks DAN waktu saat ini ke Firebase
+        push(ref(database, 'catatan_pribadi/' + currentUser.uid), { 
+            isi: teks,
+            waktu: dapatkanWaktuSekarang()
+        });
         document.getElementById('inputCatatan').value = ""; 
     }
   }
@@ -180,8 +195,13 @@
             
             const teksAman = bersihkanTeks(data.isi);
             
+            // Mengecek apakah catatan ini punya data waktu (antisipasi catatan lama)
+            const waktuTampil = data.waktu ? data.waktu : "Waktu tidak tercatat";
+            
+            // Menambahkan elemen <div class="waktu-teks"> di atas isi catatan
             daftar.innerHTML += `
                 <li>
+                    <div class="waktu-teks">🕒 ${waktuTampil}</div>
                     <span class="isi-teks">${teksAman}</span>
                     <div class="grup-tombol">
                         <button class="btn-aksi btn-edit" data-id="${idCatatan}">Edit</button>
@@ -207,7 +227,11 @@
           const teksBaru = prompt("Ubah catatan rahasia Anda:", teksLama);
           
           if (teksBaru !== null && teksBaru.trim() !== "") {
-              update(ref(database, `catatan_pribadi/${currentUser.uid}/${idYangDiedit}`), { isi: teksBaru });
+              // Memperbarui teks DAN memperbarui waktunya (menambahkan label "Diedit")
+              update(ref(database, `catatan_pribadi/${currentUser.uid}/${idYangDiedit}`), { 
+                  isi: teksBaru,
+                  waktu: dapatkanWaktuSekarang() + " (Diedit)"
+              });
           }
       }
   });
