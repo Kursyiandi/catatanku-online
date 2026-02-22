@@ -9,9 +9,8 @@
         .container { max-width: 400px; margin: 40px auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         h2 { text-align: center; color: #333; margin-top: 0; }
         
-        /* Desain Area Login & App */
         #areaLogin { text-align: center; padding: 20px 0; }
-        #areaApp { display: none; } /* Disembunyikan sebelum login */
+        #areaApp { display: none; } 
         
         .btn-google { background: #db4437; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; margin-bottom: 10px; }
         .btn-logout { background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; float: right; margin-bottom: 15px; }
@@ -21,13 +20,20 @@
         .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
         input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px; outline: none; }
         button { cursor: pointer; transition: 0.3s; }
-        .btn-simpan { background: #4dabf7; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; }
+        .btn-simpan { background: #4dabf7; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; flex-shrink: 0; }
         .btn-simpan:hover { background: #3bc9db; }
         
         ul { list-style: none; padding: 0; margin: 0; }
-        li { background: #f8f9fa; margin-bottom: 10px; padding: 12px 15px; border-radius: 6px; border-left: 4px solid #4dabf7; display: flex; justify-content: space-between; align-items: center; }
-        .isi-teks { flex: 1; margin-right: 10px; word-break: break-word; }
-        .grup-tombol { display: flex; gap: 5px; }
+        
+        /* PERBAIKAN BUG: align-items diubah ke flex-start agar tombol tetap di atas, ditambah gap */
+        li { background: #f8f9fa; margin-bottom: 10px; padding: 12px 15px; border-radius: 6px; border-left: 4px solid #4dabf7; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        
+        /* PERBAIKAN BUG: line-height agar teks panjang nyaman dibaca */
+        .isi-teks { flex: 1; word-break: break-word; line-height: 1.5; color: #495057; }
+        
+        /* PERBAIKAN BUG: flex-shrink: 0 MENCEGAH TOMBOL TERGENCET MENGHILANG */
+        .grup-tombol { display: flex; gap: 5px; flex-shrink: 0; margin-top: 2px; }
+        
         .btn-aksi { padding: 6px 10px; font-size: 12px; border-radius: 4px; border: none; color: white; }
         .btn-edit { background: #fcc419; }
         .btn-hapus { background: #ff6b6b; }
@@ -56,7 +62,6 @@
 </div>
 
 <script type="module">
-  // 1. Mengimpor alat Database DAN Authentication (Login)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
   import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
@@ -72,15 +77,11 @@
 
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
-  
-  // Menyalakan Mesin Login
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
 
-  // Variabel untuk menyimpan ID pengguna yang sedang login
   let currentUser = null;
 
-  // --- LOGIKA LOGIN & LOGOUT ---
   document.getElementById('btnLogin').addEventListener('click', () => {
       signInWithPopup(auth, provider).catch((error) => alert("Gagal login: " + error.message));
   });
@@ -89,32 +90,24 @@
       signOut(auth);
   });
 
-  // Mengecek apakah pengguna sedang login atau tidak
   onAuthStateChanged(auth, (user) => {
       if (user) {
-          // JIKA BERHASIL LOGIN:
           currentUser = user;
-          document.getElementById('areaLogin').style.display = 'none'; // Sembunyikan tombol login
-          document.getElementById('areaApp').style.display = 'block'; // Tampilkan aplikasi
-          document.getElementById('infoUser').innerText = `Halo, ${user.displayName}!`; // Sapa nama pengguna
-          
-          muatCatatan(); // Panggil data dari database
+          document.getElementById('areaLogin').style.display = 'none';
+          document.getElementById('areaApp').style.display = 'block';
+          document.getElementById('infoUser').innerText = `Halo, ${user.displayName}!`;
+          muatCatatan(); 
       } else {
-          // JIKA BELUM LOGIN / KELUAR:
           currentUser = null;
           document.getElementById('areaLogin').style.display = 'block';
           document.getElementById('areaApp').style.display = 'none';
-          document.getElementById('daftarCatatan').innerHTML = ""; // Bersihkan layar
+          document.getElementById('daftarCatatan').innerHTML = ""; 
       }
   });
 
-
-  // --- LOGIKA DATABASE (CRUD) ---
-  
   function simpanCatatan() {
     const teks = document.getElementById('inputCatatan').value;
     if (teks !== "" && currentUser !== null) {
-        // PENTING: Sekarang data disimpan di dalam folder khusus ID pengguna tersebut
         push(ref(database, 'catatan_pribadi/' + currentUser.uid), { isi: teks });
         document.getElementById('inputCatatan').value = ""; 
     }
@@ -126,7 +119,6 @@
   });
 
   function muatCatatan() {
-      // Menarik data HANYA dari folder milik pengguna yang sedang login
       const referensiCatatan = ref(database, 'catatan_pribadi/' + currentUser.uid);
       
       onValue(referensiCatatan, (snapshot) => {
