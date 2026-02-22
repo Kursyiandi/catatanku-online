@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catatan Pribadi</title>
+    <title>Catatan Harian Pribadi</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #e9ecef; }
         .container { max-width: 400px; margin: 40px auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
@@ -25,7 +25,6 @@
         
         ul { list-style: none; padding: 0; margin: 0; }
         
-        /* DESAIN BARU: Flex-direction kolom (atas-bawah) */
         li { 
             background: #f8f9fa; 
             margin-bottom: 12px; 
@@ -33,24 +32,23 @@
             border-radius: 6px; 
             border-left: 4px solid #4dabf7; 
             display: flex; 
-            flex-direction: column; /* Mengubah susunan menjadi atas ke bawah */
-            gap: 12px; /* Jarak antara teks dan tombol */
+            flex-direction: column; 
+            gap: 12px; 
         }
         
         .isi-teks { 
             width: 100%; 
             word-break: break-word; 
-            white-space: pre-wrap; /* Menghormati enter/baris baru */
+            white-space: pre-wrap; 
             line-height: 1.6; 
             color: #495057; 
         }
         
-        /* Mendorong grup tombol ke pojok kanan bawah */
         .grup-tombol { 
             display: flex; 
             gap: 8px; 
             align-self: flex-end; 
-            border-top: 1px dashed #ddd; /* Garis pemisah tipis */
+            border-top: 1px dashed #ddd; 
             padding-top: 10px;
             width: 100%;
             justify-content: flex-end;
@@ -151,11 +149,12 @@
             const idCatatan = dataAnak.key; 
             const data = dataAnak.val();
             
+            // PERBAIKAN BUG: Tidak lagi menempelkan data-isi di dalam tombol!
             daftar.innerHTML += `
                 <li>
                     <span class="isi-teks">${data.isi}</span>
                     <div class="grup-tombol">
-                        <button class="btn-aksi btn-edit" data-id="${idCatatan}" data-isi="${data.isi}">Edit</button>
+                        <button class="btn-aksi btn-edit" data-id="${idCatatan}">Edit</button>
                         <button class="btn-aksi btn-hapus" data-id="${idCatatan}">Hapus</button>
                     </div>
                 </li>
@@ -174,7 +173,10 @@
       
       if(target.classList.contains('btn-edit')) {
           const idYangDiedit = target.getAttribute('data-id');
-          const teksLama = target.getAttribute('data-isi');
+          
+          // PERBAIKAN BUG: Sistem disuruh mengambil teks langsung dari layar
+          const teksLama = target.closest('li').querySelector('.isi-teks').innerText;
+          
           const teksBaru = prompt("Ubah catatan rahasia Anda:", teksLama);
           
           if (teksBaru !== null && teksBaru.trim() !== "") {
@@ -187,4 +189,3 @@
 
 </body>
 </html>
-
