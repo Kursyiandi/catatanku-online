@@ -3,45 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catatan Harian Online</title>
+    <title>Catatan Harian Pribadi</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #e9ecef; }
         .container { max-width: 400px; margin: 40px auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         h2 { text-align: center; color: #333; margin-top: 0; }
+        
+        /* Desain Area Login & App */
+        #areaLogin { text-align: center; padding: 20px 0; }
+        #areaApp { display: none; } /* Disembunyikan sebelum login */
+        
+        .btn-google { background: #db4437; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; margin-bottom: 10px; }
+        .btn-logout { background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; float: right; margin-bottom: 15px; }
+        
+        .info-user { clear: both; margin-bottom: 15px; font-weight: bold; color: #495057; border-bottom: 2px solid #eee; padding-bottom: 10px;}
+        
         .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
         input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px; outline: none; }
-        button { padding: 12px 20px; cursor: pointer; background: #4dabf7; color: white; border: none; border-radius: 6px; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #3bc9db; }
+        button { cursor: pointer; transition: 0.3s; }
+        .btn-simpan { background: #4dabf7; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; }
+        .btn-simpan:hover { background: #3bc9db; }
         
         ul { list-style: none; padding: 0; margin: 0; }
-        li { background: #f8f9fa; margin-bottom: 10px; padding: 12px 15px; border-radius: 6px; border-left: 4px solid #4dabf7; color: #495057; display: flex; justify-content: space-between; align-items: center; }
-        
+        li { background: #f8f9fa; margin-bottom: 10px; padding: 12px 15px; border-radius: 6px; border-left: 4px solid #4dabf7; display: flex; justify-content: space-between; align-items: center; }
         .isi-teks { flex: 1; margin-right: 10px; word-break: break-word; }
         .grup-tombol { display: flex; gap: 5px; }
-        
-        /* Desain tombol Edit & Hapus */
-        .btn-aksi { padding: 6px 10px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; color: white; }
+        .btn-aksi { padding: 6px 10px; font-size: 12px; border-radius: 4px; border: none; color: white; }
         .btn-edit { background: #fcc419; }
-        .btn-edit:hover { background: #fab005; }
         .btn-hapus { background: #ff6b6b; }
-        .btn-hapus:hover { background: #fa5252; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Catatan Harianku 📝</h2>
-    <div class="input-group">
-        <input type="text" id="inputCatatan" placeholder="Tulis sesuatu hari ini...">
-        <button id="btnSimpan">Simpan</button>
+    <h2>Catatan Rahasia 🔒</h2>
+    
+    <div id="areaLogin">
+        <p>Silakan masuk untuk melihat catatan Anda.</p>
+        <button id="btnLogin" class="btn-google">Masuk dengan Google</button>
     </div>
-    <ul id="daftarCatatan"></ul>
+
+    <div id="areaApp">
+        <button id="btnLogout" class="btn-logout">Keluar</button>
+        <div id="infoUser" class="info-user"></div>
+        
+        <div class="input-group">
+            <input type="text" id="inputCatatan" placeholder="Tulis catatan rahasia hari ini...">
+            <button id="btnSimpan" class="btn-simpan">Simpan</button>
+        </div>
+        <ul id="daftarCatatan"></ul>
+    </div>
 </div>
 
 <script type="module">
-  // 1. TAMBAHAN: Kita mengimpor alat 'update' dari Firebase
+  // 1. Mengimpor alat Database DAN Authentication (Login)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
   import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDsRTS_VwqllFKsMqzb_v7iwfH6DL7Lma0",
@@ -54,11 +72,50 @@
 
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
+  
+  // Menyalakan Mesin Login
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
 
+  // Variabel untuk menyimpan ID pengguna yang sedang login
+  let currentUser = null;
+
+  // --- LOGIKA LOGIN & LOGOUT ---
+  document.getElementById('btnLogin').addEventListener('click', () => {
+      signInWithPopup(auth, provider).catch((error) => alert("Gagal login: " + error.message));
+  });
+
+  document.getElementById('btnLogout').addEventListener('click', () => {
+      signOut(auth);
+  });
+
+  // Mengecek apakah pengguna sedang login atau tidak
+  onAuthStateChanged(auth, (user) => {
+      if (user) {
+          // JIKA BERHASIL LOGIN:
+          currentUser = user;
+          document.getElementById('areaLogin').style.display = 'none'; // Sembunyikan tombol login
+          document.getElementById('areaApp').style.display = 'block'; // Tampilkan aplikasi
+          document.getElementById('infoUser').innerText = `Halo, ${user.displayName}!`; // Sapa nama pengguna
+          
+          muatCatatan(); // Panggil data dari database
+      } else {
+          // JIKA BELUM LOGIN / KELUAR:
+          currentUser = null;
+          document.getElementById('areaLogin').style.display = 'block';
+          document.getElementById('areaApp').style.display = 'none';
+          document.getElementById('daftarCatatan').innerHTML = ""; // Bersihkan layar
+      }
+  });
+
+
+  // --- LOGIKA DATABASE (CRUD) ---
+  
   function simpanCatatan() {
     const teks = document.getElementById('inputCatatan').value;
-    if (teks !== "") {
-        push(ref(database, 'catatan/'), { isi: teks });
+    if (teks !== "" && currentUser !== null) {
+        // PENTING: Sekarang data disimpan di dalam folder khusus ID pengguna tersebut
+        push(ref(database, 'catatan_pribadi/' + currentUser.uid), { isi: teks });
         document.getElementById('inputCatatan').value = ""; 
     }
   }
@@ -68,50 +125,46 @@
       if (e.key === 'Enter') simpanCatatan();
   });
 
-  const referensiCatatan = ref(database, 'catatan/');
-  onValue(referensiCatatan, (snapshot) => {
-    const daftar = document.getElementById('daftarCatatan');
-    daftar.innerHTML = ""; 
-    
-    snapshot.forEach((dataAnak) => {
-        const idCatatan = dataAnak.key; 
-        const data = dataAnak.val();
+  function muatCatatan() {
+      // Menarik data HANYA dari folder milik pengguna yang sedang login
+      const referensiCatatan = ref(database, 'catatan_pribadi/' + currentUser.uid);
+      
+      onValue(referensiCatatan, (snapshot) => {
+        const daftar = document.getElementById('daftarCatatan');
+        daftar.innerHTML = ""; 
         
-        // Menambahkan tombol Edit berwarna kuning di sebelah Hapus
-        daftar.innerHTML += `
-            <li>
-                <span class="isi-teks">${data.isi}</span>
-                <div class="grup-tombol">
-                    <button class="btn-aksi btn-edit" data-id="${idCatatan}" data-isi="${data.isi}">Edit</button>
-                    <button class="btn-aksi btn-hapus" data-id="${idCatatan}">Hapus</button>
-                </div>
-            </li>
-        `;
-    });
-  });
+        snapshot.forEach((dataAnak) => {
+            const idCatatan = dataAnak.key; 
+            const data = dataAnak.val();
+            
+            daftar.innerHTML += `
+                <li>
+                    <span class="isi-teks">${data.isi}</span>
+                    <div class="grup-tombol">
+                        <button class="btn-aksi btn-edit" data-id="${idCatatan}" data-isi="${data.isi}">Edit</button>
+                        <button class="btn-aksi btn-hapus" data-id="${idCatatan}">Hapus</button>
+                    </div>
+                </li>
+            `;
+        });
+      });
+  }
 
-  // Fungsi klik untuk tombol Edit dan Hapus
   document.getElementById('daftarCatatan').addEventListener('click', function(e) {
       const target = e.target;
       
-      // Jika tombol HAPUS ditekan
       if(target.classList.contains('btn-hapus')) {
           const idYangDihapus = target.getAttribute('data-id');
-          remove(ref(database, 'catatan/' + idYangDihapus));
+          remove(ref(database, `catatan_pribadi/${currentUser.uid}/${idYangDihapus}`));
       }
       
-      // Jika tombol EDIT ditekan (FUNGSI BARU)
       if(target.classList.contains('btn-edit')) {
           const idYangDiedit = target.getAttribute('data-id');
           const teksLama = target.getAttribute('data-isi');
+          const teksBaru = prompt("Ubah catatan rahasia Anda:", teksLama);
           
-          // Memunculkan kotak dialog untuk mengubah teks
-          const teksBaru = prompt("Ubah catatan Anda:", teksLama);
-          
-          // Memastikan teks tidak kosong dan pengguna tidak menekan 'Batal'
           if (teksBaru !== null && teksBaru.trim() !== "") {
-              // Mengirim pembaruan data ke Firebase
-              update(ref(database, 'catatan/' + idYangDiedit), { isi: teksBaru });
+              update(ref(database, `catatan_pribadi/${currentUser.uid}/${idYangDiedit}`), { isi: teksBaru });
           }
       }
   });
