@@ -46,7 +46,7 @@
         .btn-edit { background: #fcc419; color: #333; }
         .btn-hapus { background: #ff6b6b; color: white; }
         
-        /* --- DESAIN KHUSUS PENGELUARAN BARU --- */
+        /* --- DESAIN KHUSUS PENGELUARAN --- */
         .item-pengeluaran { border-top-color: #ff8787; } 
         .nominal-teks { font-size: 20px; font-weight: bold; color: #e03131; margin-top: 5px; }
         
@@ -109,13 +109,13 @@
                 <input type="date" id="inputTanggalPilih" class="pilih-tanggal" title="Pilih hari untuk melihat/mencatat pengeluaran">
 
                 <div class="area-ringkasan">
-                    <div class="kotak-ringkasan kotak-bulan">
-                        <div class="label-ringkasan">Total Bulan Ini</div>
-                        <div id="angkaTotalBulan" class="angka-ringkasan">Rp 0</div>
-                    </div>
                     <div class="kotak-ringkasan kotak-hari">
                         <div class="label-ringkasan">Total Hari Ini</div>
                         <div id="angkaTotalHari" class="angka-ringkasan">Rp 0</div>
+                    </div>
+                    <div class="kotak-ringkasan kotak-bulan">
+                        <div class="label-ringkasan">Total Bulan Ini</div>
+                        <div id="angkaTotalBulan" class="angka-ringkasan">Rp 0</div>
                     </div>
                 </div>
 
@@ -153,17 +153,14 @@
   let currentUser = null;
   let modeAktif = "catatan"; 
   
-  // Variabel untuk menyimpan data mentah dari database
   let dataCatatanPribadi = [];
   let dataPengeluaranPribadi = [];
 
-  // Setelan Tanggal Default (Hari Ini)
   const inputTanggal = document.getElementById('inputTanggalPilih');
   const tzoffset = (new Date()).getTimezoneOffset() * 60000; 
   const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
   inputTanggal.value = localISOTime;
 
-  // Jika tanggal diubah, otomatis muat ulang daftar pengeluaran
   inputTanggal.addEventListener('change', () => {
       if(modeAktif === "pengeluaran") renderLayar();
   });
@@ -178,14 +175,12 @@
           document.getElementById('areaApp').style.display = 'block';
           document.getElementById('infoUser').innerText = `Halo, ${user.displayName}!`;
           
-          // Mengambil data Catatan dari Firebase (Otomatis Update)
           onValue(ref(database, 'catatan_pribadi/' + user.uid), (snapshot) => {
               dataCatatanPribadi = [];
               snapshot.forEach(child => { dataCatatanPribadi.push({ id: child.key, ...child.val() }) });
               if(modeAktif === "catatan") renderLayar();
           });
 
-          // Mengambil data Pengeluaran dari Firebase (Otomatis Update)
           onValue(ref(database, 'pengeluaran_pribadi/' + user.uid), (snapshot) => {
               dataPengeluaranPribadi = [];
               snapshot.forEach(child => { dataPengeluaranPribadi.push({ id: child.key, ...child.val() }) });
@@ -199,7 +194,6 @@
       }
   });
 
-  // Ganti Tab
   document.getElementById('btnMenuCatatan').addEventListener('click', () => gantiTab('catatan'));
   document.getElementById('btnMenuPengeluaran').addEventListener('click', () => gantiTab('pengeluaran'));
 
@@ -218,13 +212,11 @@
   function bersihkanTeks(teks) { const d = document.createElement('div'); d.innerText = teks; return d.innerHTML; }
   function formatWaktuDetail() { return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }); }
 
-  // Fungsi Utama Menggambar Layar (UI)
   function renderLayar() {
       const daftar = document.getElementById('daftarItem');
       daftar.innerHTML = "";
 
       if (modeAktif === "catatan") {
-          // --- RENDER CATATAN ---
           if(dataCatatanPribadi.length === 0) {
               daftar.innerHTML = "<div class='pesan-kosong'>Belum ada catatan.</div>"; return;
           }
@@ -241,9 +233,8 @@
                   </li>`;
           });
       } else {
-          // --- RENDER PENGELUARAN ---
-          const tglPilih = inputTanggal.value; // Misal: "2026-02-22"
-          const blnPilih = tglPilih.substring(0, 7); // Misal: "2026-02"
+          const tglPilih = inputTanggal.value; 
+          const blnPilih = tglPilih.substring(0, 7); 
           
           let totalBulan = 0;
           let totalHari = 0;
@@ -251,12 +242,9 @@
           let adaDataHariIni = false;
 
           dataPengeluaranPribadi.forEach(data => {
-              // Menghitung Total Bulan (Jika awalan tanggalnya sama)
               if (data.tanggal_db && data.tanggal_db.startsWith(blnPilih)) {
                   totalBulan += data.harga;
               }
-
-              // Menghitung & Menggambar List KHUSUS HARI INI
               if (data.tanggal_db === tglPilih) {
                   adaDataHariIni = true;
                   totalHari += data.harga;
@@ -272,7 +260,6 @@
               }
           });
 
-          // Update Kotak Ringkasan
           document.getElementById('angkaTotalBulan').innerText = formatRupiah(totalBulan);
           document.getElementById('angkaTotalHari').innerText = formatRupiah(totalHari);
           
@@ -284,7 +271,6 @@
       }
   }
 
-  // --- SIMPAN DATA BARU ---
   document.getElementById('btnSimpanCatatan').addEventListener('click', () => {
       const teks = document.getElementById('inputCatatan').value;
       if (teks && currentUser) {
@@ -305,7 +291,7 @@
           push(ref(database, 'pengeluaran_pribadi/' + currentUser.uid), { 
               nama_item: nama, 
               harga: Number(nominal), 
-              tanggal_db: tanggalDipilih, // Ini kunci untuk filter kalender (Format: YYYY-MM-DD)
+              tanggal_db: tanggalDipilih, 
               jam_input: formatWaktuDetail()
           });
           document.getElementById('inputNamaPengeluaran').value = ""; 
@@ -313,7 +299,6 @@
       }
   });
 
-  // --- KLIK EDIT / HAPUS ---
   document.getElementById('daftarItem').addEventListener('click', function(e) {
       const target = e.target;
       const idItem = target.getAttribute('data-id');
