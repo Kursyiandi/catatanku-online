@@ -13,7 +13,21 @@
         .kotak-utama { max-width: 600px; margin: 0 auto 30px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
         h2 { text-align: center; color: #333; margin-top: 0; font-size: 24px; }
         
-        #areaLogin { text-align: center; padding: 20px 0; }
+        #areaLogin { 
+            text-align: center; 
+            padding: 30px; 
+            
+            /* -- Kode baru untuk menengahkan posisi -- */
+            position: fixed; /* Mengunci posisi relatif terhadap layar */
+            top: 50%; 
+            left: 50%;
+            transform: translate(-50%, -50%); /* Geser titik tengah elemen ke tengah layar */
+            
+            width: 90%; /* Agar aman dan responsif di HP */
+            max-width: 450px; /* Membatasi lebar agar tidak terlalu lebar di Laptop */
+            margin: 0; /* Reset margin bawaan */
+            z-index: 1000; /* Pastikan selalu di paling atas */
+        }
         #areaApp { display: none; } 
         
         .btn-google { 
@@ -317,3 +331,4 @@
 
 </body>
 </html>
+
