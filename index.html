@@ -13,7 +13,6 @@
         .kotak-utama { max-width: 600px; margin: 0 auto 30px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
         h2 { text-align: center; color: #333; margin-top: 0; font-size: 24px; }
         
-        /* Modifikasi Posisi Area Login ke Tengah Layar */
         #areaLogin { 
             text-align: center; 
             padding: 30px; 
@@ -82,26 +81,16 @@
         .label-ringkasan { font-size: 13px; font-weight: bold; margin-bottom: 5px; }
         .angka-ringkasan { font-size: 22px; font-weight: bold; }
         
-        .pilih-tanggal { width: 100%; padding: 12px; border: 2px solid #ced4da; border-radius: 8px; font-size: 16px; margin-bottom: 20px; text-align: center; color: #495057; font-weight: bold; cursor: pointer; background-color: #f8f9fa;}
+        /* Grup Tanggal & Tombol Mode */
+        .kontrol-tanggal { display: flex; gap: 10px; margin-bottom: 20px; }
+        .pilih-tanggal { flex: 1; padding: 12px; border: 2px solid #ced4da; border-radius: 8px; font-size: 16px; text-align: center; color: #495057; font-weight: bold; cursor: pointer; background-color: #f8f9fa;}
         .pilih-tanggal:focus { border-color: #4dabf7; outline: none; background-color: white;}
+        .btn-mode-waktu { padding: 0 20px; border-radius: 8px; border: 2px solid #4dabf7; background: white; color: #4dabf7; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-mode-waktu:hover { background: #e7f5ff; }
+        .btn-mode-waktu.aktif { background: #4dabf7; color: white; }
 
-        /* CSS untuk Kolom Pencarian */
-        .input-cari {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 15px;
-            margin-bottom: 15px;
-            outline: none;
-            transition: 0.3s;
-            background-color: #f8f9fa;
-        }
-        .input-cari:focus {
-            border-color: #4dabf7;
-            background-color: white;
-            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
-        }
+        .input-cari { width: 100%; padding: 12px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 15px; margin-bottom: 15px; outline: none; transition: 0.3s; background-color: #f8f9fa; }
+        .input-cari:focus { border-color: #4dabf7; background-color: white; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
 
         .bagian-aplikasi { display: none; }
         .bagian-aplikasi.aktif { display: block; }
@@ -115,6 +104,8 @@
             .nav-menu { flex-direction: column; gap: 15px; }
             .btn-logout { width: 100%; }
             .area-ringkasan { flex-direction: column; }
+            .kontrol-tanggal { flex-direction: column; } /* Agar turun ke bawah di HP */
+            .btn-mode-waktu { padding: 14px; }
         }
     </style>
 </head>
@@ -139,7 +130,10 @@
                 <button id="btnLogout" class="btn-logout">Keluar</button>
             </div>
             
-            <input type="date" id="inputTanggalPilih" class="pilih-tanggal" title="Pilih hari untuk melihat jurnal">
+            <div class="kontrol-tanggal">
+                <input type="date" id="inputTanggalPilih" class="pilih-tanggal" title="Pilih hari untuk melihat jurnal">
+                <button id="btnModeWaktu" class="btn-mode-waktu">Lihat Sebulan</button>
+            </div>
             
             <div id="halamanCatatan" class="bagian-aplikasi aktif">
                 <input type="text" id="inputCariCatatan" class="input-cari" placeholder="🔍 Cari catatan lama atau kata kunci...">
@@ -195,19 +189,42 @@
 
   let currentUser = null;
   let modeAktif = "catatan"; 
+  let modeTampilWaktu = "hari"; // State baru: "hari" atau "bulan"
   
   let dataCatatanPribadi = [];
   let dataPengeluaranPribadi = [];
 
   const inputTanggal = document.getElementById('inputTanggalPilih');
-  const inputCari = document.getElementById('inputCariCatatan'); // Deklarasi input cari
+  const inputCari = document.getElementById('inputCariCatatan'); 
+  const btnModeWaktu = document.getElementById('btnModeWaktu'); // Tombol baru
 
   const tzoffset = (new Date()).getTimezoneOffset() * 60000; 
   const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
   inputTanggal.value = localISOTime;
 
-  inputTanggal.addEventListener('change', () => renderLayar());
-  inputCari.addEventListener('input', () => renderLayar()); // Update realtime saat mengetik
+  // Event Listener jika tanggal diubah -> kembalikan mode ke "Harian" otomatis
+  inputTanggal.addEventListener('change', () => {
+      modeTampilWaktu = "hari";
+      btnModeWaktu.innerText = "Lihat Sebulan";
+      btnModeWaktu.classList.remove("aktif");
+      renderLayar();
+  });
+  
+  inputCari.addEventListener('input', () => renderLayar());
+
+  // Event Listener untuk Tombol Toggle Sebulan / Harian
+  btnModeWaktu.addEventListener('click', () => {
+      if (modeTampilWaktu === "hari") {
+          modeTampilWaktu = "bulan";
+          btnModeWaktu.innerText = "Lihat Harian";
+          btnModeWaktu.classList.add("aktif");
+      } else {
+          modeTampilWaktu = "hari";
+          btnModeWaktu.innerText = "Lihat Sebulan";
+          btnModeWaktu.classList.remove("aktif");
+      }
+      renderLayar();
+  });
 
   document.getElementById('btnLogin').addEventListener('click', () => signInWithPopup(auth, provider));
   document.getElementById('btnLogout').addEventListener('click', () => signOut(auth));
@@ -248,9 +265,7 @@
       document.getElementById('halamanCatatan').classList.toggle('aktif', tab === 'catatan');
       document.getElementById('halamanPengeluaran').classList.toggle('aktif', tab === 'pengeluaran');
       
-      // Kosongkan kolom pencarian saat ganti tab agar tidak bingung
       if (inputCari) inputCari.value = ""; 
-      
       renderLayar();
   }
 
@@ -262,6 +277,7 @@
       const daftar = document.getElementById('daftarItem');
       daftar.innerHTML = "";
       const tglPilih = inputTanggal.value; 
+      const blnPilih = tglPilih.substring(0, 7); // Format: YYYY-MM
 
       if (modeAktif === "catatan") {
           let htmlCatatan = ""; 
@@ -272,22 +288,22 @@
               const teksAman = bersihkanTeks(data.isi);
               let tampilkan = false;
 
-              // Cek apakah ada kata kunci pencarian
               if (kataKunci !== "") {
-                  if (data.isi.toLowerCase().includes(kataKunci)) {
-                      tampilkan = true;
-                  }
+                  if (data.isi.toLowerCase().includes(kataKunci)) { tampilkan = true; }
               } else {
-                  // Jika tidak mencari, gunakan filter kalender
-                  if (data.tanggal_db === tglPilih) {
-                      tampilkan = true;
+                  // Cek apakah mode bulan atau hari
+                  if (modeTampilWaktu === "bulan") {
+                      if (data.tanggal_db && data.tanggal_db.startsWith(blnPilih)) tampilkan = true;
+                  } else {
+                      if (data.tanggal_db === tglPilih) tampilkan = true;
                   }
               }
 
               if (tampilkan) {
                   jumlahTampil++;
-                  // Info tanggal muncul hanya saat menggunakan fitur pencarian
-                  const infoTanggal = kataKunci !== "" ? `<div class="waktu-teks" style="color:#4dabf7; font-weight:bold;">📅 Tanggal: ${data.tanggal_db}</div>` : "";
+                  // Info tanggal muncul jika mencari ATAU mode sebulan aktif
+                  const infoTanggal = (kataKunci !== "" || modeTampilWaktu === "bulan") 
+                      ? `<div class="waktu-teks" style="color:#4dabf7; font-weight:bold;">📅 Tanggal: ${data.tanggal_db}</div>` : "";
                   
                   htmlCatatan += `
                       <li>
@@ -305,6 +321,9 @@
           if (jumlahTampil === 0) {
               if (kataKunci !== "") {
                   daftar.innerHTML = `<div class='pesan-kosong'>Tidak menemukan catatan dengan kata kunci "${kataKunci}".</div>`;
+              } else if (modeTampilWaktu === "bulan") {
+                  const namaBulan = new Date(tglPilih).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+                  daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada catatan di bulan ${namaBulan}.</div>`;
               } else {
                   daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada catatan di tanggal ${tglPilih}.</div>`;
               }
@@ -313,17 +332,28 @@
           }
 
       } else {
-          const blnPilih = tglPilih.substring(0, 7); 
           let totalBulan = 0; let totalHari = 0;
-          let htmlHariIni = ""; let adaDataHariIni = false;
+          let htmlHariIni = ""; let jumlahTampilPengeluaran = 0;
 
           dataPengeluaranPribadi.forEach(data => {
+              // Kalkulasi ringkasan selalu berjalan utuh
               if (data.tanggal_db && data.tanggal_db.startsWith(blnPilih)) totalBulan += data.harga;
-              if (data.tanggal_db === tglPilih) {
-                  adaDataHariIni = true;
-                  totalHari += data.harga;
+              if (data.tanggal_db === tglPilih) totalHari += data.harga;
+
+              // Penentuan item apa yang di list (Harian vs Bulanan)
+              let tampilkan = false;
+              if (modeTampilWaktu === "bulan") {
+                  if (data.tanggal_db && data.tanggal_db.startsWith(blnPilih)) tampilkan = true;
+              } else {
+                  if (data.tanggal_db === tglPilih) tampilkan = true;
+              }
+
+              if (tampilkan) {
+                  jumlahTampilPengeluaran++;
+                  const infoTgl = modeTampilWaktu === "bulan" ? `<div class="waktu-teks" style="color:#e03131; font-weight:bold;">📅 Tanggal: ${data.tanggal_db}</div>` : "";
                   htmlHariIni += `
                       <li class="item-pengeluaran">
+                          ${infoTgl}
                           <div class="waktu-teks">🕒 Jam Input: ${data.jam_input || '-'}</div>
                           <span class="isi-teks">${bersihkanTeks(data.nama_item)}</span>
                           <div class="nominal-teks">${formatRupiah(data.harga)}</div>
@@ -336,8 +366,15 @@
 
           document.getElementById('angkaTotalBulan').innerText = formatRupiah(totalBulan);
           document.getElementById('angkaTotalHari').innerText = formatRupiah(totalHari);
-          if (!adaDataHariIni) daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada pengeluaran di tanggal ${tglPilih}.</div>`;
-          else daftar.innerHTML = htmlHariIni;
+          
+          if (jumlahTampilPengeluaran === 0) {
+               if (modeTampilWaktu === "bulan") {
+                   const namaBulan = new Date(tglPilih).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+                   daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada pengeluaran di bulan ${namaBulan}.</div>`;
+               } else {
+                   daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada pengeluaran di tanggal ${tglPilih}.</div>`;
+               }
+          } else daftar.innerHTML = htmlHariIni;
       }
   }
 
@@ -349,7 +386,7 @@
               isi: teks, tanggal_db: tanggalDipilih, jam_input: formatWaktuDetail()
           });
           document.getElementById('inputCatatan').value = ""; 
-          if (inputCari) inputCari.value = ""; // Kosongkan pencarian saat tambah baru
+          if (inputCari) inputCari.value = ""; 
       }
   });
 
