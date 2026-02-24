@@ -59,9 +59,10 @@
         .btn-simpan { background: #4dabf7; color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: bold; flex-shrink: 0; }
         .btn-simpan:hover { background: #3bc9db; }
         
-        ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; align-items: start; }
-        li { background: white; padding: 20px; border-radius: 12px; border-top: 5px solid #4dabf7; box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: all 0.2s ease-in-out; }
-        li:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        /* CSS untuk kartu catatan (halaman utama) */
+        ul.daftar-kartu { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; align-items: start; }
+        ul.daftar-kartu li { background: white; padding: 20px; border-radius: 12px; border-top: 5px solid #4dabf7; box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: all 0.2s ease-in-out; }
+        ul.daftar-kartu li:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
         
         .waktu-teks { font-size: 11px; color: #adb5bd; border-bottom: 1px dashed #f1f3f5; padding-bottom: 8px; margin-bottom: 5px; }
         .isi-teks { width: 100%; word-break: break-word; white-space: pre-wrap; line-height: 1.6; color: #495057; font-size: 15px; }
@@ -70,7 +71,7 @@
         .btn-edit { background: #fcc419; color: #333; }
         .btn-hapus { background: #ff6b6b; color: white; }
         
-        .item-pengeluaran { border-top-color: #ff8787; } 
+        .item-pengeluaran { border-top-color: #ff8787 !important; } 
         .nominal-teks { font-size: 20px; font-weight: bold; color: #e03131; margin-top: 5px; }
         
         .area-ringkasan { display: flex; gap: 15px; margin-bottom: 20px; }
@@ -81,13 +82,12 @@
         .label-ringkasan { font-size: 13px; font-weight: bold; margin-bottom: 5px; }
         .angka-ringkasan { font-size: 22px; font-weight: bold; }
         
-        /* Grup Tanggal & Tombol Mode */
         .kontrol-tanggal { display: flex; gap: 10px; margin-bottom: 20px; }
         .pilih-tanggal { flex: 1; padding: 12px; border: 2px solid #ced4da; border-radius: 8px; font-size: 16px; text-align: center; color: #495057; font-weight: bold; cursor: pointer; background-color: #f8f9fa;}
         .pilih-tanggal:focus { border-color: #4dabf7; outline: none; background-color: white;}
+        
         .btn-mode-waktu { padding: 0 20px; border-radius: 8px; border: 2px solid #4dabf7; background: white; color: #4dabf7; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .btn-mode-waktu:hover { background: #e7f5ff; }
-        .btn-mode-waktu.aktif { background: #4dabf7; color: white; }
 
         .input-cari { width: 100%; padding: 12px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 15px; margin-bottom: 15px; outline: none; transition: 0.3s; background-color: #f8f9fa; }
         .input-cari:focus { border-color: #4dabf7; background-color: white; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
@@ -95,6 +95,19 @@
         .bagian-aplikasi { display: none; }
         .bagian-aplikasi.aktif { display: block; }
         .pesan-kosong { text-align: center; color: #868e96; font-style: italic; width: 100%; grid-column: 1 / -1; margin-top: 20px; }
+
+        /* --- CSS Khusus Halaman Rekap Bulanan (Simple List) --- */
+        #areaBulanan { display: none; }
+        .header-bulanan { display: flex; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; }
+        .btn-kembali { background: #f8f9fa; border: 1px solid #ced4da; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 15px; }
+        .btn-kembali:hover { background: #e9ecef; }
+        .judul-bulanan { margin: 0; font-size: 18px; color: #333; flex: 1; }
+        
+        .grup-tanggal { margin-bottom: 20px; }
+        .tgl-kecil { font-size: 13px; color: #868e96; font-weight: bold; border-bottom: 1px solid #dee2e6; padding-bottom: 4px; margin-bottom: 8px; }
+        .list-simple { list-style-type: disc; padding-left: 20px; margin: 0; color: #495057; }
+        .list-simple li { padding: 4px 0; font-size: 15px; line-height: 1.5; }
+        .list-simple li strong { color: #e03131; }
 
         @media (max-width: 500px) {
             body { padding: 10px; }
@@ -104,7 +117,7 @@
             .nav-menu { flex-direction: column; gap: 15px; }
             .btn-logout { width: 100%; }
             .area-ringkasan { flex-direction: column; }
-            .kontrol-tanggal { flex-direction: column; } /* Agar turun ke bawah di HP */
+            .kontrol-tanggal { flex-direction: column; } 
             .btn-mode-waktu { padding: 14px; }
         }
     </style>
@@ -119,52 +132,64 @@
     </div>
 
     <div id="areaApp">
-        <div class="kotak-utama">
-            <div id="infoUser" class="info-user"></div>
-            
-            <div class="nav-menu">
-                <div class="grup-tab">
-                    <button id="btnMenuCatatan" class="btn-tab aktif">📝 Catatan</button>
-                    <button id="btnMenuPengeluaran" class="btn-tab">💰 Pengeluaran</button>
-                </div>
-                <button id="btnLogout" class="btn-logout">Keluar</button>
-            </div>
-            
-            <div class="kontrol-tanggal">
-                <input type="date" id="inputTanggalPilih" class="pilih-tanggal" title="Pilih hari untuk melihat jurnal">
-                <button id="btnModeWaktu" class="btn-mode-waktu">Lihat Sebulan</button>
-            </div>
-            
-            <div id="halamanCatatan" class="bagian-aplikasi aktif">
-                <input type="text" id="inputCariCatatan" class="input-cari" placeholder="🔍 Cari catatan lama atau kata kunci...">
+        
+        <div id="areaUtama">
+            <div class="kotak-utama">
+                <div id="infoUser" class="info-user"></div>
                 
-                <div class="input-group">
-                    <input type="text" id="inputCatatan" placeholder="Tulis Catatan...">
-                    <button id="btnSimpanCatatan" class="btn-simpan">Simpan Catatan</button>
+                <div class="nav-menu">
+                    <div class="grup-tab">
+                        <button id="btnMenuCatatan" class="btn-tab aktif">📝 Catatan</button>
+                        <button id="btnMenuPengeluaran" class="btn-tab">💰 Pengeluaran</button>
+                    </div>
+                    <button id="btnLogout" class="btn-logout">Keluar</button>
+                </div>
+                
+                <div class="kontrol-tanggal">
+                    <input type="date" id="inputTanggalPilih" class="pilih-tanggal" title="Pilih hari untuk melihat jurnal">
+                    <button id="btnBukaSebulan" class="btn-mode-waktu">Lihat Sebulan</button>
+                </div>
+                
+                <div id="halamanCatatan" class="bagian-aplikasi aktif">
+                    <input type="text" id="inputCariCatatan" class="input-cari" placeholder="🔍 Cari catatan lama atau kata kunci...">
+                    
+                    <div class="input-group">
+                        <input type="text" id="inputCatatan" placeholder="Tulis Catatan...">
+                        <button id="btnSimpanCatatan" class="btn-simpan">Simpan</button>
+                    </div>
+                </div>
+
+                <div id="halamanPengeluaran" class="bagian-aplikasi">
+                    <div class="area-ringkasan">
+                        <div class="kotak-ringkasan kotak-hari">
+                            <div class="label-ringkasan">Pengeluaran Hari Ini</div>
+                            <div id="angkaTotalHari" class="angka-ringkasan">Rp 0</div>
+                        </div>
+                        <div class="kotak-ringkasan kotak-bulan">
+                            <div class="label-ringkasan">Pengeluaran Bulan Ini</div>
+                            <div id="angkaTotalBulan" class="angka-ringkasan">Rp 0</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="text" id="inputNamaPengeluaran" placeholder="Nama Barang (Misal: Kopi)">
+                        <input type="number" id="inputNominalPengeluaran" placeholder="Harga (Misal: 15000)">
+                    </div>
+                    <button id="btnSimpanPengeluaran" class="btn-simpan" style="width: 100%; padding: 14px; margin-bottom: 10px; background-color:#ff8787;">Catat Pengeluaran</button>
                 </div>
             </div>
 
-            <div id="halamanPengeluaran" class="bagian-aplikasi">
-                <div class="area-ringkasan">
-                    <div class="kotak-ringkasan kotak-hari">
-                        <div class="label-ringkasan">Pengeluaran Hari Ini</div>
-                        <div id="angkaTotalHari" class="angka-ringkasan">Rp 0</div>
-                    </div>
-                    <div class="kotak-ringkasan kotak-bulan">
-                        <div class="label-ringkasan">Pengeluaran Bulan Ini</div>
-                        <div id="angkaTotalBulan" class="angka-ringkasan">Rp 0</div>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <input type="text" id="inputNamaPengeluaran" placeholder="Nama Barang (Misal: Kopi)">
-                    <input type="number" id="inputNominalPengeluaran" placeholder="Harga (Misal: 15000)">
-                </div>
-                <button id="btnSimpanPengeluaran" class="btn-simpan" style="width: 100%; padding: 14px; margin-bottom: 10px; background-color:#ff8787;">Catat Pengeluaran</button>
-            </div>
+            <ul id="daftarItem" class="daftar-kartu"></ul>
         </div>
 
-        <ul id="daftarItem"></ul>
+        <div id="areaBulanan" class="kotak-utama">
+            <div class="header-bulanan">
+                <button id="btnKembali" class="btn-kembali">⬅ Kembali</button>
+                <h3 id="judulBulanan" class="judul-bulanan">Rekap Bulan Ini</h3>
+            </div>
+            <div id="kontenBulanan"></div>
+        </div>
+
     </div>
 </div>
 
@@ -189,41 +214,36 @@
 
   let currentUser = null;
   let modeAktif = "catatan"; 
-  let modeTampilWaktu = "hari"; // State baru: "hari" atau "bulan"
   
   let dataCatatanPribadi = [];
   let dataPengeluaranPribadi = [];
 
   const inputTanggal = document.getElementById('inputTanggalPilih');
   const inputCari = document.getElementById('inputCariCatatan'); 
-  const btnModeWaktu = document.getElementById('btnModeWaktu'); // Tombol baru
+  
+  // Elemen untuk navigasi halaman
+  const areaUtama = document.getElementById('areaUtama');
+  const areaBulanan = document.getElementById('areaBulanan');
+  const btnBukaSebulan = document.getElementById('btnBukaSebulan');
+  const btnKembali = document.getElementById('btnKembali');
 
   const tzoffset = (new Date()).getTimezoneOffset() * 60000; 
   const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
   inputTanggal.value = localISOTime;
 
-  // Event Listener jika tanggal diubah -> kembalikan mode ke "Harian" otomatis
-  inputTanggal.addEventListener('change', () => {
-      modeTampilWaktu = "hari";
-      btnModeWaktu.innerText = "Lihat Sebulan";
-      btnModeWaktu.classList.remove("aktif");
-      renderLayar();
-  });
-  
-  inputCari.addEventListener('input', () => renderLayar());
+  inputTanggal.addEventListener('change', () => renderLayarUtama());
+  inputCari.addEventListener('input', () => renderLayarUtama());
 
-  // Event Listener untuk Tombol Toggle Sebulan / Harian
-  btnModeWaktu.addEventListener('click', () => {
-      if (modeTampilWaktu === "hari") {
-          modeTampilWaktu = "bulan";
-          btnModeWaktu.innerText = "Lihat Harian";
-          btnModeWaktu.classList.add("aktif");
-      } else {
-          modeTampilWaktu = "hari";
-          btnModeWaktu.innerText = "Lihat Sebulan";
-          btnModeWaktu.classList.remove("aktif");
-      }
-      renderLayar();
+  // Logika Buka/Tutup Halaman Bulanan
+  btnBukaSebulan.addEventListener('click', () => {
+      areaUtama.style.display = 'none';
+      areaBulanan.style.display = 'block';
+      renderLayarBulanan();
+  });
+
+  btnKembali.addEventListener('click', () => {
+      areaBulanan.style.display = 'none';
+      areaUtama.style.display = 'block';
   });
 
   document.getElementById('btnLogin').addEventListener('click', () => signInWithPopup(auth, provider));
@@ -239,13 +259,15 @@
           onValue(ref(database, 'catatan_pribadi/' + user.uid), (snapshot) => {
               dataCatatanPribadi = [];
               snapshot.forEach(child => { dataCatatanPribadi.push({ id: child.key, ...child.val() }) });
-              if(modeAktif === "catatan") renderLayar();
+              if(areaUtama.style.display !== 'none') renderLayarUtama();
+              else renderLayarBulanan(); // Update otomatis jika sedang di halaman rekap
           });
 
           onValue(ref(database, 'pengeluaran_pribadi/' + user.uid), (snapshot) => {
               dataPengeluaranPribadi = [];
               snapshot.forEach(child => { dataPengeluaranPribadi.push({ id: child.key, ...child.val() }) });
-              if(modeAktif === "pengeluaran") renderLayar();
+              if(areaUtama.style.display !== 'none') renderLayarUtama();
+              else renderLayarBulanan(); 
           });
 
       } else {
@@ -266,18 +288,19 @@
       document.getElementById('halamanPengeluaran').classList.toggle('aktif', tab === 'pengeluaran');
       
       if (inputCari) inputCari.value = ""; 
-      renderLayar();
+      renderLayarUtama();
   }
 
   function formatRupiah(angka) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka); }
   function bersihkanTeks(teks) { const d = document.createElement('div'); d.innerText = teks; return d.innerHTML; }
   function formatWaktuDetail() { return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }); }
 
-  function renderLayar() {
+  // Fungsi Render Halaman Utama (Kartu Harian)
+  function renderLayarUtama() {
       const daftar = document.getElementById('daftarItem');
       daftar.innerHTML = "";
       const tglPilih = inputTanggal.value; 
-      const blnPilih = tglPilih.substring(0, 7); // Format: YYYY-MM
+      const blnPilih = tglPilih.substring(0, 7); 
 
       if (modeAktif === "catatan") {
           let htmlCatatan = ""; 
@@ -291,19 +314,12 @@
               if (kataKunci !== "") {
                   if (data.isi.toLowerCase().includes(kataKunci)) { tampilkan = true; }
               } else {
-                  // Cek apakah mode bulan atau hari
-                  if (modeTampilWaktu === "bulan") {
-                      if (data.tanggal_db && data.tanggal_db.startsWith(blnPilih)) tampilkan = true;
-                  } else {
-                      if (data.tanggal_db === tglPilih) tampilkan = true;
-                  }
+                  if (data.tanggal_db === tglPilih) tampilkan = true;
               }
 
               if (tampilkan) {
                   jumlahTampil++;
-                  // Info tanggal muncul jika mencari ATAU mode sebulan aktif
-                  const infoTanggal = (kataKunci !== "" || modeTampilWaktu === "bulan") 
-                      ? `<div class="waktu-teks" style="color:#4dabf7; font-weight:bold;">📅 Tanggal: ${data.tanggal_db}</div>` : "";
+                  const infoTanggal = kataKunci !== "" ? `<div class="waktu-teks" style="color:#4dabf7; font-weight:bold;">📅 Tanggal: ${data.tanggal_db}</div>` : "";
                   
                   htmlCatatan += `
                       <li>
@@ -319,14 +335,8 @@
           });
 
           if (jumlahTampil === 0) {
-              if (kataKunci !== "") {
-                  daftar.innerHTML = `<div class='pesan-kosong'>Tidak menemukan catatan dengan kata kunci "${kataKunci}".</div>`;
-              } else if (modeTampilWaktu === "bulan") {
-                  const namaBulan = new Date(tglPilih).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
-                  daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada catatan di bulan ${namaBulan}.</div>`;
-              } else {
-                  daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada catatan di tanggal ${tglPilih}.</div>`;
-              }
+              if (kataKunci !== "") daftar.innerHTML = `<div class='pesan-kosong'>Tidak menemukan catatan dengan kata kunci "${kataKunci}".</div>`;
+              else daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada catatan di tanggal ${tglPilih}.</div>`;
           } else {
               daftar.innerHTML = htmlCatatan;
           }
@@ -336,24 +346,12 @@
           let htmlHariIni = ""; let jumlahTampilPengeluaran = 0;
 
           dataPengeluaranPribadi.forEach(data => {
-              // Kalkulasi ringkasan selalu berjalan utuh
               if (data.tanggal_db && data.tanggal_db.startsWith(blnPilih)) totalBulan += data.harga;
-              if (data.tanggal_db === tglPilih) totalHari += data.harga;
-
-              // Penentuan item apa yang di list (Harian vs Bulanan)
-              let tampilkan = false;
-              if (modeTampilWaktu === "bulan") {
-                  if (data.tanggal_db && data.tanggal_db.startsWith(blnPilih)) tampilkan = true;
-              } else {
-                  if (data.tanggal_db === tglPilih) tampilkan = true;
-              }
-
-              if (tampilkan) {
+              if (data.tanggal_db === tglPilih) {
+                  totalHari += data.harga;
                   jumlahTampilPengeluaran++;
-                  const infoTgl = modeTampilWaktu === "bulan" ? `<div class="waktu-teks" style="color:#e03131; font-weight:bold;">📅 Tanggal: ${data.tanggal_db}</div>` : "";
                   htmlHariIni += `
                       <li class="item-pengeluaran">
-                          ${infoTgl}
                           <div class="waktu-teks">🕒 Jam Input: ${data.jam_input || '-'}</div>
                           <span class="isi-teks">${bersihkanTeks(data.nama_item)}</span>
                           <div class="nominal-teks">${formatRupiah(data.harga)}</div>
@@ -367,15 +365,60 @@
           document.getElementById('angkaTotalBulan').innerText = formatRupiah(totalBulan);
           document.getElementById('angkaTotalHari').innerText = formatRupiah(totalHari);
           
-          if (jumlahTampilPengeluaran === 0) {
-               if (modeTampilWaktu === "bulan") {
-                   const namaBulan = new Date(tglPilih).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
-                   daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada pengeluaran di bulan ${namaBulan}.</div>`;
-               } else {
-                   daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada pengeluaran di tanggal ${tglPilih}.</div>`;
-               }
-          } else daftar.innerHTML = htmlHariIni;
+          if (jumlahTampilPengeluaran === 0) daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada pengeluaran di tanggal ${tglPilih}.</div>`;
+          else daftar.innerHTML = htmlHariIni;
       }
+  }
+
+  // Fungsi Render Halaman Baru (Rekap Sebulan Simple List)
+  function renderLayarBulanan() {
+      const konten = document.getElementById('kontenBulanan');
+      const tglPilih = inputTanggal.value;
+      const blnPilih = tglPilih.substring(0, 7); // Format: YYYY-MM
+      
+      // Update Judul Halaman
+      const namaBulan = new Date(tglPilih).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+      document.getElementById('judulBulanan').innerText = `Rekap ${modeAktif === 'catatan' ? 'Catatan' : 'Pengeluaran'} - ${namaBulan}`;
+
+      let dataSumber = modeAktif === 'catatan' ? dataCatatanPribadi : dataPengeluaranPribadi;
+      
+      // Saring data khusus bulan ini
+      let dataBulanIni = dataSumber.filter(d => d.tanggal_db && d.tanggal_db.startsWith(blnPilih));
+
+      if (dataBulanIni.length === 0) {
+          konten.innerHTML = `<div class="pesan-kosong">Belum ada data di bulan ini.</div>`;
+          return;
+      }
+
+      // Urutkan data berdasarkan tanggal (dari yang paling lama ke paling baru)
+      dataBulanIni.sort((a, b) => a.tanggal_db.localeCompare(b.tanggal_db));
+
+      // Kelompokkan data per tanggal
+      const dataDikelompokkan = {};
+      dataBulanIni.forEach(item => {
+          if (!dataDikelompokkan[item.tanggal_db]) dataDikelompokkan[item.tanggal_db] = [];
+          dataDikelompokkan[item.tanggal_db].push(item);
+      });
+
+      // Bangun HTML Simple List
+      let htmlRekap = "";
+      for (const tgl in dataDikelompokkan) {
+          htmlRekap += `<div class="grup-tanggal">`;
+          htmlRekap += `<div class="tgl-kecil">📅 ${tgl}</div>`; // Tanggal format kecil
+          htmlRekap += `<ul class="list-simple">`; // List kebawah
+          
+          dataDikelompokkan[tgl].forEach(item => {
+              if (modeAktif === 'catatan') {
+                  htmlRekap += `<li>${bersihkanTeks(item.isi)}</li>`;
+              } else {
+                  htmlRekap += `<li>${bersihkanTeks(item.nama_item)} : <strong>${formatRupiah(item.harga)}</strong></li>`;
+              }
+          });
+          
+          htmlRekap += `</ul></div>`;
+      }
+
+      konten.innerHTML = htmlRekap;
   }
 
   document.getElementById('btnSimpanCatatan').addEventListener('click', () => {
