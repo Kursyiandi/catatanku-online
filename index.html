@@ -13,120 +13,109 @@
         .kotak-utama { max-width: 600px; margin: 0 auto 30px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
         h2 { text-align: center; color: #333; margin-top: 0; font-size: 24px; }
         
-        #areaLogin { 
-            text-align: center; 
-            padding: 30px; 
-            position: fixed; 
-            top: 50%; 
-            left: 50%;
-            transform: translate(-50%, -50%); 
-            width: 90%; 
-            max-width: 450px; 
-            margin: 0; 
-            z-index: 1000;
-        }
-
+        #areaLogin { text-align: center; padding: 30px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 450px; margin: 0; z-index: 1000; }
         #areaApp { display: none; } 
         
-        .btn-google { 
-            background: #db4437; 
-            color: white; 
-            border: none; 
-            padding: 12px 35px; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            font-size: 16px; 
-            margin-top: 10px;
-            margin-bottom: 10px; 
-            transition: 0.3s; 
-        }
+        .btn-google { background: #db4437; color: white; border: none; padding: 12px 35px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin: 10px 0; transition: 0.3s; }
         .btn-google:hover { background: #c53929; box-shadow: 0 4px 8px rgba(219,68,55,0.3); transform: translateY(-2px); }
         
-        .nav-menu { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; align-items: center; justify-content: space-between; }
-        .grup-tab { display: flex; gap: 10px; }
-        .btn-tab { background: #f8f9fa; color: #495057; border: 1px solid #ced4da; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-tab.aktif { background: #4dabf7; color: white; border-color: #4dabf7; }
-        .btn-logout { background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        /* --- Header App & Tombol Logout Ikon --- */
+        .header-app { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .info-user { margin-bottom: 0; font-weight: bold; color: #495057; font-size: 18px; }
+        .btn-logout { background: transparent; border: none; color: #adb5bd; padding: 5px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .btn-logout:hover { color: #ff6b6b; }
         
-        .info-user { margin-bottom: 15px; font-weight: bold; color: #495057; text-align: center; }
+        /* --- Navigasi Tab --- */
+        .nav-menu { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; align-items: center; }
+        .grup-tab { display: flex; gap: 10px; width: 100%; }
+        .btn-tab { flex: 1; background: #f8f9fa; color: #495057; border: 1px solid #ced4da; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; text-align: center; }
+        .btn-tab.aktif { background: #4dabf7; color: white; border-color: #4dabf7; box-shadow: 0 4px 6px rgba(77, 171, 247, 0.2); }
         
+        /* --- Kontrol: Date Picker, Search & Tombol Sebulan --- */
+        .kontrol-tanggal { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; }
+        .baris-kontrol { display: flex; gap: 10px; flex: 2; }
+        
+        .pilih-tanggal { flex: 1; padding: 10px; border: 2px solid #ced4da; border-radius: 8px; font-size: 14px; text-align: center; color: #495057; font-weight: bold; cursor: pointer; background-color: #f8f9fa; margin: 0; }
+        .pilih-tanggal:focus { border-color: #4dabf7; outline: none; background-color: white;}
+        
+        .kotak-cari-ikon { display: flex; align-items: center; background: #f8f9fa; border: 2px solid #ced4da; border-radius: 8px; padding: 0 10px; flex: 1; transition: 0.3s; }
+        .kotak-cari-ikon:focus-within { border-color: #4dabf7; background: white; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
+        .kotak-cari-ikon span { font-size: 14px; color: #868e96; }
+        .kotak-cari-ikon input { border: none; background: transparent; padding: 10px 5px; width: 100%; outline: none; font-size: 14px; }
+        
+        .btn-mode-waktu { flex: 1; padding: 10px; border-radius: 8px; border: 2px solid #4dabf7; background: white; color: #4dabf7; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; white-space: nowrap; }
+        .btn-mode-waktu:hover { background: #e7f5ff; }
+
+        /* --- Kartu List & Tombol Edit/Hapus --- */
+        ul.daftar-kartu { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; align-items: start; }
+        ul.daftar-kartu li { background: white; padding: 15px 20px; border-radius: 12px; border-top: 5px solid #4dabf7; box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; transition: all 0.2s; }
+        ul.daftar-kartu li:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        
+        .header-kartu { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #f1f3f5; padding-bottom: 8px; margin-bottom: 10px; }
+        .waktu-teks { font-size: 11px; color: #adb5bd; }
+        .grup-tombol-kecil { display: flex; gap: 5px; }
+        .btn-aksi { padding: 4px 8px; font-size: 11px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 3px; }
+        .btn-edit { background: #fff3bf; color: #e67700; }
+        .btn-hapus { background: #ffe3e3; color: #c92a2a; }
+        
+        .isi-teks { width: 100%; word-break: break-word; white-space: pre-wrap; line-height: 1.6; color: #495057; font-size: 15px; }
+        .item-pengeluaran { border-top-color: #ff8787 !important; } 
+        .nominal-teks { font-size: 20px; font-weight: bold; color: #e03131; margin-top: 10px; }
+        
+        /* Form & Area Lainnya */
         .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
         input { flex: 1; padding: 12px; border: 1px solid #ced4da; border-radius: 8px; outline: none; font-size: 15px; transition: 0.3s; }
         input:focus { border-color: #4dabf7; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
-        
         button { cursor: pointer; transition: 0.3s; }
         .btn-simpan { background: #4dabf7; color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: bold; flex-shrink: 0; }
         .btn-simpan:hover { background: #3bc9db; }
-        
-        /* CSS untuk kartu catatan (halaman utama) */
-        ul.daftar-kartu { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; align-items: start; }
-        ul.daftar-kartu li { background: white; padding: 20px; border-radius: 12px; border-top: 5px solid #4dabf7; box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: all 0.2s ease-in-out; }
-        ul.daftar-kartu li:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
-        
-        .waktu-teks { font-size: 11px; color: #adb5bd; border-bottom: 1px dashed #f1f3f5; padding-bottom: 8px; margin-bottom: 5px; }
-        .isi-teks { width: 100%; word-break: break-word; white-space: pre-wrap; line-height: 1.6; color: #495057; font-size: 15px; }
-        .grup-tombol { display: flex; gap: 8px; align-self: flex-end; border-top: 1px solid #f1f3f5; padding-top: 15px; margin-top: 5px; width: 100%; justify-content: flex-end; }
-        .btn-aksi { padding: 6px 15px; font-size: 12px; border-radius: 6px; border: none; font-weight: bold; }
-        .btn-edit { background: #fcc419; color: #333; }
-        .btn-hapus { background: #ff6b6b; color: white; }
-        
-        .item-pengeluaran { border-top-color: #ff8787 !important; } 
-        .nominal-teks { font-size: 20px; font-weight: bold; color: #e03131; margin-top: 5px; }
         
         .area-ringkasan { display: flex; gap: 15px; margin-bottom: 20px; }
         .kotak-ringkasan { flex: 1; padding: 15px; border-radius: 8px; text-align: center; border: 2px solid transparent; }
         .kotak-bulan { background: #e7f5ff; border-color: #74c0fc; color: #1864ab; }
         .kotak-hari { background: #fff5f5; border-color: #ff8787; color: #e03131; }
-        
         .label-ringkasan { font-size: 13px; font-weight: bold; margin-bottom: 5px; }
         .angka-ringkasan { font-size: 22px; font-weight: bold; }
-        
-        .kontrol-tanggal { display: flex; gap: 10px; margin-bottom: 20px; }
-        .pilih-tanggal { flex: 1; padding: 12px; border: 2px solid #ced4da; border-radius: 8px; font-size: 16px; text-align: center; color: #495057; font-weight: bold; cursor: pointer; background-color: #f8f9fa;}
-        .pilih-tanggal:focus { border-color: #4dabf7; outline: none; background-color: white;}
-        
-        .btn-mode-waktu { padding: 0 20px; border-radius: 8px; border: 2px solid #4dabf7; background: white; color: #4dabf7; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-mode-waktu:hover { background: #e7f5ff; }
-
-        .input-cari { width: 100%; padding: 12px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 15px; margin-bottom: 15px; outline: none; transition: 0.3s; background-color: #f8f9fa; }
-        .input-cari:focus { border-color: #4dabf7; background-color: white; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
 
         .bagian-aplikasi { display: none; }
         .bagian-aplikasi.aktif { display: block; }
         .pesan-kosong { text-align: center; color: #868e96; font-style: italic; width: 100%; grid-column: 1 / -1; margin-top: 20px; }
 
-        /* --- CSS Khusus Halaman Rekap Bulanan (Simple List) --- */
+        /* Halaman Rekap Bulanan */
         #areaBulanan { display: none; }
         .header-bulanan { display: flex; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; gap: 15px; }
-        
-        /* Tombol Kembali Diperbarui (Hanya Panah) */
         .btn-kembali { background: #f8f9fa; border: 1px solid #ced4da; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .btn-kembali:hover { background: #e9ecef; transform: translateX(-2px); }
-        
         .judul-bulanan { margin: 0; font-size: 18px; color: #333; flex: 1; line-height: 1.4; }
-        
         .grup-tanggal { margin-bottom: 20px; }
         .tgl-kecil { font-size: 13px; color: #868e96; font-weight: bold; border-bottom: 1px solid #dee2e6; padding-bottom: 4px; margin-bottom: 8px; }
         .list-simple { list-style-type: disc; padding-left: 20px; margin: 0; color: #495057; }
         .list-simple li { padding: 4px 0; font-size: 15px; line-height: 1.5; }
         .list-simple li strong { color: #e03131; }
 
+        /* --- Tampilan Mobile (Responsive) --- */
         @media (max-width: 500px) {
-            body { padding: 10px; }
+            body { padding: 10px; padding-bottom: 85px; } /* Ruang untuk Nav Bar Bawah */
             .kotak-utama { padding: 20px; margin-bottom: 20px; }
             .input-group { flex-direction: column; }
             .btn-simpan { padding: 14px; }
-            .nav-menu { flex-direction: column; gap: 15px; }
-            .btn-logout { width: 100%; }
             .area-ringkasan { flex-direction: column; }
             
-            /* Agar tanggal & tombol Lihat Sebulan tetap sejajar di HP */
-            .kontrol-tanggal { flex-direction: row; gap: 8px; } 
-            .pilih-tanggal { font-size: 14px; padding: 10px; } 
-            .btn-mode-waktu { padding: 10px 15px; font-size: 14px; }
+            /* Menyusun Date, Search, & Tombol Sebulan */
+            .kontrol-tanggal { flex-direction: column; align-items: stretch; }
+            .baris-kontrol { width: 100%; }
+            .btn-mode-waktu { width: 100%; flex: auto; }
             
-            .judul-bulanan { font-size: 16px; } /* Sedikit dikecilkan di HP agar muat */
+            /* Menyulap Menu Menjadi Navigation Bar Bawah Ala Mobile App */
+            .nav-menu {
+                position: fixed; bottom: 0; left: 0; width: 100%;
+                background: white; padding: 12px 15px; margin: 0;
+                box-shadow: 0 -3px 15px rgba(0,0,0,0.06);
+                z-index: 1000; border-top: none; border-bottom: none;
+                border-radius: 15px 15px 0 0;
+            }
+            .btn-tab { padding: 12px 0; border: none; background: #f1f3f5; color: #868e96; }
+            .btn-tab.aktif { background: #e7f5ff; color: #1864ab; border-bottom: 3px solid #4dabf7; border-radius: 8px 8px 0 0; }
         }
     </style>
 </head>
@@ -140,29 +129,41 @@
     </div>
 
     <div id="areaApp">
-        
         <div id="areaUtama">
             <div class="kotak-utama">
-                <div id="infoUser" class="info-user"></div>
+                
+                <div class="header-app">
+                    <div id="infoUser" class="info-user"></div>
+                    <button id="btnLogout" class="btn-logout" title="Keluar">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
                 
                 <div class="nav-menu">
                     <div class="grup-tab">
                         <button id="btnMenuCatatan" class="btn-tab aktif">📝 Catatan</button>
                         <button id="btnMenuPengeluaran" class="btn-tab">💰 Pengeluaran</button>
                     </div>
-                    <button id="btnLogout" class="btn-logout">Keluar</button>
                 </div>
                 
                 <div class="kontrol-tanggal">
-                    <input type="date" id="inputTanggalPilih" class="pilih-tanggal" title="Pilih hari untuk melihat jurnal">
+                    <div class="baris-kontrol">
+                        <input type="date" id="inputTanggalPilih" class="pilih-tanggal" title="Pilih hari">
+                        <div id="wadahCari" class="kotak-cari-ikon">
+                            <span>🔍</span>
+                            <input type="text" id="inputCariCatatan" placeholder="Cari...">
+                        </div>
+                    </div>
                     <button id="btnBukaSebulan" class="btn-mode-waktu">Lihat Sebulan</button>
                 </div>
                 
                 <div id="halamanCatatan" class="bagian-aplikasi aktif">
-                    <input type="text" id="inputCariCatatan" class="input-cari" placeholder="🔍 Cari catatan lama atau kata kunci...">
-                    
                     <div class="input-group">
-                        <input type="text" id="inputCatatan" placeholder="Tulis Catatan...">
+                        <input type="text" id="inputCatatan" placeholder="Tulis Catatan Baru...">
                         <button id="btnSimpanCatatan" class="btn-simpan">Simpan</button>
                     </div>
                 </div>
@@ -178,7 +179,6 @@
                             <div id="angkaTotalBulan" class="angka-ringkasan">Rp 0</div>
                         </div>
                     </div>
-
                     <div class="input-group">
                         <input type="text" id="inputNamaPengeluaran" placeholder="Nama Barang (Misal: Kopi)">
                         <input type="number" id="inputNominalPengeluaran" placeholder="Harga (Misal: 15000)">
@@ -197,7 +197,6 @@
             </div>
             <div id="kontenBulanan"></div>
         </div>
-
     </div>
 </div>
 
@@ -228,8 +227,8 @@
 
   const inputTanggal = document.getElementById('inputTanggalPilih');
   const inputCari = document.getElementById('inputCariCatatan'); 
+  const wadahCari = document.getElementById('wadahCari');
   
-  // Elemen untuk navigasi halaman
   const areaUtama = document.getElementById('areaUtama');
   const areaBulanan = document.getElementById('areaBulanan');
   const btnBukaSebulan = document.getElementById('btnBukaSebulan');
@@ -242,7 +241,6 @@
   inputTanggal.addEventListener('change', () => renderLayarUtama());
   inputCari.addEventListener('input', () => renderLayarUtama());
 
-  // Logika Buka/Tutup Halaman Bulanan
   btnBukaSebulan.addEventListener('click', () => {
       areaUtama.style.display = 'none';
       areaBulanan.style.display = 'block';
@@ -268,7 +266,7 @@
               dataCatatanPribadi = [];
               snapshot.forEach(child => { dataCatatanPribadi.push({ id: child.key, ...child.val() }) });
               if(areaUtama.style.display !== 'none') renderLayarUtama();
-              else renderLayarBulanan(); // Update otomatis jika sedang di halaman rekap
+              else renderLayarBulanan(); 
           });
 
           onValue(ref(database, 'pengeluaran_pribadi/' + user.uid), (snapshot) => {
@@ -295,7 +293,10 @@
       document.getElementById('halamanCatatan').classList.toggle('aktif', tab === 'catatan');
       document.getElementById('halamanPengeluaran').classList.toggle('aktif', tab === 'pengeluaran');
       
+      // Tampilkan ikon cari hanya di catatan agar bersih saat di Pengeluaran
+      wadahCari.style.display = tab === 'catatan' ? 'flex' : 'none';
       if (inputCari) inputCari.value = ""; 
+      
       renderLayarUtama();
   }
 
@@ -303,7 +304,6 @@
   function bersihkanTeks(teks) { const d = document.createElement('div'); d.innerText = teks; return d.innerHTML; }
   function formatWaktuDetail() { return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }); }
 
-  // Fungsi Render Halaman Utama (Kartu Harian)
   function renderLayarUtama() {
       const daftar = document.getElementById('daftarItem');
       daftar.innerHTML = "";
@@ -313,7 +313,7 @@
       if (modeAktif === "catatan") {
           let htmlCatatan = ""; 
           let jumlahTampil = 0;
-          const kataKunci = inputCari ? inputCari.value.toLowerCase() : "";
+          const kataKunci = inputCari && wadahCari.style.display !== 'none' ? inputCari.value.toLowerCase() : "";
 
           dataCatatanPribadi.forEach(data => {
               const teksAman = bersihkanTeks(data.isi);
@@ -327,17 +327,19 @@
 
               if (tampilkan) {
                   jumlahTampil++;
-                  const infoTanggal = kataKunci !== "" ? `<div class="waktu-teks" style="color:#4dabf7; font-weight:bold;">📅 Tanggal: ${data.tanggal_db}</div>` : "";
+                  const infoTanggal = kataKunci !== "" ? `<div style="font-size:12px; color:#4dabf7; font-weight:bold; margin-bottom:5px;">📅 ${data.tanggal_db}</div>` : "";
                   
                   htmlCatatan += `
                       <li>
                           ${infoTanggal}
-                          <div class="waktu-teks">🕒 Jam Input: ${data.jam_input || '-'}</div>
-                          <span class="isi-teks">${teksAman}</span>
-                          <div class="grup-tombol">
-                              <button class="btn-aksi btn-edit" data-id="${data.id}" data-jenis="catatan">Edit</button>
-                              <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="catatan">Hapus</button>
+                          <div class="header-kartu">
+                              <div class="waktu-teks">🕒 Jam: ${data.jam_input || '-'}</div>
+                              <div class="grup-tombol-kecil">
+                                  <button class="btn-aksi btn-edit" data-id="${data.id}" data-jenis="catatan">✏️ Edit</button>
+                                  <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="catatan">🗑️ Hapus</button>
+                              </div>
                           </div>
+                          <span class="isi-teks">${teksAman}</span>
                       </li>`;
               }
           });
@@ -360,12 +362,14 @@
                   jumlahTampilPengeluaran++;
                   htmlHariIni += `
                       <li class="item-pengeluaran">
-                          <div class="waktu-teks">🕒 Jam Input: ${data.jam_input || '-'}</div>
+                          <div class="header-kartu">
+                              <div class="waktu-teks">🕒 Jam: ${data.jam_input || '-'}</div>
+                              <div class="grup-tombol-kecil">
+                                  <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="pengeluaran">🗑️ Hapus</button>
+                              </div>
+                          </div>
                           <span class="isi-teks">${bersihkanTeks(data.nama_item)}</span>
                           <div class="nominal-teks">${formatRupiah(data.harga)}</div>
-                          <div class="grup-tombol">
-                              <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="pengeluaran">Hapus</button>
-                          </div>
                       </li>`;
               }
           });
@@ -378,7 +382,6 @@
       }
   }
 
-  // Fungsi Render Halaman Baru (Rekap Sebulan Simple List)
   function renderLayarBulanan() {
       const konten = document.getElementById('kontenBulanan');
       const tglPilih = inputTanggal.value;
@@ -388,7 +391,6 @@
       document.getElementById('judulBulanan').innerText = `Rekap ${modeAktif === 'catatan' ? 'Catatan' : 'Pengeluaran'} - ${namaBulan}`;
 
       let dataSumber = modeAktif === 'catatan' ? dataCatatanPribadi : dataPengeluaranPribadi;
-      
       let dataBulanIni = dataSumber.filter(d => d.tanggal_db && d.tanggal_db.startsWith(blnPilih));
 
       if (dataBulanIni.length === 0) {
@@ -451,14 +453,18 @@
 
   document.getElementById('daftarItem').addEventListener('click', function(e) {
       const target = e.target;
-      const idItem = target.getAttribute('data-id');
-      const jenis = target.getAttribute('data-jenis'); 
-      if(target.classList.contains('btn-hapus')) {
+      const btn = target.closest('button');
+      if (!btn) return;
+      
+      const idItem = btn.getAttribute('data-id');
+      const jenis = btn.getAttribute('data-jenis'); 
+      
+      if(btn.classList.contains('btn-hapus')) {
           const folder = jenis === 'catatan' ? 'catatan_pribadi/' : 'pengeluaran_pribadi/';
           remove(ref(database, folder + currentUser.uid + '/' + idItem));
       }
-      if(target.classList.contains('btn-edit') && jenis === 'catatan') {
-          const teksLama = target.closest('li').querySelector('.isi-teks').innerText;
+      if(btn.classList.contains('btn-edit') && jenis === 'catatan') {
+          const teksLama = btn.closest('li').querySelector('.isi-teks').innerText;
           const teksBaru = prompt("Ubah catatan:", teksLama);
           if (teksBaru !== null && teksBaru.trim() !== "") {
               update(ref(database, `catatan_pribadi/${currentUser.uid}/${idItem}`), { 
