@@ -13,21 +13,20 @@
         .kotak-utama { max-width: 600px; margin: 0 auto 30px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
         h2 { text-align: center; color: #333; margin-top: 0; font-size: 24px; }
         
+        /* Modifikasi Posisi Area Login ke Tengah Layar */
         #areaLogin { 
             text-align: center; 
             padding: 30px; 
-            
-            /* -- Kode baru untuk menengahkan posisi -- */
-            position: fixed; /* Mengunci posisi relatif terhadap layar */
+            position: fixed; 
             top: 50%; 
             left: 50%;
-            transform: translate(-50%, -50%); /* Geser titik tengah elemen ke tengah layar */
-            
-            width: 90%; /* Agar aman dan responsif di HP */
-            max-width: 450px; /* Membatasi lebar agar tidak terlalu lebar di Laptop */
-            margin: 0; /* Reset margin bawaan */
-            z-index: 1000; /* Pastikan selalu di paling atas */
+            transform: translate(-50%, -50%); 
+            width: 90%; 
+            max-width: 450px; 
+            margin: 0; 
+            z-index: 1000;
         }
+
         #areaApp { display: none; } 
         
         .btn-google { 
@@ -86,6 +85,24 @@
         .pilih-tanggal { width: 100%; padding: 12px; border: 2px solid #ced4da; border-radius: 8px; font-size: 16px; margin-bottom: 20px; text-align: center; color: #495057; font-weight: bold; cursor: pointer; background-color: #f8f9fa;}
         .pilih-tanggal:focus { border-color: #4dabf7; outline: none; background-color: white;}
 
+        /* CSS untuk Kolom Pencarian */
+        .input-cari {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 15px;
+            margin-bottom: 15px;
+            outline: none;
+            transition: 0.3s;
+            background-color: #f8f9fa;
+        }
+        .input-cari:focus {
+            border-color: #4dabf7;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
+        }
+
         .bagian-aplikasi { display: none; }
         .bagian-aplikasi.aktif { display: block; }
         .pesan-kosong { text-align: center; color: #868e96; font-style: italic; width: 100%; grid-column: 1 / -1; margin-top: 20px; }
@@ -125,6 +142,8 @@
             <input type="date" id="inputTanggalPilih" class="pilih-tanggal" title="Pilih hari untuk melihat jurnal">
             
             <div id="halamanCatatan" class="bagian-aplikasi aktif">
+                <input type="text" id="inputCariCatatan" class="input-cari" placeholder="🔍 Cari catatan lama atau kata kunci...">
+                
                 <div class="input-group">
                     <input type="text" id="inputCatatan" placeholder="Tulis Catatan...">
                     <button id="btnSimpanCatatan" class="btn-simpan">Simpan Catatan</button>
@@ -181,11 +200,14 @@
   let dataPengeluaranPribadi = [];
 
   const inputTanggal = document.getElementById('inputTanggalPilih');
+  const inputCari = document.getElementById('inputCariCatatan'); // Deklarasi input cari
+
   const tzoffset = (new Date()).getTimezoneOffset() * 60000; 
   const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
   inputTanggal.value = localISOTime;
 
   inputTanggal.addEventListener('change', () => renderLayar());
+  inputCari.addEventListener('input', () => renderLayar()); // Update realtime saat mengetik
 
   document.getElementById('btnLogin').addEventListener('click', () => signInWithPopup(auth, provider));
   document.getElementById('btnLogout').addEventListener('click', () => signOut(auth));
@@ -225,6 +247,10 @@
       document.getElementById('btnMenuPengeluaran').classList.toggle('aktif', tab === 'pengeluaran');
       document.getElementById('halamanCatatan').classList.toggle('aktif', tab === 'catatan');
       document.getElementById('halamanPengeluaran').classList.toggle('aktif', tab === 'pengeluaran');
+      
+      // Kosongkan kolom pencarian saat ganti tab agar tidak bingung
+      if (inputCari) inputCari.value = ""; 
+      
       renderLayar();
   }
 
@@ -238,13 +264,34 @@
       const tglPilih = inputTanggal.value; 
 
       if (modeAktif === "catatan") {
-          let htmlCatatan = ""; let adaCatatanHariIni = false;
+          let htmlCatatan = ""; 
+          let jumlahTampil = 0;
+          const kataKunci = inputCari ? inputCari.value.toLowerCase() : "";
+
           dataCatatanPribadi.forEach(data => {
-              if (data.tanggal_db === tglPilih) {
-                  adaCatatanHariIni = true;
-                  const teksAman = bersihkanTeks(data.isi);
+              const teksAman = bersihkanTeks(data.isi);
+              let tampilkan = false;
+
+              // Cek apakah ada kata kunci pencarian
+              if (kataKunci !== "") {
+                  if (data.isi.toLowerCase().includes(kataKunci)) {
+                      tampilkan = true;
+                  }
+              } else {
+                  // Jika tidak mencari, gunakan filter kalender
+                  if (data.tanggal_db === tglPilih) {
+                      tampilkan = true;
+                  }
+              }
+
+              if (tampilkan) {
+                  jumlahTampil++;
+                  // Info tanggal muncul hanya saat menggunakan fitur pencarian
+                  const infoTanggal = kataKunci !== "" ? `<div class="waktu-teks" style="color:#4dabf7; font-weight:bold;">📅 Tanggal: ${data.tanggal_db}</div>` : "";
+                  
                   htmlCatatan += `
                       <li>
+                          ${infoTanggal}
                           <div class="waktu-teks">🕒 Jam Input: ${data.jam_input || '-'}</div>
                           <span class="isi-teks">${teksAman}</span>
                           <div class="grup-tombol">
@@ -254,8 +301,17 @@
                       </li>`;
               }
           });
-          if (!adaCatatanHariIni) daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada catatan di tanggal ${tglPilih}.</div>`;
-          else daftar.innerHTML = htmlCatatan;
+
+          if (jumlahTampil === 0) {
+              if (kataKunci !== "") {
+                  daftar.innerHTML = `<div class='pesan-kosong'>Tidak menemukan catatan dengan kata kunci "${kataKunci}".</div>`;
+              } else {
+                  daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada catatan di tanggal ${tglPilih}.</div>`;
+              }
+          } else {
+              daftar.innerHTML = htmlCatatan;
+          }
+
       } else {
           const blnPilih = tglPilih.substring(0, 7); 
           let totalBulan = 0; let totalHari = 0;
@@ -293,6 +349,7 @@
               isi: teks, tanggal_db: tanggalDipilih, jam_input: formatWaktuDetail()
           });
           document.getElementById('inputCatatan').value = ""; 
+          if (inputCari) inputCari.value = ""; // Kosongkan pencarian saat tambah baru
       }
   });
 
@@ -331,4 +388,3 @@
 
 </body>
 </html>
-
