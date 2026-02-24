@@ -98,10 +98,13 @@
 
         /* --- CSS Khusus Halaman Rekap Bulanan (Simple List) --- */
         #areaBulanan { display: none; }
-        .header-bulanan { display: flex; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; }
-        .btn-kembali { background: #f8f9fa; border: 1px solid #ced4da; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 15px; }
-        .btn-kembali:hover { background: #e9ecef; }
-        .judul-bulanan { margin: 0; font-size: 18px; color: #333; flex: 1; }
+        .header-bulanan { display: flex; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; gap: 15px; }
+        
+        /* Tombol Kembali Diperbarui (Hanya Panah) */
+        .btn-kembali { background: #f8f9fa; border: 1px solid #ced4da; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .btn-kembali:hover { background: #e9ecef; transform: translateX(-2px); }
+        
+        .judul-bulanan { margin: 0; font-size: 18px; color: #333; flex: 1; line-height: 1.4; }
         
         .grup-tanggal { margin-bottom: 20px; }
         .tgl-kecil { font-size: 13px; color: #868e96; font-weight: bold; border-bottom: 1px solid #dee2e6; padding-bottom: 4px; margin-bottom: 8px; }
@@ -117,8 +120,13 @@
             .nav-menu { flex-direction: column; gap: 15px; }
             .btn-logout { width: 100%; }
             .area-ringkasan { flex-direction: column; }
-            .kontrol-tanggal { flex-direction: column; } 
-            .btn-mode-waktu { padding: 14px; }
+            
+            /* Agar tanggal & tombol Lihat Sebulan tetap sejajar di HP */
+            .kontrol-tanggal { flex-direction: row; gap: 8px; } 
+            .pilih-tanggal { font-size: 14px; padding: 10px; } 
+            .btn-mode-waktu { padding: 10px 15px; font-size: 14px; }
+            
+            .judul-bulanan { font-size: 16px; } /* Sedikit dikecilkan di HP agar muat */
         }
     </style>
 </head>
@@ -184,7 +192,7 @@
 
         <div id="areaBulanan" class="kotak-utama">
             <div class="header-bulanan">
-                <button id="btnKembali" class="btn-kembali">⬅ Kembali</button>
+                <button id="btnKembali" class="btn-kembali" title="Kembali">⬅</button>
                 <h3 id="judulBulanan" class="judul-bulanan">Rekap Bulan Ini</h3>
             </div>
             <div id="kontenBulanan"></div>
@@ -374,15 +382,13 @@
   function renderLayarBulanan() {
       const konten = document.getElementById('kontenBulanan');
       const tglPilih = inputTanggal.value;
-      const blnPilih = tglPilih.substring(0, 7); // Format: YYYY-MM
+      const blnPilih = tglPilih.substring(0, 7); 
       
-      // Update Judul Halaman
       const namaBulan = new Date(tglPilih).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
       document.getElementById('judulBulanan').innerText = `Rekap ${modeAktif === 'catatan' ? 'Catatan' : 'Pengeluaran'} - ${namaBulan}`;
 
       let dataSumber = modeAktif === 'catatan' ? dataCatatanPribadi : dataPengeluaranPribadi;
       
-      // Saring data khusus bulan ini
       let dataBulanIni = dataSumber.filter(d => d.tanggal_db && d.tanggal_db.startsWith(blnPilih));
 
       if (dataBulanIni.length === 0) {
@@ -390,22 +396,19 @@
           return;
       }
 
-      // Urutkan data berdasarkan tanggal (dari yang paling lama ke paling baru)
       dataBulanIni.sort((a, b) => a.tanggal_db.localeCompare(b.tanggal_db));
 
-      // Kelompokkan data per tanggal
       const dataDikelompokkan = {};
       dataBulanIni.forEach(item => {
           if (!dataDikelompokkan[item.tanggal_db]) dataDikelompokkan[item.tanggal_db] = [];
           dataDikelompokkan[item.tanggal_db].push(item);
       });
 
-      // Bangun HTML Simple List
       let htmlRekap = "";
       for (const tgl in dataDikelompokkan) {
           htmlRekap += `<div class="grup-tanggal">`;
-          htmlRekap += `<div class="tgl-kecil">📅 ${tgl}</div>`; // Tanggal format kecil
-          htmlRekap += `<ul class="list-simple">`; // List kebawah
+          htmlRekap += `<div class="tgl-kecil">📅 ${tgl}</div>`; 
+          htmlRekap += `<ul class="list-simple">`; 
           
           dataDikelompokkan[tgl].forEach(item => {
               if (modeAktif === 'catatan') {
