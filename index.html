@@ -66,14 +66,19 @@
         .item-pengeluaran { border-top-color: #ff8787 !important; } 
         .nominal-teks { font-size: 20px; font-weight: bold; color: #e03131; margin-top: 10px; }
         
-        /* --- Form & Area Lainnya --- */
-        .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        /* --- Form & Area Lainnya (PERBAIKAN AUTO-RESIZE & BUTTON SIZE) --- */
+        .input-group { display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end; /* Memastikan tombol selalu ada di bawah/rata jika input memanjang */ }
+        
         input, textarea { flex: 1; padding: 12px; border: 1px solid #ced4da; border-radius: 8px; outline: none; font-size: 15px; transition: 0.3s; font-family: inherit; }
         input:focus, textarea:focus { border-color: #4dabf7; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
-        textarea { resize: vertical; min-height: 45px; } /* Khusus textarea bisa di-resize vertikal */
+        
+        /* Textarea khusus input catatan agar otomatis resize */
+        textarea#inputCatatan { resize: none; overflow: hidden; height: 44px; padding: 11px 12px; line-height: 1.4; } 
         
         button { cursor: pointer; transition: 0.3s; }
-        .btn-simpan { background: #4dabf7; color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: bold; flex-shrink: 0; }
+        
+        /* Tombol simpan ukurannya dikunci mati 44px agar sama persis dengan input 1 baris */
+        .btn-simpan { background: #4dabf7; color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: bold; flex-shrink: 0; height: 44px; display: flex; align-items: center; justify-content: center; }
         .btn-simpan:hover { background: #3bc9db; }
         
         .area-ringkasan { display: flex; gap: 15px; margin-bottom: 20px; }
@@ -90,7 +95,7 @@
         /* Halaman Rekap Bulanan */
         #areaBulanan { display: none; }
         .header-bulanan { display: flex; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; gap: 15px; }
-        .btn-kembali { background: #f8f9fa; border: 1px solid #ced4da; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .btn-kembali { background: #f8f9fa; border: 1px solid #ced4da; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: 0.2s; height: 40px; }
         .btn-kembali:hover { background: #e9ecef; transform: translateX(-2px); }
         .judul-bulanan { margin: 0; font-size: 18px; color: #333; flex: 1; line-height: 1.4; }
         .grup-tanggal { margin-bottom: 20px; }
@@ -98,13 +103,21 @@
         .list-simple { list-style-type: disc; padding-left: 20px; margin: 0; color: #495057; }
         .list-simple li { padding: 4px 0; font-size: 15px; line-height: 1.5; }
         .list-simple li strong { color: #e03131; }
+        
+        /* --- Modal Edit Kustom --- */
+        #overlayModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; backdrop-filter: blur(2px); }
+        #modalEdit { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; width: 90%; max-width: 400px; margin: 0; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .btn-batal-modal { padding: 0 15px; border-radius: 8px; border: none; background: #e9ecef; color: #495057; cursor: pointer; font-weight: bold; transition: 0.3s; height: 44px; }
+        .btn-batal-modal:hover { background: #dee2e6; }
 
         /* --- Tampilan Mobile (Responsive) --- */
         @media (max-width: 500px) {
             body { padding: 10px; padding-bottom: 85px; } 
             .kotak-utama { padding: 20px; margin-bottom: 20px; }
-            .input-group { flex-direction: column; }
-            .btn-simpan { padding: 14px; }
+            
+            /* input-group (textarea dan tombol) ditumpuk di HP agar tombol memanjang rapi */
+            .input-group { flex-direction: column; align-items: stretch; }
+            .btn-simpan { width: 100%; padding: 0; }
             
             .area-ringkasan { flex-direction: row; gap: 10px; } 
             .kotak-ringkasan { padding: 12px 10px; }
@@ -178,7 +191,7 @@
                 
                 <div id="halamanCatatan" class="bagian-aplikasi aktif">
                     <div class="input-group">
-                        <textarea id="inputCatatan" placeholder="Tulis Catatan Baru (Tekan Enter untuk baris baru)..." rows="2"></textarea>
+                        <textarea id="inputCatatan" placeholder="Tulis catatan (Tekan Enter untuk baris baru)..."></textarea>
                         <button id="btnSimpanCatatan" class="btn-simpan">Simpan</button>
                     </div>
                 </div>
@@ -198,7 +211,7 @@
                         <input type="text" id="inputNamaPengeluaran" placeholder="Nama Barang (Misal: Kopi)">
                         <input type="number" id="inputNominalPengeluaran" placeholder="Harga (Misal: 15000)">
                     </div>
-                    <button id="btnSimpanPengeluaran" class="btn-simpan" style="width: 100%; padding: 14px; margin-bottom: 10px; background-color:#ff8787;">Catat Pengeluaran</button>
+                    <button id="btnSimpanPengeluaran" class="btn-simpan" style="width: 100%; margin-bottom: 10px; background-color:#ff8787;">Catat Pengeluaran</button>
                 </div>
             </div>
 
@@ -212,6 +225,16 @@
             </div>
             <div id="kontenBulanan"></div>
         </div>
+    </div>
+</div>
+
+<div id="overlayModal"></div>
+<div id="modalEdit">
+    <h3 style="margin-top:0; color:#333; margin-bottom:15px; font-size: 18px;">✏️ Edit Catatan</h3>
+    <textarea id="inputEditCatatan" style="width:100%; min-height:120px; padding:12px; border:1px solid #ced4da; border-radius:8px; outline:none; font-family:inherit; font-size:15px; resize:vertical; line-height:1.5;"></textarea>
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:15px;">
+        <button id="btnBatalEdit" class="btn-batal-modal">Batal</button>
+        <button id="btnSimpanEdit" class="btn-simpan">Simpan Perubahan</button>
     </div>
 </div>
 
@@ -236,6 +259,7 @@
 
   let currentUser = null;
   let modeAktif = "catatan"; 
+  let idCatatanEditAktif = null; // Menyimpan ID catatan yang sedang di-edit
   
   let dataCatatanPribadi = [];
   let dataPengeluaranPribadi = [];
@@ -243,12 +267,19 @@
   const inputTanggal = document.getElementById('inputTanggalPilih');
   const inputCari = document.getElementById('inputCariCatatan'); 
   const wadahCari = document.getElementById('wadahCari');
+  const inputCatatan = document.getElementById('inputCatatan'); // Diambil untuk Auto-Resize
   
   const areaUtama = document.getElementById('areaUtama');
   const areaBulanan = document.getElementById('areaBulanan');
   const btnBukaSebulan = document.getElementById('btnBukaSebulan');
   const btnKembali = document.getElementById('btnKembali');
   const teksTanggalHeader = document.getElementById('teksTanggalHeader');
+
+  // Skrip Auto-Resize Textarea Catatan (Memanjang jika diketik/Enter)
+  inputCatatan.addEventListener('input', function() {
+      this.style.height = '44px'; // Setel ulang tinggi ke semula dulu
+      this.style.height = (this.scrollHeight) + 'px'; // Atur tinggi sesuai isi (scroll)
+  });
 
   function updateTanggalHeader() {
       const tgl = inputTanggal.value;
@@ -325,9 +356,7 @@
       wadahCari.style.display = tab === 'catatan' ? 'flex' : 'none';
       if (inputCari) inputCari.value = ""; 
       
-      // Mengubah teks tombol secara otomatis menyesuaikan tab yang aktif
       btnBukaSebulan.innerText = tab === 'catatan' ? 'Catatan Bulan Ini' : 'Pengeluaran Bulan Ini';
-      
       renderLayarUtama();
   }
 
@@ -464,7 +493,8 @@
           push(ref(database, 'catatan_pribadi/' + currentUser.uid), { 
               isi: teks, tanggal_db: tanggalDipilih, jam_input: formatWaktuDetail()
           });
-          document.getElementById('inputCatatan').value = ""; 
+          inputCatatan.value = ""; 
+          inputCatatan.style.height = "44px"; // Kembalikan tinggi input ke 1 baris setelah simpan
           if (inputCari) inputCari.value = ""; 
       }
   });
@@ -482,6 +512,7 @@
       }
   });
 
+  // Skrip Logika Klik Edit dan Hapus
   document.getElementById('daftarItem').addEventListener('click', function(e) {
       const target = e.target;
       const btn = target.closest('button');
@@ -494,16 +525,41 @@
           const folder = jenis === 'catatan' ? 'catatan_pribadi/' : 'pengeluaran_pribadi/';
           remove(ref(database, folder + currentUser.uid + '/' + idItem));
       }
+      
+      // Menampilkan Modal Edit Buatan Sendiri (Sebagai ganti dari prompt bawaan browser)
       if(btn.classList.contains('btn-edit') && jenis === 'catatan') {
+          // Ambil isi tulisan lama berdasarkan innerText agar Enter (\n) tetap terbawa
           const teksLama = btn.closest('li').querySelector('.isi-teks').innerText;
-          const teksBaru = prompt("Ubah catatan:", teksLama);
-          if (teksBaru !== null && teksBaru.trim() !== "") {
-              update(ref(database, `catatan_pribadi/${currentUser.uid}/${idItem}`), { 
-                  isi: teksBaru, jam_input: formatWaktuDetail() + " (Diedit)" 
-              });
-          }
+          
+          document.getElementById('inputEditCatatan').value = teksLama;
+          document.getElementById('overlayModal').style.display = 'block';
+          document.getElementById('modalEdit').style.display = 'block';
+          
+          idCatatanEditAktif = idItem; // Simpan ID untuk ditimpa nanti
       }
   });
+
+  // Skrip Menutup Modal Batal
+  document.getElementById('btnBatalEdit').addEventListener('click', () => {
+      document.getElementById('overlayModal').style.display = 'none';
+      document.getElementById('modalEdit').style.display = 'none';
+      idCatatanEditAktif = null;
+  });
+
+  // Skrip Menyimpan Hasil Edit (Update ke Database Firebase)
+  document.getElementById('btnSimpanEdit').addEventListener('click', () => {
+      const teksBaru = document.getElementById('inputEditCatatan').value;
+      if (teksBaru.trim() !== "" && idCatatanEditAktif !== null && currentUser) {
+          update(ref(database, `catatan_pribadi/${currentUser.uid}/${idCatatanEditAktif}`), { 
+              isi: teksBaru, jam_input: formatWaktuDetail() + " (Diedit)" 
+          });
+          // Tutup Modal setelah selesai
+          document.getElementById('overlayModal').style.display = 'none';
+          document.getElementById('modalEdit').style.display = 'none';
+          idCatatanEditAktif = null;
+      }
+  });
+
 </script>
 
 </body>
