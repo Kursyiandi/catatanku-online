@@ -47,6 +47,8 @@
         .kotak-cari-ikon:focus-within { border-color: #4dabf7; background: white; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
         .kotak-cari-ikon span { font-size: 14px; color: #868e96; }
         .kotak-cari-ikon input { border: none; background: transparent; padding: 10px 5px; width: 100%; outline: none; font-size: 14px; }
+        /* PERBAIKAN: Menghilangkan garis biru ganda di dalam kotak pencarian */
+        .kotak-cari-ikon input:focus { box-shadow: none; border: none; }
         
         .btn-mode-waktu { flex: 1; padding: 10px; border-radius: 8px; border: 2px solid #4dabf7; background: white; color: #4dabf7; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; white-space: nowrap; }
         .btn-mode-waktu:hover { background: #e7f5ff; }
