@@ -34,10 +34,8 @@
         .btn-tab.aktif { background: #4dabf7; color: white; border-color: #4dabf7; box-shadow: 0 4px 6px rgba(77, 171, 247, 0.2); }
         
         /* --- Kontrol: Date Picker, Search & Tombol Sebulan --- */
-        .kontrol-tanggal { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; }
-        .baris-kontrol { display: flex; gap: 10px; flex: 2; }
+        .kontrol-tanggal { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; width: 100%; }
         
-        /* Trik Mengubah Date Picker menjadi Ikon Tombol Saja */
         .pilih-tanggal-wrapper { position: relative; background: #f8f9fa; border: 2px solid #ced4da; border-radius: 8px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
         .pilih-tanggal-wrapper span { font-size: 18px; }
         .pilih-tanggal-wrapper:hover, .pilih-tanggal-wrapper:focus-within { border-color: #4dabf7; background: white; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
@@ -47,7 +45,6 @@
         .kotak-cari-ikon:focus-within { border-color: #4dabf7; background: white; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
         .kotak-cari-ikon span { font-size: 14px; color: #868e96; }
         .kotak-cari-ikon input { border: none; background: transparent; padding: 10px 5px; width: 100%; outline: none; font-size: 14px; }
-        /* PERBAIKAN: Menghilangkan garis biru ganda di dalam kotak pencarian */
         .kotak-cari-ikon input:focus { box-shadow: none; border: none; }
         
         .btn-mode-waktu { flex: 1; padding: 10px; border-radius: 8px; border: 2px solid #4dabf7; background: white; color: #4dabf7; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; white-space: nowrap; }
@@ -106,18 +103,21 @@
             .kotak-utama { padding: 20px; margin-bottom: 20px; }
             .input-group { flex-direction: column; }
             .btn-simpan { padding: 14px; }
-            .area-ringkasan { flex-direction: column; }
             
-            /* Penyesuaian Header agar teks tanggal tidak tabrakan di HP */
+            /* -- PERUBAHAN: Ringkasan Pengeluaran Kiri-Kanan di Mobile -- */
+            .area-ringkasan { flex-direction: row; gap: 10px; } 
+            .kotak-ringkasan { padding: 12px 10px; }
+            .label-ringkasan { font-size: 11px; margin-bottom: 2px; }
+            .angka-ringkasan { font-size: 17px; }
+            
             .header-app { flex-direction: column; align-items: flex-start; gap: 8px; }
             .header-kanan { width: 100%; justify-content: space-between; border-top: 1px dashed #dee2e6; padding-top: 8px; }
             
-            /* Menyusun Date, Search, & Tombol Sebulan */
-            .kontrol-tanggal { flex-direction: column; align-items: stretch; }
-            .baris-kontrol { width: 100%; }
-            .btn-mode-waktu { width: 100%; flex: auto; }
+            /* -- PERUBAHAN: Kontrol Tanggal & Cari berdampingan menyamping -- */
+            .kontrol-tanggal { flex-direction: row; align-items: center; flex-wrap: nowrap; }
+            .pilih-tanggal-wrapper { width: 40px; height: 40px; }
+            .btn-mode-waktu { font-size: 13px; padding: 10px 5px; }
             
-            /* Menyulap Menu Menjadi Navigation Bar Bawah Ala Mobile App */
             .nav-menu {
                 position: fixed; bottom: 0; left: 0; width: 100%;
                 background: white; padding: 12px 15px; margin: 0;
@@ -165,15 +165,13 @@
                 </div>
                 
                 <div class="kontrol-tanggal">
-                    <div class="baris-kontrol">
-                        <div class="pilih-tanggal-wrapper" title="Ubah Tanggal">
-                            <span>📅</span>
-                            <input type="date" id="inputTanggalPilih" class="pilih-tanggal-sembunyi">
-                        </div>
-                        <div id="wadahCari" class="kotak-cari-ikon">
-                            <span>🔍</span>
-                            <input type="text" id="inputCariCatatan" placeholder="Cari...">
-                        </div>
+                    <div class="pilih-tanggal-wrapper" title="Ubah Tanggal">
+                        <span>📅</span>
+                        <input type="date" id="inputTanggalPilih" class="pilih-tanggal-sembunyi">
+                    </div>
+                    <div id="wadahCari" class="kotak-cari-ikon">
+                        <span>🔍</span>
+                        <input type="text" id="inputCariCatatan" placeholder="Cari...">
                     </div>
                     <button id="btnBukaSebulan" class="btn-mode-waktu">Lihat Sebulan</button>
                 </div>
@@ -252,7 +250,6 @@
   const btnKembali = document.getElementById('btnKembali');
   const teksTanggalHeader = document.getElementById('teksTanggalHeader');
 
-  // Fungsi untuk Update Teks Tanggal di Header
   function updateTanggalHeader() {
       const tgl = inputTanggal.value;
       if(!tgl) return;
@@ -264,9 +261,8 @@
   const tzoffset = (new Date()).getTimezoneOffset() * 60000; 
   const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
   inputTanggal.value = localISOTime;
-  updateTanggalHeader(); // Set tanggal saat load pertama kali
+  updateTanggalHeader(); 
 
-  // Event saat tanggal diganti
   inputTanggal.addEventListener('change', () => {
       updateTanggalHeader();
       renderLayarUtama();
