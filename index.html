@@ -13,12 +13,11 @@
     <link rel="apple-touch-icon" href="logo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Self Apps">
     <style>
-        /* ... (Kode CSS Anda tetap sama di bawah sini) ... */
         * { box-sizing: border-box; } 
 
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #e9ecef; margin: 0; }
-        /* ... (KODE CSS ANDA SETERUSNYA TETAP SAMA) ... */
         .container { max-width: 1200px; margin: 0 auto; }
         
         .kotak-utama { max-width: 600px; margin: 0 auto 30px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
@@ -124,8 +123,6 @@
         #modalEdit { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; width: 90%; max-width: 400px; margin: 0; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .btn-batal-modal { padding: 0 15px; border-radius: 8px; border: none; background: #e9ecef; color: #495057; cursor: pointer; font-weight: bold; transition: 0.3s; height: 44px; }
         .btn-batal-modal:hover { background: #dee2e6; }
-        
-        /* Container untuk tombol dalam modal edit */
         .grup-tombol-modal { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
 
         /* --- Tampilan Mobile (Responsive) --- */
@@ -136,7 +133,6 @@
             .input-group { flex-direction: column; align-items: stretch; }
             .btn-simpan { width: 100%; padding: 0; }
             
-            /* Penyesuaian khusus tombol di dalam modal pada layar HP */
             .grup-tombol-modal { flex-direction: column-reverse; gap: 8px; }
             .btn-batal-modal { width: 100%; }
             #modalEdit .btn-simpan { width: 100%; }
@@ -621,5 +617,3 @@
 
 </body>
 </html>
-
-
