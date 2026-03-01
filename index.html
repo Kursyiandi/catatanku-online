@@ -67,17 +67,19 @@
         .nominal-teks { font-size: 20px; font-weight: bold; color: #e03131; margin-top: 10px; }
         
         /* --- Form & Area Lainnya (PERBAIKAN AUTO-RESIZE & BUTTON SIZE) --- */
-        .input-group { display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end; /* Memastikan tombol selalu ada di bawah/rata jika input memanjang */ }
+        .input-group { display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end; }
         
-        input, textarea { flex: 1; padding: 12px; border: 1px solid #ced4da; border-radius: 8px; outline: none; font-size: 15px; transition: 0.3s; font-family: inherit; }
+        input, textarea { flex: 1; padding: 12px; border: 1px solid #ced4da; border-radius: 8px; outline: none; font-size: 15px; transition: border-color 0.3s, box-shadow 0.3s; font-family: inherit; }
         input:focus, textarea:focus { border-color: #4dabf7; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
         
-        /* Textarea khusus input catatan agar otomatis resize */
-        textarea#inputCatatan { resize: none; overflow: hidden; height: 44px; padding: 11px 12px; line-height: 1.4; } 
+        /* Textarea Input Utama */
+        textarea#inputCatatan { resize: none; overflow: hidden; min-height: 44px; height: 44px; padding: 11px 12px; line-height: 1.4; } 
+        
+        /* Textarea Edit (dalam modal) */
+        textarea#inputEditCatatan { width: 100%; resize: none; overflow: hidden; min-height: 44px; height: 44px; padding: 12px; line-height: 1.5; }
         
         button { cursor: pointer; transition: 0.3s; }
         
-        /* Tombol simpan ukurannya dikunci mati 44px agar sama persis dengan input 1 baris */
         .btn-simpan { background: #4dabf7; color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: bold; flex-shrink: 0; height: 44px; display: flex; align-items: center; justify-content: center; }
         .btn-simpan:hover { background: #3bc9db; }
         
@@ -115,7 +117,6 @@
             body { padding: 10px; padding-bottom: 85px; } 
             .kotak-utama { padding: 20px; margin-bottom: 20px; }
             
-            /* input-group (textarea dan tombol) ditumpuk di HP agar tombol memanjang rapi */
             .input-group { flex-direction: column; align-items: stretch; }
             .btn-simpan { width: 100%; padding: 0; }
             
@@ -231,7 +232,7 @@
 <div id="overlayModal"></div>
 <div id="modalEdit">
     <h3 style="margin-top:0; color:#333; margin-bottom:15px; font-size: 18px;">✏️ Edit Catatan</h3>
-    <textarea id="inputEditCatatan" style="width:100%; min-height:120px; padding:12px; border:1px solid #ced4da; border-radius:8px; outline:none; font-family:inherit; font-size:15px; resize:vertical; line-height:1.5;"></textarea>
+    <textarea id="inputEditCatatan"></textarea>
     <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:15px;">
         <button id="btnBatalEdit" class="btn-batal-modal">Batal</button>
         <button id="btnSimpanEdit" class="btn-simpan">Simpan Perubahan</button>
@@ -267,7 +268,8 @@
   const inputTanggal = document.getElementById('inputTanggalPilih');
   const inputCari = document.getElementById('inputCariCatatan'); 
   const wadahCari = document.getElementById('wadahCari');
-  const inputCatatan = document.getElementById('inputCatatan'); // Diambil untuk Auto-Resize
+  const inputCatatan = document.getElementById('inputCatatan'); 
+  const inputEditCatatan = document.getElementById('inputEditCatatan');
   
   const areaUtama = document.getElementById('areaUtama');
   const areaBulanan = document.getElementById('areaBulanan');
@@ -275,11 +277,19 @@
   const btnKembali = document.getElementById('btnKembali');
   const teksTanggalHeader = document.getElementById('teksTanggalHeader');
 
-  // Skrip Auto-Resize Textarea Catatan (Memanjang jika diketik/Enter)
-  inputCatatan.addEventListener('input', function() {
-      this.style.height = '44px'; // Setel ulang tinggi ke semula dulu
-      this.style.height = (this.scrollHeight) + 'px'; // Atur tinggi sesuai isi (scroll)
-  });
+  // --- Fungsi Pintar Auto-Resize Teksarea (Bisa Memanjang & Mengecil Mulus) ---
+  function autoResize() {
+      // 1. Set ke auto agar kotak bisa MENGECIL jika baris dihapus (backspace)
+      this.style.height = 'auto'; 
+      // 2. Baca ukuran tinggi konten yang sebenarnya, lalu set sebagai ukuran pasti
+      // Ditambah +2px untuk kompensasi border agar tidak bergeser aneh
+      this.style.height = (this.scrollHeight + 2) + 'px'; 
+  }
+
+  // Terapkan fungsi autoResize ke kotak Input Utama dan Kotak Edit
+  inputCatatan.addEventListener('input', autoResize);
+  inputEditCatatan.addEventListener('input', autoResize);
+
 
   function updateTanggalHeader() {
       const tgl = inputTanggal.value;
@@ -356,7 +366,9 @@
       wadahCari.style.display = tab === 'catatan' ? 'flex' : 'none';
       if (inputCari) inputCari.value = ""; 
       
+      // Mengubah teks tombol secara otomatis menyesuaikan tab yang aktif
       btnBukaSebulan.innerText = tab === 'catatan' ? 'Catatan Bulan Ini' : 'Pengeluaran Bulan Ini';
+      
       renderLayarUtama();
   }
 
@@ -487,7 +499,7 @@
   }
 
   document.getElementById('btnSimpanCatatan').addEventListener('click', () => {
-      const teks = document.getElementById('inputCatatan').value;
+      const teks = inputCatatan.value;
       const tanggalDipilih = document.getElementById('inputTanggalPilih').value;
       if (teks && currentUser) {
           push(ref(database, 'catatan_pribadi/' + currentUser.uid), { 
@@ -526,14 +538,18 @@
           remove(ref(database, folder + currentUser.uid + '/' + idItem));
       }
       
-      // Menampilkan Modal Edit Buatan Sendiri (Sebagai ganti dari prompt bawaan browser)
+      // Menampilkan Modal Edit Buatan Sendiri 
       if(btn.classList.contains('btn-edit') && jenis === 'catatan') {
           // Ambil isi tulisan lama berdasarkan innerText agar Enter (\n) tetap terbawa
           const teksLama = btn.closest('li').querySelector('.isi-teks').innerText;
           
-          document.getElementById('inputEditCatatan').value = teksLama;
+          inputEditCatatan.value = teksLama;
           document.getElementById('overlayModal').style.display = 'block';
           document.getElementById('modalEdit').style.display = 'block';
+          
+          // Paksa pop-up edit menyesuaikan ukurannya secara otomatis begitu muncul
+          inputEditCatatan.style.height = 'auto';
+          inputEditCatatan.style.height = (inputEditCatatan.scrollHeight + 2) + 'px';
           
           idCatatanEditAktif = idItem; // Simpan ID untuk ditimpa nanti
       }
@@ -548,7 +564,7 @@
 
   // Skrip Menyimpan Hasil Edit (Update ke Database Firebase)
   document.getElementById('btnSimpanEdit').addEventListener('click', () => {
-      const teksBaru = document.getElementById('inputEditCatatan').value;
+      const teksBaru = inputEditCatatan.value;
       if (teksBaru.trim() !== "" && idCatatanEditAktif !== null && currentUser) {
           update(ref(database, `catatan_pribadi/${currentUser.uid}/${idCatatanEditAktif}`), { 
               isi: teksBaru, jam_input: formatWaktuDetail() + " (Diedit)" 
