@@ -20,8 +20,10 @@
         .btn-google:hover { background: #c53929; box-shadow: 0 4px 8px rgba(219,68,55,0.3); transform: translateY(-2px); }
         
         /* --- Header App & Tombol Logout Ikon --- */
-        .header-app { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .info-user { margin-bottom: 0; font-weight: bold; color: #495057; font-size: 18px; }
+        .header-app { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .info-user { margin-bottom: 0; font-weight: bold; color: #1864ab; font-size: 18px; }
+        .header-kanan { display: flex; align-items: center; gap: 10px; }
+        .teks-tanggal-header { font-size: 13px; font-weight: bold; color: #868e96; }
         .btn-logout { background: transparent; border: none; color: #adb5bd; padding: 5px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
         .btn-logout:hover { color: #ff6b6b; }
         
@@ -35,8 +37,11 @@
         .kontrol-tanggal { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; }
         .baris-kontrol { display: flex; gap: 10px; flex: 2; }
         
-        .pilih-tanggal { flex: 1; padding: 10px; border: 2px solid #ced4da; border-radius: 8px; font-size: 14px; text-align: center; color: #495057; font-weight: bold; cursor: pointer; background-color: #f8f9fa; margin: 0; }
-        .pilih-tanggal:focus { border-color: #4dabf7; outline: none; background-color: white;}
+        /* Trik Mengubah Date Picker menjadi Ikon Tombol Saja */
+        .pilih-tanggal-wrapper { position: relative; background: #f8f9fa; border: 2px solid #ced4da; border-radius: 8px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
+        .pilih-tanggal-wrapper span { font-size: 18px; }
+        .pilih-tanggal-wrapper:hover, .pilih-tanggal-wrapper:focus-within { border-color: #4dabf7; background: white; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
+        .pilih-tanggal-sembunyi { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
         
         .kotak-cari-ikon { display: flex; align-items: center; background: #f8f9fa; border: 2px solid #ced4da; border-radius: 8px; padding: 0 10px; flex: 1; transition: 0.3s; }
         .kotak-cari-ikon:focus-within { border-color: #4dabf7; background: white; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
@@ -95,11 +100,15 @@
 
         /* --- Tampilan Mobile (Responsive) --- */
         @media (max-width: 500px) {
-            body { padding: 10px; padding-bottom: 85px; } /* Ruang untuk Nav Bar Bawah */
+            body { padding: 10px; padding-bottom: 85px; } 
             .kotak-utama { padding: 20px; margin-bottom: 20px; }
             .input-group { flex-direction: column; }
             .btn-simpan { padding: 14px; }
             .area-ringkasan { flex-direction: column; }
+            
+            /* Penyesuaian Header agar teks tanggal tidak tabrakan di HP */
+            .header-app { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .header-kanan { width: 100%; justify-content: space-between; border-top: 1px dashed #dee2e6; padding-top: 8px; }
             
             /* Menyusun Date, Search, & Tombol Sebulan */
             .kontrol-tanggal { flex-direction: column; align-items: stretch; }
@@ -134,13 +143,16 @@
                 
                 <div class="header-app">
                     <div id="infoUser" class="info-user"></div>
-                    <button id="btnLogout" class="btn-logout" title="Keluar">
-                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                            <polyline points="16 17 21 12 16 7"></polyline>
-                            <line x1="21" y1="12" x2="9" y2="12"></line>
-                        </svg>
-                    </button>
+                    <div class="header-kanan">
+                        <div id="teksTanggalHeader" class="teks-tanggal-header"></div>
+                        <button id="btnLogout" class="btn-logout" title="Keluar">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="nav-menu">
@@ -152,7 +164,10 @@
                 
                 <div class="kontrol-tanggal">
                     <div class="baris-kontrol">
-                        <input type="date" id="inputTanggalPilih" class="pilih-tanggal" title="Pilih hari">
+                        <div class="pilih-tanggal-wrapper" title="Ubah Tanggal">
+                            <span>📅</span>
+                            <input type="date" id="inputTanggalPilih" class="pilih-tanggal-sembunyi">
+                        </div>
                         <div id="wadahCari" class="kotak-cari-ikon">
                             <span>🔍</span>
                             <input type="text" id="inputCariCatatan" placeholder="Cari...">
@@ -233,12 +248,28 @@
   const areaBulanan = document.getElementById('areaBulanan');
   const btnBukaSebulan = document.getElementById('btnBukaSebulan');
   const btnKembali = document.getElementById('btnKembali');
+  const teksTanggalHeader = document.getElementById('teksTanggalHeader');
+
+  // Fungsi untuk Update Teks Tanggal di Header
+  function updateTanggalHeader() {
+      const tgl = inputTanggal.value;
+      if(!tgl) return;
+      const dateObj = new Date(tgl);
+      const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+      teksTanggalHeader.innerText = dateObj.toLocaleDateString('id-ID', options);
+  }
 
   const tzoffset = (new Date()).getTimezoneOffset() * 60000; 
   const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
   inputTanggal.value = localISOTime;
+  updateTanggalHeader(); // Set tanggal saat load pertama kali
 
-  inputTanggal.addEventListener('change', () => renderLayarUtama());
+  // Event saat tanggal diganti
+  inputTanggal.addEventListener('change', () => {
+      updateTanggalHeader();
+      renderLayarUtama();
+  });
+  
   inputCari.addEventListener('input', () => renderLayarUtama());
 
   btnBukaSebulan.addEventListener('click', () => {
@@ -293,7 +324,6 @@
       document.getElementById('halamanCatatan').classList.toggle('aktif', tab === 'catatan');
       document.getElementById('halamanPengeluaran').classList.toggle('aktif', tab === 'pengeluaran');
       
-      // Tampilkan ikon cari hanya di catatan agar bersih saat di Pengeluaran
       wadahCari.style.display = tab === 'catatan' ? 'flex' : 'none';
       if (inputCari) inputCari.value = ""; 
       
