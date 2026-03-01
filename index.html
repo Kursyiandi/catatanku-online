@@ -33,9 +33,15 @@
         .btn-tab { flex: 1; background: #f8f9fa; color: #495057; border: 1px solid #ced4da; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; text-align: center; }
         .btn-tab.aktif { background: #4dabf7; color: white; border-color: #4dabf7; box-shadow: 0 4px 6px rgba(77, 171, 247, 0.2); }
         
-        /* --- Kontrol: Date Picker, Search & Tombol Sebulan --- */
+        /* --- Kontrol: Date Picker, Navigasi Tanggal, Search & Tombol Sebulan --- */
         .kontrol-tanggal { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; width: 100%; }
         
+        /* Grup khusus untuk prev, kalender, next */
+        .grup-nav-tanggal { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+        
+        .btn-nav-tgl { background: #f8f9fa; border: 2px solid #ced4da; border-radius: 8px; width: 36px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #495057; font-size: 14px; font-weight: bold; transition: 0.3s; padding: 0; }
+        .btn-nav-tgl:hover { border-color: #4dabf7; color: #4dabf7; background: white; }
+
         .pilih-tanggal-wrapper { position: relative; background: #f8f9fa; border: 2px solid #ced4da; border-radius: 8px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
         .pilih-tanggal-wrapper span { font-size: 18px; }
         .pilih-tanggal-wrapper:hover, .pilih-tanggal-wrapper:focus-within { border-color: #4dabf7; background: white; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
@@ -72,11 +78,11 @@
         input, textarea { flex: 1; padding: 12px; border: 1px solid #ced4da; border-radius: 8px; outline: none; font-size: 15px; transition: border-color 0.3s, box-shadow 0.3s; font-family: inherit; }
         input:focus, textarea:focus { border-color: #4dabf7; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
         
-        /* Textarea Input Utama */
-        textarea#inputCatatan { resize: none; overflow: hidden; min-height: 44px; height: 44px; padding: 11px 12px; line-height: 1.4; } 
+        /* Textarea Input Utama - Padding & Line-height diatur presisi agar pas 44px di 1 baris */
+        textarea#inputCatatan { resize: none; overflow: hidden; min-height: 44px; height: 44px; padding: 10px 12px; line-height: 20px; } 
         
         /* Textarea Edit (dalam modal) */
-        textarea#inputEditCatatan { width: 100%; resize: none; overflow: hidden; min-height: 44px; height: 44px; padding: 12px; line-height: 1.5; }
+        textarea#inputEditCatatan { width: 100%; resize: none; overflow: hidden; min-height: 44px; height: 44px; padding: 10px 12px; line-height: 20px; }
         
         button { cursor: pointer; transition: 0.3s; }
         
@@ -129,7 +135,12 @@
             .header-kanan { width: 100%; justify-content: space-between; border-top: 1px dashed #dee2e6; padding-top: 8px; }
             
             .kontrol-tanggal { flex-direction: row; align-items: center; flex-wrap: nowrap; }
+            
+            /* Penyesuaian Grup Navigasi Tanggal di Mobile agar tetap muat */
+            .grup-nav-tanggal { gap: 3px; }
+            .btn-nav-tgl { width: 32px; height: 40px; font-size: 12px; }
             .pilih-tanggal-wrapper { width: 40px; height: 40px; }
+            
             .btn-mode-waktu { font-size: 13px; padding: 10px 5px; }
             
             .nav-menu {
@@ -179,10 +190,15 @@
                 </div>
                 
                 <div class="kontrol-tanggal">
-                    <div class="pilih-tanggal-wrapper" title="Ubah Tanggal">
-                        <span>📅</span>
-                        <input type="date" id="inputTanggalPilih" class="pilih-tanggal-sembunyi">
+                    <div class="grup-nav-tanggal">
+                        <button id="btnPrevTanggal" class="btn-nav-tgl" title="Hari Sebelumnya">❮</button>
+                        <div class="pilih-tanggal-wrapper" title="Ubah Tanggal">
+                            <span>📅</span>
+                            <input type="date" id="inputTanggalPilih" class="pilih-tanggal-sembunyi">
+                        </div>
+                        <button id="btnNextTanggal" class="btn-nav-tgl" title="Hari Selanjutnya">❯</button>
                     </div>
+
                     <div id="wadahCari" class="kotak-cari-ikon">
                         <span>🔍</span>
                         <input type="text" id="inputCariCatatan" placeholder="Cari...">
@@ -260,7 +276,7 @@
 
   let currentUser = null;
   let modeAktif = "catatan"; 
-  let idCatatanEditAktif = null; // Menyimpan ID catatan yang sedang di-edit
+  let idCatatanEditAktif = null; 
   
   let dataCatatanPribadi = [];
   let dataPengeluaranPribadi = [];
@@ -277,16 +293,19 @@
   const btnKembali = document.getElementById('btnKembali');
   const teksTanggalHeader = document.getElementById('teksTanggalHeader');
 
-  // --- Fungsi Pintar Auto-Resize Teksarea (Bisa Memanjang & Mengecil Mulus) ---
+  // --- FUNGSI AUTO-RESIZE YANG DISEMPURNAKAN ---
   function autoResize() {
-      // 1. Set ke auto agar kotak bisa MENGECIL jika baris dihapus (backspace)
-      this.style.height = 'auto'; 
-      // 2. Baca ukuran tinggi konten yang sebenarnya, lalu set sebagai ukuran pasti
-      // Ditambah +2px untuk kompensasi border agar tidak bergeser aneh
+      // Jika kosong sama sekali, kembalikan ke tinggi persis 1 baris
+      if (this.value === "") {
+          this.style.height = '44px';
+          return;
+      }
+      // Trik agar bisa mengecil saat baris dihapus (backspace)
+      this.style.height = '44px'; 
+      // Set tinggi baru berdasarkan scrollHeight (+2px untuk kompensasi border)
       this.style.height = (this.scrollHeight + 2) + 'px'; 
   }
 
-  // Terapkan fungsi autoResize ke kotak Input Utama dan Kotak Edit
   inputCatatan.addEventListener('input', autoResize);
   inputEditCatatan.addEventListener('input', autoResize);
 
@@ -298,6 +317,28 @@
       const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
       teksTanggalHeader.innerText = dateObj.toLocaleDateString('id-ID', options);
   }
+  
+  // --- FUNGSI LOMPAT TANGGAL (PREV/NEXT) ---
+  function ubahTanggalHari(selisih) {
+      const tgl = inputTanggal.value;
+      if(!tgl) return;
+      const dateObj = new Date(tgl);
+      dateObj.setDate(dateObj.getDate() + selisih);
+      
+      // Ambil kembali menjadi string format YYYY-MM-DD dengan aman
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      
+      inputTanggal.value = `${year}-${month}-${day}`;
+      
+      updateTanggalHeader();
+      renderLayarUtama();
+  }
+
+  document.getElementById('btnPrevTanggal').addEventListener('click', () => ubahTanggalHari(-1));
+  document.getElementById('btnNextTanggal').addEventListener('click', () => ubahTanggalHari(1));
+
 
   const tzoffset = (new Date()).getTimezoneOffset() * 60000; 
   const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
@@ -366,9 +407,7 @@
       wadahCari.style.display = tab === 'catatan' ? 'flex' : 'none';
       if (inputCari) inputCari.value = ""; 
       
-      // Mengubah teks tombol secara otomatis menyesuaikan tab yang aktif
       btnBukaSebulan.innerText = tab === 'catatan' ? 'Catatan Bulan Ini' : 'Pengeluaran Bulan Ini';
-      
       renderLayarUtama();
   }
 
@@ -506,7 +545,7 @@
               isi: teks, tanggal_db: tanggalDipilih, jam_input: formatWaktuDetail()
           });
           inputCatatan.value = ""; 
-          inputCatatan.style.height = "44px"; // Kembalikan tinggi input ke 1 baris setelah simpan
+          inputCatatan.style.height = "44px"; 
           if (inputCari) inputCari.value = ""; 
       }
   });
@@ -524,7 +563,6 @@
       }
   });
 
-  // Skrip Logika Klik Edit dan Hapus
   document.getElementById('daftarItem').addEventListener('click', function(e) {
       const target = e.target;
       const btn = target.closest('button');
@@ -538,38 +576,33 @@
           remove(ref(database, folder + currentUser.uid + '/' + idItem));
       }
       
-      // Menampilkan Modal Edit Buatan Sendiri 
       if(btn.classList.contains('btn-edit') && jenis === 'catatan') {
-          // Ambil isi tulisan lama berdasarkan innerText agar Enter (\n) tetap terbawa
           const teksLama = btn.closest('li').querySelector('.isi-teks').innerText;
           
           inputEditCatatan.value = teksLama;
           document.getElementById('overlayModal').style.display = 'block';
           document.getElementById('modalEdit').style.display = 'block';
           
-          // Paksa pop-up edit menyesuaikan ukurannya secara otomatis begitu muncul
-          inputEditCatatan.style.height = 'auto';
+          // Trigger fungsi resize secara manual saat modal muncul
+          inputEditCatatan.style.height = '44px';
           inputEditCatatan.style.height = (inputEditCatatan.scrollHeight + 2) + 'px';
           
-          idCatatanEditAktif = idItem; // Simpan ID untuk ditimpa nanti
+          idCatatanEditAktif = idItem; 
       }
   });
 
-  // Skrip Menutup Modal Batal
   document.getElementById('btnBatalEdit').addEventListener('click', () => {
       document.getElementById('overlayModal').style.display = 'none';
       document.getElementById('modalEdit').style.display = 'none';
       idCatatanEditAktif = null;
   });
 
-  // Skrip Menyimpan Hasil Edit (Update ke Database Firebase)
   document.getElementById('btnSimpanEdit').addEventListener('click', () => {
       const teksBaru = inputEditCatatan.value;
       if (teksBaru.trim() !== "" && idCatatanEditAktif !== null && currentUser) {
           update(ref(database, `catatan_pribadi/${currentUser.uid}/${idCatatanEditAktif}`), { 
               isi: teksBaru, jam_input: formatWaktuDetail() + " (Diedit)" 
           });
-          // Tutup Modal setelah selesai
           document.getElementById('overlayModal').style.display = 'none';
           document.getElementById('modalEdit').style.display = 'none';
           idCatatanEditAktif = null;
