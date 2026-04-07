@@ -117,6 +117,24 @@
         .list-simple { list-style-type: disc; padding-left: 20px; margin: 0; color: #495057; }
         .list-simple li { padding: 4px 0; font-size: 15px; line-height: 1.5; }
         .list-simple li strong { color: #e03131; }
+        .input-bulan-rekap {
+            padding: 8px 12px;
+            border: 2px solid #ced4da;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            font-family: inherit;
+            color: #495057;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+        .input-bulan-rekap:hover, .input-bulan-rekap:focus {
+            border-color: #4dabf7;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
+        }
         
         /* --- Modal Edit Kustom --- */
         #overlayModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; backdrop-filter: blur(2px); }
@@ -248,7 +266,8 @@
         <div id="areaBulanan" class="kotak-utama">
             <div class="header-bulanan">
                 <button id="btnKembali" class="btn-kembali" title="Kembali">⬅</button>
-                <h3 id="judulBulanan" class="judul-bulanan">Rekap Bulan Ini</h3>
+                <h3 id="judulBulanan" class="judul-bulanan" style="flex: 1;">Rekap</h3>
+                <input type="month" id="inputBulanRekap" class="input-bulan-rekap">
             </div>
             <div id="kontenBulanan"></div>
         </div>
@@ -357,11 +376,70 @@
   
   inputCari.addEventListener('input', () => renderLayarUtama());
 
+  // 1. Modifikasi Event Listener Tombol Buka Sebulan
   btnBukaSebulan.addEventListener('click', () => {
       areaUtama.style.display = 'none';
       areaBulanan.style.display = 'block';
+      
+      // Sinkronkan: Set input bulan rekap dengan bulan yang sedang aktif di halaman utama
+      const inputBulanRekap = document.getElementById('inputBulanRekap');
+      inputBulanRekap.value = inputTanggal.value.substring(0, 7); 
+      
       renderLayarBulanan();
   });
+
+  // 2. Tambahkan Event Listener baru untuk Input Bulan Rekap
+  document.getElementById('inputBulanRekap').addEventListener('change', () => {
+      renderLayarBulanan(); // Render ulang saat bulannya diganti
+  });
+
+  // 3. Modifikasi fungsi renderLayarBulanan
+  function renderLayarBulanan() {
+      const konten = document.getElementById('kontenBulanan');
+      
+      // Ambil nilai bulan dari input yang baru kita buat (Format: YYYY-MM)
+      const blnPilih = document.getElementById('inputBulanRekap').value; 
+      
+      document.getElementById('judulBulanan').innerText = `Rekap ${modeAktif === 'catatan' ? 'Catatan' : 'Pengeluaran'}`;
+
+      let dataSumber = modeAktif === 'catatan' ? dataCatatanPribadi : dataPengeluaranPribadi;
+      // Filter data berdasarkan bulan yang dipilih di input
+      let dataBulanIni = dataSumber.filter(d => d.tanggal_db && d.tanggal_db.startsWith(blnPilih));
+
+      if (dataBulanIni.length === 0) {
+          // Buat format tanggal dummy untuk memunculkan nama bulan di pesan kosong
+          const namaBulan = new Date(blnPilih + "-01").toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+          konten.innerHTML = `<div class="pesan-kosong">Belum ada data di bulan ${namaBulan}.</div>`;
+          return;
+      }
+
+      dataBulanIni.sort((a, b) => a.tanggal_db.localeCompare(b.tanggal_db));
+
+      const dataDikelompokkan = {};
+      dataBulanIni.forEach(item => {
+          if (!dataDikelompokkan[item.tanggal_db]) dataDikelompokkan[item.tanggal_db] = [];
+          dataDikelompokkan[item.tanggal_db].push(item);
+      });
+
+      let htmlRekap = "";
+      for (const tgl in dataDikelompokkan) {
+          htmlRekap += `<div class="grup-tanggal">`;
+          htmlRekap += `<div class="tgl-kecil">📅 ${tgl}</div>`; 
+          htmlRekap += `<ul class="list-simple">`; 
+          
+          dataDikelompokkan[tgl].forEach(item => {
+              if (modeAktif === 'catatan') {
+                  htmlRekap += `<li>${bersihkanTeks(item.isi)}</li>`;
+              } else {
+                  htmlRekap += `<li>${bersihkanTeks(item.nama_item)} : <strong>${formatRupiah(item.harga)}</strong></li>`;
+              }
+          });
+          
+          htmlRekap += `</ul></div>`;
+      }
+
+      konten.innerHTML = htmlRekap;
+  }
 
   btnKembali.addEventListener('click', () => {
       areaBulanan.style.display = 'none';
