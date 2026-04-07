@@ -1,695 +1,617 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Self Apps</title>
-    
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4dabf7">
-    
-    <link rel="icon" href="logo.png" type="image/png">
-    
-    <link rel="apple-touch-icon" href="logo.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Self Apps">
-    <style>
-        * { box-sizing: border-box; } 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self Apps</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4dabf7">
+    
+    <link rel="icon" href="logo.png" type="image/png">
+    
+    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Self Apps">
+    <style>
+        * { box-sizing: border-box; } 
 
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #e9ecef; margin: 0; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        
-        .kotak-utama { max-width: 600px; margin: 0 auto 30px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
-        h2 { text-align: center; color: #333; margin-top: 0; font-size: 24px; }
-        
-        #areaLogin { text-align: center; padding: 30px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 450px; margin: 0; z-index: 1000; }
-        #areaApp { display: none; } 
-        
-        .btn-google { background: #db4437; color: white; border: none; padding: 12px 35px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin: 10px 0; transition: 0.3s; }
-        .btn-google:hover { background: #c53929; box-shadow: 0 4px 8px rgba(219,68,55,0.3); transform: translateY(-2px); }
-        
-        /* --- Header App & Tombol Logout Ikon --- */
-        .header-app { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-        .info-user { margin-bottom: 0; font-weight: bold; color: #1864ab; font-size: 18px; }
-        .header-kanan { display: flex; align-items: center; gap: 10px; }
-        .teks-tanggal-header { font-size: 13px; font-weight: bold; color: #868e96; }
-        .btn-logout { background: transparent; border: none; color: #adb5bd; padding: 5px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
-        .btn-logout:hover { color: #ff6b6b; }
-        
-        /* --- Navigasi Tab --- */
-        .nav-menu { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; align-items: center; }
-        .grup-tab { display: flex; gap: 10px; width: 100%; }
-        .btn-tab { flex: 1; background: #f8f9fa; color: #495057; border: 1px solid #ced4da; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; text-align: center; }
-        .btn-tab.aktif { background: #4dabf7; color: white; border-color: #4dabf7; box-shadow: 0 4px 6px rgba(77, 171, 247, 0.2); }
-        
-        /* --- Kontrol: Date Picker, Navigasi Tanggal, Search & Tombol Sebulan --- */
-        .kontrol-tanggal { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; width: 100%; }
-        
-        .grup-nav-tanggal { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
-        
-        .btn-nav-tgl { background: #f8f9fa; border: 2px solid #ced4da; border-radius: 8px; width: 36px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #495057; font-size: 14px; font-weight: bold; transition: 0.3s; padding: 0; }
-        .btn-nav-tgl:hover { border-color: #4dabf7; color: #4dabf7; background: white; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #e9ecef; margin: 0; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        .kotak-utama { max-width: 600px; margin: 0 auto 30px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+        h2 { text-align: center; color: #333; margin-top: 0; font-size: 24px; }
+        
+        #areaLogin { text-align: center; padding: 30px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 450px; margin: 0; z-index: 1000; }
+        #areaApp { display: none; } 
+        
+        .btn-google { background: #db4437; color: white; border: none; padding: 12px 35px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin: 10px 0; transition: 0.3s; }
+        .btn-google:hover { background: #c53929; box-shadow: 0 4px 8px rgba(219,68,55,0.3); transform: translateY(-2px); }
+        
+        /* --- Header App & Tombol Logout Ikon --- */
+        .header-app { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .info-user { margin-bottom: 0; font-weight: bold; color: #1864ab; font-size: 18px; }
+        .header-kanan { display: flex; align-items: center; gap: 10px; }
+        .teks-tanggal-header { font-size: 13px; font-weight: bold; color: #868e96; }
+        .btn-logout { background: transparent; border: none; color: #adb5bd; padding: 5px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .btn-logout:hover { color: #ff6b6b; }
+        
+        /* --- Navigasi Tab --- */
+        .nav-menu { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; align-items: center; }
+        .grup-tab { display: flex; gap: 10px; width: 100%; }
+        .btn-tab { flex: 1; background: #f8f9fa; color: #495057; border: 1px solid #ced4da; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; text-align: center; }
+        .btn-tab.aktif { background: #4dabf7; color: white; border-color: #4dabf7; box-shadow: 0 4px 6px rgba(77, 171, 247, 0.2); }
+        
+        /* --- Kontrol: Date Picker, Navigasi Tanggal, Search & Tombol Sebulan --- */
+        .kontrol-tanggal { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; width: 100%; }
+        
+        .grup-nav-tanggal { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+        
+        .btn-nav-tgl { background: #f8f9fa; border: 2px solid #ced4da; border-radius: 8px; width: 36px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #495057; font-size: 14px; font-weight: bold; transition: 0.3s; padding: 0; }
+        .btn-nav-tgl:hover { border-color: #4dabf7; color: #4dabf7; background: white; }
 
-        .pilih-tanggal-wrapper { position: relative; background: #f8f9fa; border: 2px solid #ced4da; border-radius: 8px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
-        .pilih-tanggal-wrapper span { font-size: 18px; }
-        .pilih-tanggal-wrapper:hover, .pilih-tanggal-wrapper:focus-within { border-color: #4dabf7; background: white; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
-        .pilih-tanggal-sembunyi { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        
-        .kotak-cari-ikon { display: flex; align-items: center; background: #f8f9fa; border: 2px solid #ced4da; border-radius: 8px; padding: 0 10px; flex: 1; transition: 0.3s; }
-        .kotak-cari-ikon:focus-within { border-color: #4dabf7; background: white; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
-        .kotak-cari-ikon span { font-size: 14px; color: #868e96; }
-        .kotak-cari-ikon input { border: none; background: transparent; padding: 10px 5px; width: 100%; outline: none; font-size: 14px; }
-        .kotak-cari-ikon input:focus { box-shadow: none; border: none; }
-        
-        .btn-mode-waktu { flex: 1; padding: 10px; border-radius: 8px; border: 2px solid #4dabf7; background: white; color: #4dabf7; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; white-space: nowrap; }
-        .btn-mode-waktu:hover { background: #e7f5ff; }
+        .pilih-tanggal-wrapper { position: relative; background: #f8f9fa; border: 2px solid #ced4da; border-radius: 8px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
+        .pilih-tanggal-wrapper span { font-size: 18px; }
+        .pilih-tanggal-wrapper:hover, .pilih-tanggal-wrapper:focus-within { border-color: #4dabf7; background: white; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
+        .pilih-tanggal-sembunyi { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        
+        .kotak-cari-ikon { display: flex; align-items: center; background: #f8f9fa; border: 2px solid #ced4da; border-radius: 8px; padding: 0 10px; flex: 1; transition: 0.3s; }
+        .kotak-cari-ikon:focus-within { border-color: #4dabf7; background: white; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
+        .kotak-cari-ikon span { font-size: 14px; color: #868e96; }
+        .kotak-cari-ikon input { border: none; background: transparent; padding: 10px 5px; width: 100%; outline: none; font-size: 14px; }
+        .kotak-cari-ikon input:focus { box-shadow: none; border: none; }
+        
+        .btn-mode-waktu { flex: 1; padding: 10px; border-radius: 8px; border: 2px solid #4dabf7; background: white; color: #4dabf7; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; white-space: nowrap; }
+        .btn-mode-waktu:hover { background: #e7f5ff; }
 
-        /* --- Kartu List & Tombol Edit/Hapus --- */
-        ul.daftar-kartu { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; align-items: start; }
-        ul.daftar-kartu li { background: white; padding: 15px 20px; border-radius: 12px; border-top: 5px solid #4dabf7; box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; transition: all 0.2s; }
-        ul.daftar-kartu li:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
-        
-        .header-kartu { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #f1f3f5; padding-bottom: 8px; margin-bottom: 10px; }
-        .waktu-teks { font-size: 11px; color: #adb5bd; }
-        .grup-tombol-kecil { display: flex; gap: 5px; }
-        .btn-aksi { padding: 4px 8px; font-size: 11px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 3px; }
-        .btn-edit { background: #fff3bf; color: #e67700; }
-        .btn-hapus { background: #ffe3e3; color: #c92a2a; }
-        
-        .isi-teks { width: 100%; word-break: break-word; white-space: pre-wrap; line-height: 1.6; color: #495057; font-size: 15px; }
-        .item-pengeluaran { border-top-color: #ff8787 !important; } 
-        .nominal-teks { font-size: 20px; font-weight: bold; color: #e03131; margin-top: 10px; }
-        
-        /* --- Form & Area Lainnya --- */
-        .input-group { display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end; }
-        
-        input, textarea { flex: 1; padding: 12px; border: 1px solid #ced4da; border-radius: 8px; outline: none; font-size: 15px; transition: border-color 0.3s, box-shadow 0.3s; font-family: inherit; }
-        input:focus, textarea:focus { border-color: #4dabf7; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
-        
-        textarea#inputCatatan { resize: none; overflow: hidden; min-height: 44px; height: 44px; padding: 10px 12px; line-height: 20px; } 
-        textarea#inputEditCatatan { width: 100%; resize: none; overflow: hidden; min-height: 44px; height: 44px; padding: 10px 12px; line-height: 20px; }
-        
-        button { cursor: pointer; transition: 0.3s; }
-        
-        .btn-simpan { background: #4dabf7; color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: bold; flex-shrink: 0; height: 44px; display: flex; align-items: center; justify-content: center; }
-        .btn-simpan:hover { background: #3bc9db; }
-        
-        .area-ringkasan { display: flex; gap: 15px; margin-bottom: 20px; }
-        .kotak-ringkasan { flex: 1; padding: 15px; border-radius: 8px; text-align: center; border: 2px solid transparent; }
-        .kotak-bulan { background: #e7f5ff; border-color: #74c0fc; color: #1864ab; }
-        .kotak-hari { background: #fff5f5; border-color: #ff8787; color: #e03131; }
-        .label-ringkasan { font-size: 13px; font-weight: bold; margin-bottom: 5px; }
-        .angka-ringkasan { font-size: 22px; font-weight: bold; }
+        /* --- Kartu List & Tombol Edit/Hapus --- */
+        ul.daftar-kartu { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; align-items: start; }
+        ul.daftar-kartu li { background: white; padding: 15px 20px; border-radius: 12px; border-top: 5px solid #4dabf7; box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; transition: all 0.2s; }
+        ul.daftar-kartu li:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        
+        .header-kartu { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #f1f3f5; padding-bottom: 8px; margin-bottom: 10px; }
+        .waktu-teks { font-size: 11px; color: #adb5bd; }
+        .grup-tombol-kecil { display: flex; gap: 5px; }
+        .btn-aksi { padding: 4px 8px; font-size: 11px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 3px; }
+        .btn-edit { background: #fff3bf; color: #e67700; }
+        .btn-hapus { background: #ffe3e3; color: #c92a2a; }
+        
+        .isi-teks { width: 100%; word-break: break-word; white-space: pre-wrap; line-height: 1.6; color: #495057; font-size: 15px; }
+        .item-pengeluaran { border-top-color: #ff8787 !important; } 
+        .nominal-teks { font-size: 20px; font-weight: bold; color: #e03131; margin-top: 10px; }
+        
+        /* --- Form & Area Lainnya --- */
+        .input-group { display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end; }
+        
+        input, textarea { flex: 1; padding: 12px; border: 1px solid #ced4da; border-radius: 8px; outline: none; font-size: 15px; transition: border-color 0.3s, box-shadow 0.3s; font-family: inherit; }
+        input:focus, textarea:focus { border-color: #4dabf7; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
+        
+        textarea#inputCatatan { resize: none; overflow: hidden; min-height: 44px; height: 44px; padding: 10px 12px; line-height: 20px; } 
+        textarea#inputEditCatatan { width: 100%; resize: none; overflow: hidden; min-height: 44px; height: 44px; padding: 10px 12px; line-height: 20px; }
+        
+        button { cursor: pointer; transition: 0.3s; }
+        
+        .btn-simpan { background: #4dabf7; color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: bold; flex-shrink: 0; height: 44px; display: flex; align-items: center; justify-content: center; }
+        .btn-simpan:hover { background: #3bc9db; }
+        
+        .area-ringkasan { display: flex; gap: 15px; margin-bottom: 20px; }
+        .kotak-ringkasan { flex: 1; padding: 15px; border-radius: 8px; text-align: center; border: 2px solid transparent; }
+        .kotak-bulan { background: #e7f5ff; border-color: #74c0fc; color: #1864ab; }
+        .kotak-hari { background: #fff5f5; border-color: #ff8787; color: #e03131; }
+        .label-ringkasan { font-size: 13px; font-weight: bold; margin-bottom: 5px; }
+        .angka-ringkasan { font-size: 22px; font-weight: bold; }
 
-        .bagian-aplikasi { display: none; }
-        .bagian-aplikasi.aktif { display: block; }
-        .pesan-kosong { text-align: center; color: #868e96; font-style: italic; width: 100%; grid-column: 1 / -1; margin-top: 20px; }
+        .bagian-aplikasi { display: none; }
+        .bagian-aplikasi.aktif { display: block; }
+        .pesan-kosong { text-align: center; color: #868e96; font-style: italic; width: 100%; grid-column: 1 / -1; margin-top: 20px; }
 
-        /* Halaman Rekap Bulanan */
-        #areaBulanan { display: none; }
-        .header-bulanan { display: flex; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; gap: 15px; }
-        .btn-kembali { background: #f8f9fa; border: 1px solid #ced4da; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: 0.2s; height: 40px; }
-        .btn-kembali:hover { background: #e9ecef; transform: translateX(-2px); }
-        .judul-bulanan { margin: 0; font-size: 18px; color: #333; flex: 1; line-height: 1.4; }
-        .grup-tanggal { margin-bottom: 20px; }
-        .tgl-kecil { font-size: 13px; color: #868e96; font-weight: bold; border-bottom: 1px solid #dee2e6; padding-bottom: 4px; margin-bottom: 8px; }
-        .list-simple { list-style-type: disc; padding-left: 20px; margin: 0; color: #495057; }
-        .list-simple li { padding: 4px 0; font-size: 15px; line-height: 1.5; }
-        .list-simple li strong { color: #e03131; }
-        .input-bulan-rekap {
-            padding: 8px 12px;
-            border: 2px solid #ced4da;
-            border-radius: 8px;
-            outline: none;
-            font-size: 14px;
-            font-family: inherit;
-            color: #495057;
-            background: #f8f9fa;
-            cursor: pointer;
-            transition: 0.3s;
-            font-weight: bold;
-        }
-        .input-bulan-rekap:hover, .input-bulan-rekap:focus {
-            border-color: #4dabf7;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
-        }
-        
-        /* --- Modal Edit Kustom --- */
-        #overlayModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; backdrop-filter: blur(2px); }
-        #modalEdit { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; width: 90%; max-width: 400px; margin: 0; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .btn-batal-modal { padding: 0 15px; border-radius: 8px; border: none; background: #e9ecef; color: #495057; cursor: pointer; font-weight: bold; transition: 0.3s; height: 44px; }
-        .btn-batal-modal:hover { background: #dee2e6; }
-        .grup-tombol-modal { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
+        /* Halaman Rekap Bulanan */
+        #areaBulanan { display: none; }
+        .header-bulanan { display: flex; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; gap: 15px; }
+        .btn-kembali { background: #f8f9fa; border: 1px solid #ced4da; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: 0.2s; height: 40px; }
+        .btn-kembali:hover { background: #e9ecef; transform: translateX(-2px); }
+        .judul-bulanan { margin: 0; font-size: 18px; color: #333; flex: 1; line-height: 1.4; }
+        .grup-tanggal { margin-bottom: 20px; }
+        .tgl-kecil { font-size: 13px; color: #868e96; font-weight: bold; border-bottom: 1px solid #dee2e6; padding-bottom: 4px; margin-bottom: 8px; }
+        .list-simple { list-style-type: disc; padding-left: 20px; margin: 0; color: #495057; }
+        .list-simple li { padding: 4px 0; font-size: 15px; line-height: 1.5; }
+        .list-simple li strong { color: #e03131; }
+        
+        /* --- Modal Edit Kustom --- */
+        #overlayModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; backdrop-filter: blur(2px); }
+        #modalEdit { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; width: 90%; max-width: 400px; margin: 0; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .btn-batal-modal { padding: 0 15px; border-radius: 8px; border: none; background: #e9ecef; color: #495057; cursor: pointer; font-weight: bold; transition: 0.3s; height: 44px; }
+        .btn-batal-modal:hover { background: #dee2e6; }
+        .grup-tombol-modal { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
 
-        /* --- Tampilan Mobile (Responsive) --- */
-        @media (max-width: 500px) {
-            body { padding: 10px; padding-bottom: 85px; } 
-            .kotak-utama { padding: 20px; margin-bottom: 20px; }
-            
-            .input-group { flex-direction: column; align-items: stretch; }
-            .btn-simpan { width: 100%; padding: 0; }
-            
-            .grup-tombol-modal { flex-direction: column-reverse; gap: 8px; }
-            .btn-batal-modal { width: 100%; }
-            #modalEdit .btn-simpan { width: 100%; }
-            
-            .area-ringkasan { flex-direction: row; gap: 10px; } 
-            .kotak-ringkasan { padding: 12px 10px; }
-            .label-ringkasan { font-size: 11px; margin-bottom: 2px; }
-            .angka-ringkasan { font-size: 17px; }
-            
-            .header-app { flex-direction: column; align-items: flex-start; gap: 8px; }
-            .header-kanan { width: 100%; justify-content: space-between; border-top: 1px dashed #dee2e6; padding-top: 8px; }
-            
-            .kontrol-tanggal { flex-direction: row; align-items: center; flex-wrap: nowrap; }
-            
-            .grup-nav-tanggal { gap: 3px; }
-            .btn-nav-tgl { width: 32px; height: 40px; font-size: 12px; }
-            .pilih-tanggal-wrapper { width: 40px; height: 40px; }
-            
-            .btn-mode-waktu { font-size: 13px; padding: 10px 5px; }
-            
-            .nav-menu {
-                position: fixed; bottom: 0; left: 0; width: 100%;
-                background: white; padding: 12px 15px; margin: 0;
-                box-shadow: 0 -3px 15px rgba(0,0,0,0.06);
-                z-index: 1000; border-top: none; border-bottom: none;
-                border-radius: 15px 15px 0 0;
-            }
-            .btn-tab { padding: 12px 0; border: none; background: #f1f3f5; color: #868e96; }
-            .btn-tab.aktif { background: #e7f5ff; color: #1864ab; border-bottom: 3px solid #4dabf7; border-radius: 8px 8px 0 0; }
-        }
-    </style>
+        /* --- Tampilan Mobile (Responsive) --- */
+        @media (max-width: 500px) {
+            body { padding: 10px; padding-bottom: 85px; } 
+            .kotak-utama { padding: 20px; margin-bottom: 20px; }
+            
+            .input-group { flex-direction: column; align-items: stretch; }
+            .btn-simpan { width: 100%; padding: 0; }
+            
+            .grup-tombol-modal { flex-direction: column-reverse; gap: 8px; }
+            .btn-batal-modal { width: 100%; }
+            #modalEdit .btn-simpan { width: 100%; }
+            
+            .area-ringkasan { flex-direction: row; gap: 10px; } 
+            .kotak-ringkasan { padding: 12px 10px; }
+            .label-ringkasan { font-size: 11px; margin-bottom: 2px; }
+            .angka-ringkasan { font-size: 17px; }
+            
+            .header-app { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .header-kanan { width: 100%; justify-content: space-between; border-top: 1px dashed #dee2e6; padding-top: 8px; }
+            
+            .kontrol-tanggal { flex-direction: row; align-items: center; flex-wrap: nowrap; }
+            
+            .grup-nav-tanggal { gap: 3px; }
+            .btn-nav-tgl { width: 32px; height: 40px; font-size: 12px; }
+            .pilih-tanggal-wrapper { width: 40px; height: 40px; }
+            
+            .btn-mode-waktu { font-size: 13px; padding: 10px 5px; }
+            
+            .nav-menu {
+                position: fixed; bottom: 0; left: 0; width: 100%;
+                background: white; padding: 12px 15px; margin: 0;
+                box-shadow: 0 -3px 15px rgba(0,0,0,0.06);
+                z-index: 1000; border-top: none; border-bottom: none;
+                border-radius: 15px 15px 0 0;
+            }
+            .btn-tab { padding: 12px 0; border: none; background: #f1f3f5; color: #868e96; }
+            .btn-tab.aktif { background: #e7f5ff; color: #1864ab; border-bottom: 3px solid #4dabf7; border-radius: 8px 8px 0 0; }
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="areaLogin" class="kotak-utama">
-        <h2>Self Apps 🔒</h2>
-        <p style="color: #6c757d; margin-bottom: 20px;">Silakan masuk untuk melanjutkan.</p>
-        <button id="btnLogin" class="btn-google">Masuk dengan Google</button>
-    </div>
+    <div id="areaLogin" class="kotak-utama">
+        <h2>Self Apps 🔒</h2>
+        <p style="color: #6c757d; margin-bottom: 20px;">Silakan masuk untuk melanjutkan.</p>
+        <button id="btnLogin" class="btn-google">Masuk dengan Google</button>
+    </div>
 
-    <div id="areaApp">
-        <div id="areaUtama">
-            <div class="kotak-utama">
-                
-                <div class="header-app">
-                    <div id="infoUser" class="info-user"></div>
-                    <div class="header-kanan">
-                        <div id="teksTanggalHeader" class="teks-tanggal-header"></div>
-                        <button id="btnLogout" class="btn-logout" title="Keluar">
-                            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                                <polyline points="16 17 21 12 16 7"></polyline>
-                                <line x1="21" y1="12" x2="9" y2="12"></line>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="nav-menu">
-                    <div class="grup-tab">
-                        <button id="btnMenuCatatan" class="btn-tab aktif">📝 Catatan</button>
-                        <button id="btnMenuPengeluaran" class="btn-tab">💰 Pengeluaran</button>
-                    </div>
-                </div>
-                
-                <div class="kontrol-tanggal">
-                    <div class="grup-nav-tanggal">
-                        <button id="btnPrevTanggal" class="btn-nav-tgl" title="Hari Sebelumnya">❮</button>
-                        <div class="pilih-tanggal-wrapper" title="Ubah Tanggal">
-                            <span>📅</span>
-                            <input type="date" id="inputTanggalPilih" class="pilih-tanggal-sembunyi">
-                        </div>
-                        <button id="btnNextTanggal" class="btn-nav-tgl" title="Hari Selanjutnya">❯</button>
-                    </div>
+    <div id="areaApp">
+        <div id="areaUtama">
+            <div class="kotak-utama">
+                
+                <div class="header-app">
+                    <div id="infoUser" class="info-user"></div>
+                    <div class="header-kanan">
+                        <div id="teksTanggalHeader" class="teks-tanggal-header"></div>
+                        <button id="btnLogout" class="btn-logout" title="Keluar">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="nav-menu">
+                    <div class="grup-tab">
+                        <button id="btnMenuCatatan" class="btn-tab aktif">📝 Catatan</button>
+                        <button id="btnMenuPengeluaran" class="btn-tab">💰 Pengeluaran</button>
+                    </div>
+                </div>
+                
+                <div class="kontrol-tanggal">
+                    <div class="grup-nav-tanggal">
+                        <button id="btnPrevTanggal" class="btn-nav-tgl" title="Hari Sebelumnya">❮</button>
+                        <div class="pilih-tanggal-wrapper" title="Ubah Tanggal">
+                            <span>📅</span>
+                            <input type="date" id="inputTanggalPilih" class="pilih-tanggal-sembunyi">
+                        </div>
+                        <button id="btnNextTanggal" class="btn-nav-tgl" title="Hari Selanjutnya">❯</button>
+                    </div>
 
-                    <div id="wadahCari" class="kotak-cari-ikon">
-                        <span>🔍</span>
-                        <input type="text" id="inputCariCatatan" placeholder="Cari...">
-                    </div>
-                    <button id="btnBukaSebulan" class="btn-mode-waktu">Catatan Bulan Ini</button>
-                </div>
-                
-                <div id="halamanCatatan" class="bagian-aplikasi aktif">
-                    <div class="input-group">
-                        <textarea id="inputCatatan" placeholder="Tulis catatan (Tekan Enter untuk baris baru)..."></textarea>
-                        <button id="btnSimpanCatatan" class="btn-simpan">Simpan</button>
-                    </div>
-                </div>
+                    <div id="wadahCari" class="kotak-cari-ikon">
+                        <span>🔍</span>
+                        <input type="text" id="inputCariCatatan" placeholder="Cari...">
+                    </div>
+                    <button id="btnBukaSebulan" class="btn-mode-waktu">Catatan Bulan Ini</button>
+                </div>
+                
+                <div id="halamanCatatan" class="bagian-aplikasi aktif">
+                    <div class="input-group">
+                        <textarea id="inputCatatan" placeholder="Tulis catatan (Tekan Enter untuk baris baru)..."></textarea>
+                        <button id="btnSimpanCatatan" class="btn-simpan">Simpan</button>
+                    </div>
+                </div>
 
-                <div id="halamanPengeluaran" class="bagian-aplikasi">
-                    <div class="area-ringkasan">
-                        <div class="kotak-ringkasan kotak-hari">
-                            <div class="label-ringkasan">Pengeluaran Hari Ini</div>
-                            <div id="angkaTotalHari" class="angka-ringkasan">Rp 0</div>
-                        </div>
-                        <div class="kotak-ringkasan kotak-bulan">
-                            <div class="label-ringkasan">Pengeluaran Bulan Ini</div>
-                            <div id="angkaTotalBulan" class="angka-ringkasan">Rp 0</div>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <input type="text" id="inputNamaPengeluaran" placeholder="Nama Barang (Misal: Kopi)">
-                        <input type="number" id="inputNominalPengeluaran" placeholder="Harga (Misal: 15000)">
-                    </div>
-                    <button id="btnSimpanPengeluaran" class="btn-simpan" style="width: 100%; margin-bottom: 10px; background-color:#ff8787;">Catat Pengeluaran</button>
-                </div>
-            </div>
+                <div id="halamanPengeluaran" class="bagian-aplikasi">
+                    <div class="area-ringkasan">
+                        <div class="kotak-ringkasan kotak-hari">
+                            <div class="label-ringkasan">Pengeluaran Hari Ini</div>
+                            <div id="angkaTotalHari" class="angka-ringkasan">Rp 0</div>
+                        </div>
+                        <div class="kotak-ringkasan kotak-bulan">
+                            <div class="label-ringkasan">Pengeluaran Bulan Ini</div>
+                            <div id="angkaTotalBulan" class="angka-ringkasan">Rp 0</div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="inputNamaPengeluaran" placeholder="Nama Barang (Misal: Kopi)">
+                        <input type="number" id="inputNominalPengeluaran" placeholder="Harga (Misal: 15000)">
+                    </div>
+                    <button id="btnSimpanPengeluaran" class="btn-simpan" style="width: 100%; margin-bottom: 10px; background-color:#ff8787;">Catat Pengeluaran</button>
+                </div>
+            </div>
 
-            <ul id="daftarItem" class="daftar-kartu"></ul>
-        </div>
+            <ul id="daftarItem" class="daftar-kartu"></ul>
+        </div>
 
-        <div id="areaBulanan" class="kotak-utama">
-            <div class="header-bulanan">
-                <button id="btnKembali" class="btn-kembali" title="Kembali">⬅</button>
-                <h3 id="judulBulanan" class="judul-bulanan" style="flex: 1;">Rekap</h3>
-                <input type="month" id="inputBulanRekap" class="input-bulan-rekap">
-            </div>
-            <div id="kontenBulanan"></div>
-        </div>
-    </div>
+        <div id="areaBulanan" class="kotak-utama">
+            <div class="header-bulanan">
+                <button id="btnKembali" class="btn-kembali" title="Kembali">⬅</button>
+                <h3 id="judulBulanan" class="judul-bulanan">Rekap Bulan Ini</h3>
+            </div>
+            <div id="kontenBulanan"></div>
+        </div>
+    </div>
 </div>
 
 <div id="overlayModal"></div>
 <div id="modalEdit">
-    <h3 style="margin-top:0; color:#333; margin-bottom:15px; font-size: 18px;">✏️ Edit Catatan</h3>
-    <textarea id="inputEditCatatan"></textarea>
-    
-    <div class="grup-tombol-modal">
-        <button id="btnBatalEdit" class="btn-batal-modal">Batal</button>
-        <button id="btnSimpanEdit" class="btn-simpan">Simpan Perubahan</button>
-    </div>
+    <h3 style="margin-top:0; color:#333; margin-bottom:15px; font-size: 18px;">✏️ Edit Catatan</h3>
+    <textarea id="inputEditCatatan"></textarea>
+    
+    <div class="grup-tombol-modal">
+        <button id="btnBatalEdit" class="btn-batal-modal">Batal</button>
+        <button id="btnSimpanEdit" class="btn-simpan">Simpan Perubahan</button>
+    </div>
 </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-  import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDsRTS_VwqllFKsMqzb_v7iwfH6DL7Lma0",
-    authDomain: "catatanku-bfa2a.firebaseapp.com",
-    projectId: "catatanku-bfa2a",
-    storageBucket: "catatanku-bfa2a.firebasestorage.app",
-    messagingSenderId: "661605719763",
-    appId: "1:661605719763:web:0f1f1cac9c7f782ff83e26"
-  };
+  const firebaseConfig = {
+    apiKey: "AIzaSyDsRTS_VwqllFKsMqzb_v7iwfH6DL7Lma0",
+    authDomain: "catatanku-bfa2a.firebaseapp.com",
+    projectId: "catatanku-bfa2a",
+    storageBucket: "catatanku-bfa2a.firebasestorage.app",
+    messagingSenderId: "661605719763",
+    appId: "1:661605719763:web:0f1f1cac9c7f782ff83e26"
+  };
 
-  const app = initializeApp(firebaseConfig);
-  const database = getDatabase(app);
-  const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
 
-  let currentUser = null;
-  let modeAktif = "catatan"; 
-  let idCatatanEditAktif = null; 
-  
-  let dataCatatanPribadi = [];
-  let dataPengeluaranPribadi = [];
+  let currentUser = null;
+  let modeAktif = "catatan"; 
+  let idCatatanEditAktif = null; 
+  
+  let dataCatatanPribadi = [];
+  let dataPengeluaranPribadi = [];
 
-  const inputTanggal = document.getElementById('inputTanggalPilih');
-  const inputCari = document.getElementById('inputCariCatatan'); 
-  const wadahCari = document.getElementById('wadahCari');
-  const inputCatatan = document.getElementById('inputCatatan'); 
-  const inputEditCatatan = document.getElementById('inputEditCatatan');
-  
-  const areaUtama = document.getElementById('areaUtama');
-  const areaBulanan = document.getElementById('areaBulanan');
-  const btnBukaSebulan = document.getElementById('btnBukaSebulan');
-  const btnKembali = document.getElementById('btnKembali');
-  const teksTanggalHeader = document.getElementById('teksTanggalHeader');
+  const inputTanggal = document.getElementById('inputTanggalPilih');
+  const inputCari = document.getElementById('inputCariCatatan'); 
+  const wadahCari = document.getElementById('wadahCari');
+  const inputCatatan = document.getElementById('inputCatatan'); 
+  const inputEditCatatan = document.getElementById('inputEditCatatan');
+  
+  const areaUtama = document.getElementById('areaUtama');
+  const areaBulanan = document.getElementById('areaBulanan');
+  const btnBukaSebulan = document.getElementById('btnBukaSebulan');
+  const btnKembali = document.getElementById('btnKembali');
+  const teksTanggalHeader = document.getElementById('teksTanggalHeader');
 
-  function autoResize() {
-      if (this.value === "") {
-          this.style.height = '44px';
-          return;
-      }
-      this.style.height = '44px'; 
-      this.style.height = (this.scrollHeight + 2) + 'px'; 
-  }
+  function autoResize() {
+      if (this.value === "") {
+          this.style.height = '44px';
+          return;
+      }
+      this.style.height = '44px'; 
+      this.style.height = (this.scrollHeight + 2) + 'px'; 
+  }
 
-  inputCatatan.addEventListener('input', autoResize);
-  inputEditCatatan.addEventListener('input', autoResize);
-
-
-  function updateTanggalHeader() {
-      const tgl = inputTanggal.value;
-      if(!tgl) return;
-      const dateObj = new Date(tgl);
-      const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-      teksTanggalHeader.innerText = dateObj.toLocaleDateString('id-ID', options);
-  }
-  
-  function ubahTanggalHari(selisih) {
-      const tgl = inputTanggal.value;
-      if(!tgl) return;
-      const dateObj = new Date(tgl);
-      dateObj.setDate(dateObj.getDate() + selisih);
-      
-      const year = dateObj.getFullYear();
-      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-      const day = String(dateObj.getDate()).padStart(2, '0');
-      
-      inputTanggal.value = `${year}-${month}-${day}`;
-      
-      updateTanggalHeader();
-      renderLayarUtama();
-  }
-
-  document.getElementById('btnPrevTanggal').addEventListener('click', () => ubahTanggalHari(-1));
-  document.getElementById('btnNextTanggal').addEventListener('click', () => ubahTanggalHari(1));
+  inputCatatan.addEventListener('input', autoResize);
+  inputEditCatatan.addEventListener('input', autoResize);
 
 
-  const tzoffset = (new Date()).getTimezoneOffset() * 60000; 
-  const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
-  inputTanggal.value = localISOTime;
-  updateTanggalHeader(); 
+  function updateTanggalHeader() {
+      const tgl = inputTanggal.value;
+      if(!tgl) return;
+      const dateObj = new Date(tgl);
+      const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+      teksTanggalHeader.innerText = dateObj.toLocaleDateString('id-ID', options);
+  }
+  
+  function ubahTanggalHari(selisih) {
+      const tgl = inputTanggal.value;
+      if(!tgl) return;
+      const dateObj = new Date(tgl);
+      dateObj.setDate(dateObj.getDate() + selisih);
+      
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      
+      inputTanggal.value = `${year}-${month}-${day}`;
+      
+      updateTanggalHeader();
+      renderLayarUtama();
+  }
 
-  inputTanggal.addEventListener('change', () => {
-      updateTanggalHeader();
-      renderLayarUtama();
-  });
-  
-  inputCari.addEventListener('input', () => renderLayarUtama());
+  document.getElementById('btnPrevTanggal').addEventListener('click', () => ubahTanggalHari(-1));
+  document.getElementById('btnNextTanggal').addEventListener('click', () => ubahTanggalHari(1));
 
-  // 1. Modifikasi Event Listener Tombol Buka Sebulan
-  btnBukaSebulan.addEventListener('click', () => {
-      areaUtama.style.display = 'none';
-      areaBulanan.style.display = 'block';
-      
-      // Sinkronkan: Set input bulan rekap dengan bulan yang sedang aktif di halaman utama
-      const inputBulanRekap = document.getElementById('inputBulanRekap');
-      inputBulanRekap.value = inputTanggal.value.substring(0, 7); 
-      
-      renderLayarBulanan();
-  });
 
-  // 2. Tambahkan Event Listener baru untuk Input Bulan Rekap
-  document.getElementById('inputBulanRekap').addEventListener('change', () => {
-      renderLayarBulanan(); // Render ulang saat bulannya diganti
-  });
+  const tzoffset = (new Date()).getTimezoneOffset() * 60000; 
+  const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
+  inputTanggal.value = localISOTime;
+  updateTanggalHeader(); 
 
-  // 3. Modifikasi fungsi renderLayarBulanan
-  function renderLayarBulanan() {
-      const konten = document.getElementById('kontenBulanan');
-      
-      // Ambil nilai bulan dari input yang baru kita buat (Format: YYYY-MM)
-      const blnPilih = document.getElementById('inputBulanRekap').value; 
-      
-      document.getElementById('judulBulanan').innerText = `Rekap ${modeAktif === 'catatan' ? 'Catatan' : 'Pengeluaran'}`;
+  inputTanggal.addEventListener('change', () => {
+      updateTanggalHeader();
+      renderLayarUtama();
+  });
+  
+  inputCari.addEventListener('input', () => renderLayarUtama());
 
-      let dataSumber = modeAktif === 'catatan' ? dataCatatanPribadi : dataPengeluaranPribadi;
-      // Filter data berdasarkan bulan yang dipilih di input
-      let dataBulanIni = dataSumber.filter(d => d.tanggal_db && d.tanggal_db.startsWith(blnPilih));
+  btnBukaSebulan.addEventListener('click', () => {
+      areaUtama.style.display = 'none';
+      areaBulanan.style.display = 'block';
+      renderLayarBulanan();
+  });
 
-      if (dataBulanIni.length === 0) {
-          // Buat format tanggal dummy untuk memunculkan nama bulan di pesan kosong
-          const namaBulan = new Date(blnPilih + "-01").toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
-          konten.innerHTML = `<div class="pesan-kosong">Belum ada data di bulan ${namaBulan}.</div>`;
-          return;
-      }
+  btnKembali.addEventListener('click', () => {
+      areaBulanan.style.display = 'none';
+      areaUtama.style.display = 'block';
+  });
 
-      dataBulanIni.sort((a, b) => a.tanggal_db.localeCompare(b.tanggal_db));
+  document.getElementById('btnLogin').addEventListener('click', () => signInWithPopup(auth, provider));
+  document.getElementById('btnLogout').addEventListener('click', () => signOut(auth));
 
-      const dataDikelompokkan = {};
-      dataBulanIni.forEach(item => {
-          if (!dataDikelompokkan[item.tanggal_db]) dataDikelompokkan[item.tanggal_db] = [];
-          dataDikelompokkan[item.tanggal_db].push(item);
-      });
+  onAuthStateChanged(auth, (user) => {
+      if (user) {
+          currentUser = user;
+          document.getElementById('areaLogin').style.display = 'none';
+          document.getElementById('areaApp').style.display = 'block';
+          document.getElementById('infoUser').innerText = `Halo, ${user.displayName}!`;
+          
+          onValue(ref(database, 'catatan_pribadi/' + user.uid), (snapshot) => {
+              dataCatatanPribadi = [];
+              snapshot.forEach(child => { dataCatatanPribadi.push({ id: child.key, ...child.val() }) });
+              if(areaUtama.style.display !== 'none') renderLayarUtama();
+              else renderLayarBulanan(); 
+          });
 
-      let htmlRekap = "";
-      for (const tgl in dataDikelompokkan) {
-          htmlRekap += `<div class="grup-tanggal">`;
-          htmlRekap += `<div class="tgl-kecil">📅 ${tgl}</div>`; 
-          htmlRekap += `<ul class="list-simple">`; 
-          
-          dataDikelompokkan[tgl].forEach(item => {
-              if (modeAktif === 'catatan') {
-                  htmlRekap += `<li>${bersihkanTeks(item.isi)}</li>`;
-              } else {
-                  htmlRekap += `<li>${bersihkanTeks(item.nama_item)} : <strong>${formatRupiah(item.harga)}</strong></li>`;
-              }
-          });
-          
-          htmlRekap += `</ul></div>`;
-      }
+          onValue(ref(database, 'pengeluaran_pribadi/' + user.uid), (snapshot) => {
+              dataPengeluaranPribadi = [];
+              snapshot.forEach(child => { dataPengeluaranPribadi.push({ id: child.key, ...child.val() }) });
+              if(areaUtama.style.display !== 'none') renderLayarUtama();
+              else renderLayarBulanan(); 
+          });
 
-      konten.innerHTML = htmlRekap;
-  }
+      } else {
+          currentUser = null;
+          document.getElementById('areaLogin').style.display = 'block';
+          document.getElementById('areaApp').style.display = 'none';
+      }
+  });
 
-  btnKembali.addEventListener('click', () => {
-      areaBulanan.style.display = 'none';
-      areaUtama.style.display = 'block';
-  });
+  document.getElementById('btnMenuCatatan').addEventListener('click', () => gantiTab('catatan'));
+  document.getElementById('btnMenuPengeluaran').addEventListener('click', () => gantiTab('pengeluaran'));
 
-  document.getElementById('btnLogin').addEventListener('click', () => signInWithPopup(auth, provider));
-  document.getElementById('btnLogout').addEventListener('click', () => signOut(auth));
+  function gantiTab(tab) {
+      modeAktif = tab;
+      document.getElementById('btnMenuCatatan').classList.toggle('aktif', tab === 'catatan');
+      document.getElementById('btnMenuPengeluaran').classList.toggle('aktif', tab === 'pengeluaran');
+      document.getElementById('halamanCatatan').classList.toggle('aktif', tab === 'catatan');
+      document.getElementById('halamanPengeluaran').classList.toggle('aktif', tab === 'pengeluaran');
+      
+      wadahCari.style.display = tab === 'catatan' ? 'flex' : 'none';
+      if (inputCari) inputCari.value = ""; 
+      
+      btnBukaSebulan.innerText = tab === 'catatan' ? 'Catatan Bulan Ini' : 'Pengeluaran Bulan Ini';
+      renderLayarUtama();
+  }
 
-  onAuthStateChanged(auth, (user) => {
-      if (user) {
-          currentUser = user;
-          document.getElementById('areaLogin').style.display = 'none';
-          document.getElementById('areaApp').style.display = 'block';
-          document.getElementById('infoUser').innerText = `Halo, ${user.displayName}!`;
-          
-          onValue(ref(database, 'catatan_pribadi/' + user.uid), (snapshot) => {
-              dataCatatanPribadi = [];
-              snapshot.forEach(child => { dataCatatanPribadi.push({ id: child.key, ...child.val() }) });
-              if(areaUtama.style.display !== 'none') renderLayarUtama();
-              else renderLayarBulanan(); 
-          });
+  function formatRupiah(angka) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka); }
+  function bersihkanTeks(teks) { const d = document.createElement('div'); d.innerText = teks; return d.innerHTML; }
+  function formatWaktuDetail() { return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }); }
 
-          onValue(ref(database, 'pengeluaran_pribadi/' + user.uid), (snapshot) => {
-              dataPengeluaranPribadi = [];
-              snapshot.forEach(child => { dataPengeluaranPribadi.push({ id: child.key, ...child.val() }) });
-              if(areaUtama.style.display !== 'none') renderLayarUtama();
-              else renderLayarBulanan(); 
-          });
+  function renderLayarUtama() {
+      const daftar = document.getElementById('daftarItem');
+      daftar.innerHTML = "";
+      const tglPilih = inputTanggal.value; 
+      const blnPilih = tglPilih.substring(0, 7); 
 
-      } else {
-          currentUser = null;
-          document.getElementById('areaLogin').style.display = 'block';
-          document.getElementById('areaApp').style.display = 'none';
-      }
-  });
+      if (modeAktif === "catatan") {
+          let htmlCatatan = ""; 
+          let jumlahTampil = 0;
+          const kataKunci = inputCari && wadahCari.style.display !== 'none' ? inputCari.value.toLowerCase() : "";
 
-  document.getElementById('btnMenuCatatan').addEventListener('click', () => gantiTab('catatan'));
-  document.getElementById('btnMenuPengeluaran').addEventListener('click', () => gantiTab('pengeluaran'));
+          dataCatatanPribadi.forEach(data => {
+              const teksAman = bersihkanTeks(data.isi);
+              let tampilkan = false;
 
-  function gantiTab(tab) {
-      modeAktif = tab;
-      document.getElementById('btnMenuCatatan').classList.toggle('aktif', tab === 'catatan');
-      document.getElementById('btnMenuPengeluaran').classList.toggle('aktif', tab === 'pengeluaran');
-      document.getElementById('halamanCatatan').classList.toggle('aktif', tab === 'catatan');
-      document.getElementById('halamanPengeluaran').classList.toggle('aktif', tab === 'pengeluaran');
-      
-      wadahCari.style.display = tab === 'catatan' ? 'flex' : 'none';
-      if (inputCari) inputCari.value = ""; 
-      
-      btnBukaSebulan.innerText = tab === 'catatan' ? 'Catatan Bulan Ini' : 'Pengeluaran Bulan Ini';
-      renderLayarUtama();
-  }
+              if (kataKunci !== "") {
+                  if (data.isi.toLowerCase().includes(kataKunci)) { tampilkan = true; }
+              } else {
+                  if (data.tanggal_db === tglPilih) tampilkan = true;
+              }
 
-  function formatRupiah(angka) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka); }
-  function bersihkanTeks(teks) { const d = document.createElement('div'); d.innerText = teks; return d.innerHTML; }
-  function formatWaktuDetail() { return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }); }
+              if (tampilkan) {
+                  jumlahTampil++;
+                  const infoTanggal = kataKunci !== "" ? `<div style="font-size:12px; color:#4dabf7; font-weight:bold; margin-bottom:5px;">📅 ${data.tanggal_db}</div>` : "";
+                  
+                  htmlCatatan += `
+                      <li>
+                          ${infoTanggal}
+                          <div class="header-kartu">
+                              <div class="waktu-teks">🕒 Jam: ${data.jam_input || '-'}</div>
+                              <div class="grup-tombol-kecil">
+                                  <button class="btn-aksi btn-edit" data-id="${data.id}" data-jenis="catatan">✏️ Edit</button>
+                                  <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="catatan">🗑️ Hapus</button>
+                              </div>
+                          </div>
+                          <span class="isi-teks">${teksAman}</span>
+                      </li>`;
+              }
+          });
 
-  function renderLayarUtama() {
-      const daftar = document.getElementById('daftarItem');
-      daftar.innerHTML = "";
-      const tglPilih = inputTanggal.value; 
-      const blnPilih = tglPilih.substring(0, 7); 
+          if (jumlahTampil === 0) {
+              if (kataKunci !== "") daftar.innerHTML = `<div class='pesan-kosong'>Tidak menemukan catatan dengan kata kunci "${kataKunci}".</div>`;
+              else daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada catatan di tanggal ${tglPilih}.</div>`;
+          } else {
+              daftar.innerHTML = htmlCatatan;
+          }
 
-      if (modeAktif === "catatan") {
-          let htmlCatatan = ""; 
-          let jumlahTampil = 0;
-          const kataKunci = inputCari && wadahCari.style.display !== 'none' ? inputCari.value.toLowerCase() : "";
+      } else {
+          let totalBulan = 0; let totalHari = 0;
+          let htmlHariIni = ""; let jumlahTampilPengeluaran = 0;
 
-          dataCatatanPribadi.forEach(data => {
-              const teksAman = bersihkanTeks(data.isi);
-              let tampilkan = false;
+          dataPengeluaranPribadi.forEach(data => {
+              if (data.tanggal_db && data.tanggal_db.startsWith(blnPilih)) totalBulan += data.harga;
+              if (data.tanggal_db === tglPilih) {
+                  totalHari += data.harga;
+                  jumlahTampilPengeluaran++;
+                  htmlHariIni += `
+                      <li class="item-pengeluaran">
+                          <div class="header-kartu">
+                              <div class="waktu-teks">🕒 Jam: ${data.jam_input || '-'}</div>
+                              <div class="grup-tombol-kecil">
+                                  <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="pengeluaran">🗑️ Hapus</button>
+                              </div>
+                          </div>
+                          <span class="isi-teks">${bersihkanTeks(data.nama_item)}</span>
+                          <div class="nominal-teks">${formatRupiah(data.harga)}</div>
+                      </li>`;
+              }
+          });
 
-              if (kataKunci !== "") {
-                  if (data.isi.toLowerCase().includes(kataKunci)) { tampilkan = true; }
-              } else {
-                  if (data.tanggal_db === tglPilih) tampilkan = true;
-              }
+          document.getElementById('angkaTotalBulan').innerText = formatRupiah(totalBulan);
+          document.getElementById('angkaTotalHari').innerText = formatRupiah(totalHari);
+          
+          if (jumlahTampilPengeluaran === 0) daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada pengeluaran di tanggal ${tglPilih}.</div>`;
+          else daftar.innerHTML = htmlHariIni;
+      }
+  }
 
-              if (tampilkan) {
-                  jumlahTampil++;
-                  const infoTanggal = kataKunci !== "" ? `<div style="font-size:12px; color:#4dabf7; font-weight:bold; margin-bottom:5px;">📅 ${data.tanggal_db}</div>` : "";
-                  
-                  htmlCatatan += `
-                      <li>
-                          ${infoTanggal}
-                          <div class="header-kartu">
-                              <div class="waktu-teks">🕒 Jam: ${data.jam_input || '-'}</div>
-                              <div class="grup-tombol-kecil">
-                                  <button class="btn-aksi btn-edit" data-id="${data.id}" data-jenis="catatan">✏️ Edit</button>
-                                  <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="catatan">🗑️ Hapus</button>
-                              </div>
-                          </div>
-                          <span class="isi-teks">${teksAman}</span>
-                      </li>`;
-              }
-          });
+  function renderLayarBulanan() {
+      const konten = document.getElementById('kontenBulanan');
+      const tglPilih = inputTanggal.value;
+      const blnPilih = tglPilih.substring(0, 7); 
+      
+      const namaBulan = new Date(tglPilih).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+      document.getElementById('judulBulanan').innerText = `Rekap ${modeAktif === 'catatan' ? 'Catatan' : 'Pengeluaran'} - ${namaBulan}`;
 
-          if (jumlahTampil === 0) {
-              if (kataKunci !== "") daftar.innerHTML = `<div class='pesan-kosong'>Tidak menemukan catatan dengan kata kunci "${kataKunci}".</div>`;
-              else daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada catatan di tanggal ${tglPilih}.</div>`;
-          } else {
-              daftar.innerHTML = htmlCatatan;
-          }
+      let dataSumber = modeAktif === 'catatan' ? dataCatatanPribadi : dataPengeluaranPribadi;
+      let dataBulanIni = dataSumber.filter(d => d.tanggal_db && d.tanggal_db.startsWith(blnPilih));
 
-      } else {
-          let totalBulan = 0; let totalHari = 0;
-          let htmlHariIni = ""; let jumlahTampilPengeluaran = 0;
+      if (dataBulanIni.length === 0) {
+          konten.innerHTML = `<div class="pesan-kosong">Belum ada data di bulan ini.</div>`;
+          return;
+      }
 
-          dataPengeluaranPribadi.forEach(data => {
-              if (data.tanggal_db && data.tanggal_db.startsWith(blnPilih)) totalBulan += data.harga;
-              if (data.tanggal_db === tglPilih) {
-                  totalHari += data.harga;
-                  jumlahTampilPengeluaran++;
-                  htmlHariIni += `
-                      <li class="item-pengeluaran">
-                          <div class="header-kartu">
-                              <div class="waktu-teks">🕒 Jam: ${data.jam_input || '-'}</div>
-                              <div class="grup-tombol-kecil">
-                                  <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="pengeluaran">🗑️ Hapus</button>
-                              </div>
-                          </div>
-                          <span class="isi-teks">${bersihkanTeks(data.nama_item)}</span>
-                          <div class="nominal-teks">${formatRupiah(data.harga)}</div>
-                      </li>`;
-              }
-          });
+      dataBulanIni.sort((a, b) => a.tanggal_db.localeCompare(b.tanggal_db));
 
-          document.getElementById('angkaTotalBulan').innerText = formatRupiah(totalBulan);
-          document.getElementById('angkaTotalHari').innerText = formatRupiah(totalHari);
-          
-          if (jumlahTampilPengeluaran === 0) daftar.innerHTML = `<div class='pesan-kosong'>Tidak ada pengeluaran di tanggal ${tglPilih}.</div>`;
-          else daftar.innerHTML = htmlHariIni;
-      }
-  }
+      const dataDikelompokkan = {};
+      dataBulanIni.forEach(item => {
+          if (!dataDikelompokkan[item.tanggal_db]) dataDikelompokkan[item.tanggal_db] = [];
+          dataDikelompokkan[item.tanggal_db].push(item);
+      });
 
-  function renderLayarBulanan() {
-      const konten = document.getElementById('kontenBulanan');
-      const tglPilih = inputTanggal.value;
-      const blnPilih = tglPilih.substring(0, 7); 
-      
-      const namaBulan = new Date(tglPilih).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
-      document.getElementById('judulBulanan').innerText = `Rekap ${modeAktif === 'catatan' ? 'Catatan' : 'Pengeluaran'} - ${namaBulan}`;
+      let htmlRekap = "";
+      for (const tgl in dataDikelompokkan) {
+          htmlRekap += `<div class="grup-tanggal">`;
+          htmlRekap += `<div class="tgl-kecil">📅 ${tgl}</div>`; 
+          htmlRekap += `<ul class="list-simple">`; 
+          
+          dataDikelompokkan[tgl].forEach(item => {
+              if (modeAktif === 'catatan') {
+                  htmlRekap += `<li>${bersihkanTeks(item.isi)}</li>`;
+              } else {
+                  htmlRekap += `<li>${bersihkanTeks(item.nama_item)} : <strong>${formatRupiah(item.harga)}</strong></li>`;
+              }
+          });
+          
+          htmlRekap += `</ul></div>`;
+      }
 
-      let dataSumber = modeAktif === 'catatan' ? dataCatatanPribadi : dataPengeluaranPribadi;
-      let dataBulanIni = dataSumber.filter(d => d.tanggal_db && d.tanggal_db.startsWith(blnPilih));
+      konten.innerHTML = htmlRekap;
+  }
 
-      if (dataBulanIni.length === 0) {
-          konten.innerHTML = `<div class="pesan-kosong">Belum ada data di bulan ini.</div>`;
-          return;
-      }
+  document.getElementById('btnSimpanCatatan').addEventListener('click', () => {
+      const teks = inputCatatan.value;
+      const tanggalDipilih = document.getElementById('inputTanggalPilih').value;
+      if (teks && currentUser) {
+          push(ref(database, 'catatan_pribadi/' + currentUser.uid), { 
+              isi: teks, tanggal_db: tanggalDipilih, jam_input: formatWaktuDetail()
+          });
+          inputCatatan.value = ""; 
+          inputCatatan.style.height = "44px"; 
+          if (inputCari) inputCari.value = ""; 
+      }
+  });
 
-      dataBulanIni.sort((a, b) => a.tanggal_db.localeCompare(b.tanggal_db));
+  document.getElementById('btnSimpanPengeluaran').addEventListener('click', () => {
+      const nama = document.getElementById('inputNamaPengeluaran').value;
+      const nominal = document.getElementById('inputNominalPengeluaran').value;
+      const tanggalDipilih = document.getElementById('inputTanggalPilih').value;
+      if (nama && nominal && currentUser) {
+          push(ref(database, 'pengeluaran_pribadi/' + currentUser.uid), { 
+              nama_item: nama, harga: Number(nominal), tanggal_db: tanggalDipilih, jam_input: formatWaktuDetail()
+          });
+          document.getElementById('inputNamaPengeluaran').value = ""; 
+          document.getElementById('inputNominalPengeluaran').value = ""; 
+      }
+  });
 
-      const dataDikelompokkan = {};
-      dataBulanIni.forEach(item => {
-          if (!dataDikelompokkan[item.tanggal_db]) dataDikelompokkan[item.tanggal_db] = [];
-          dataDikelompokkan[item.tanggal_db].push(item);
-      });
+  document.getElementById('daftarItem').addEventListener('click', function(e) {
+      const target = e.target;
+      const btn = target.closest('button');
+      if (!btn) return;
+      
+      const idItem = btn.getAttribute('data-id');
+      const jenis = btn.getAttribute('data-jenis'); 
+      
+      if(btn.classList.contains('btn-hapus')) {
+          const folder = jenis === 'catatan' ? 'catatan_pribadi/' : 'pengeluaran_pribadi/';
+          remove(ref(database, folder + currentUser.uid + '/' + idItem));
+      }
+      
+      if(btn.classList.contains('btn-edit') && jenis === 'catatan') {
+          const teksLama = btn.closest('li').querySelector('.isi-teks').innerText;
+          
+          inputEditCatatan.value = teksLama;
+          document.getElementById('overlayModal').style.display = 'block';
+          document.getElementById('modalEdit').style.display = 'block';
+          
+          inputEditCatatan.style.height = '44px';
+          inputEditCatatan.style.height = (inputEditCatatan.scrollHeight + 2) + 'px';
+          
+          idCatatanEditAktif = idItem; 
+      }
+  });
 
-      let htmlRekap = "";
-      for (const tgl in dataDikelompokkan) {
-          htmlRekap += `<div class="grup-tanggal">`;
-          htmlRekap += `<div class="tgl-kecil">📅 ${tgl}</div>`; 
-          htmlRekap += `<ul class="list-simple">`; 
-          
-          dataDikelompokkan[tgl].forEach(item => {
-              if (modeAktif === 'catatan') {
-                  htmlRekap += `<li>${bersihkanTeks(item.isi)}</li>`;
-              } else {
-                  htmlRekap += `<li>${bersihkanTeks(item.nama_item)} : <strong>${formatRupiah(item.harga)}</strong></li>`;
-              }
-          });
-          
-          htmlRekap += `</ul></div>`;
-      }
+  document.getElementById('btnBatalEdit').addEventListener('click', () => {
+      document.getElementById('overlayModal').style.display = 'none';
+      document.getElementById('modalEdit').style.display = 'none';
+      idCatatanEditAktif = null;
+  });
 
-      konten.innerHTML = htmlRekap;
-  }
-
-  document.getElementById('btnSimpanCatatan').addEventListener('click', () => {
-      const teks = inputCatatan.value;
-      const tanggalDipilih = document.getElementById('inputTanggalPilih').value;
-      if (teks && currentUser) {
-          push(ref(database, 'catatan_pribadi/' + currentUser.uid), { 
-              isi: teks, tanggal_db: tanggalDipilih, jam_input: formatWaktuDetail()
-          });
-          inputCatatan.value = ""; 
-          inputCatatan.style.height = "44px"; 
-          if (inputCari) inputCari.value = ""; 
-      }
-  });
-
-  document.getElementById('btnSimpanPengeluaran').addEventListener('click', () => {
-      const nama = document.getElementById('inputNamaPengeluaran').value;
-      const nominal = document.getElementById('inputNominalPengeluaran').value;
-      const tanggalDipilih = document.getElementById('inputTanggalPilih').value;
-      if (nama && nominal && currentUser) {
-          push(ref(database, 'pengeluaran_pribadi/' + currentUser.uid), { 
-              nama_item: nama, harga: Number(nominal), tanggal_db: tanggalDipilih, jam_input: formatWaktuDetail()
-          });
-          document.getElementById('inputNamaPengeluaran').value = ""; 
-          document.getElementById('inputNominalPengeluaran').value = ""; 
-      }
-  });
-
-  document.getElementById('daftarItem').addEventListener('click', function(e) {
-      const target = e.target;
-      const btn = target.closest('button');
-      if (!btn) return;
-      
-      const idItem = btn.getAttribute('data-id');
-      const jenis = btn.getAttribute('data-jenis'); 
-      
-      if(btn.classList.contains('btn-hapus')) {
-          const folder = jenis === 'catatan' ? 'catatan_pribadi/' : 'pengeluaran_pribadi/';
-          remove(ref(database, folder + currentUser.uid + '/' + idItem));
-      }
-      
-      if(btn.classList.contains('btn-edit') && jenis === 'catatan') {
-          const teksLama = btn.closest('li').querySelector('.isi-teks').innerText;
-          
-          inputEditCatatan.value = teksLama;
-          document.getElementById('overlayModal').style.display = 'block';
-          document.getElementById('modalEdit').style.display = 'block';
-          
-          inputEditCatatan.style.height = '44px';
-          inputEditCatatan.style.height = (inputEditCatatan.scrollHeight + 2) + 'px';
-          
-          idCatatanEditAktif = idItem; 
-      }
-  });
-
-  document.getElementById('btnBatalEdit').addEventListener('click', () => {
-      document.getElementById('overlayModal').style.display = 'none';
-      document.getElementById('modalEdit').style.display = 'none';
-      idCatatanEditAktif = null;
-  });
-
-  document.getElementById('btnSimpanEdit').addEventListener('click', () => {
-      const teksBaru = inputEditCatatan.value;
-      if (teksBaru.trim() !== "" && idCatatanEditAktif !== null && currentUser) {
-          update(ref(database, `catatan_pribadi/${currentUser.uid}/${idCatatanEditAktif}`), { 
-              isi: teksBaru, jam_input: formatWaktuDetail() + " (Diedit)" 
-          });
-          document.getElementById('overlayModal').style.display = 'none';
-          document.getElementById('modalEdit').style.display = 'none';
-          idCatatanEditAktif = null;
-      }
-  });
+  document.getElementById('btnSimpanEdit').addEventListener('click', () => {
+      const teksBaru = inputEditCatatan.value;
+      if (teksBaru.trim() !== "" && idCatatanEditAktif !== null && currentUser) {
+          update(ref(database, `catatan_pribadi/${currentUser.uid}/${idCatatanEditAktif}`), { 
+              isi: teksBaru, jam_input: formatWaktuDetail() + " (Diedit)" 
+          });
+          document.getElementById('overlayModal').style.display = 'none';
+          document.getElementById('modalEdit').style.display = 'none';
+          idCatatanEditAktif = null;
+      }
+  });
 
 </script>
 
