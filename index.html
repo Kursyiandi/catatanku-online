@@ -118,6 +118,25 @@
         .list-simple li { padding: 4px 0; font-size: 15px; line-height: 1.5; }
         .list-simple li strong { color: #e03131; }
         
+        .input-bulan-rekap {
+            padding: 8px 12px;
+            border: 2px solid #ced4da;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            font-family: inherit;
+            color: #495057;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+        .input-bulan-rekap:hover, .input-bulan-rekap:focus {
+            border-color: #4dabf7;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
+        }
+        
         /* --- Modal Edit Kustom --- */
         #overlayModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; backdrop-filter: blur(2px); }
         #modalEdit { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; width: 90%; max-width: 400px; margin: 0; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
@@ -248,7 +267,8 @@
         <div id="areaBulanan" class="kotak-utama">
             <div class="header-bulanan">
                 <button id="btnKembali" class="btn-kembali" title="Kembali">⬅</button>
-                <h3 id="judulBulanan" class="judul-bulanan">Rekap Bulan Ini</h3>
+                <h3 id="judulBulanan" class="judul-bulanan" style="flex: 1;">Rekap</h3>
+                <input type="month" id="inputBulanRekap" class="input-bulan-rekap">
             </div>
             <div id="kontenBulanan"></div>
         </div>
@@ -357,10 +377,20 @@
   
   inputCari.addEventListener('input', () => renderLayarUtama());
 
+  // EVENT LISTENER BUKA SEBULAN (SUDAH DIPERBAIKI)
   btnBukaSebulan.addEventListener('click', () => {
       areaUtama.style.display = 'none';
       areaBulanan.style.display = 'block';
+      
+      const inputBulanRekap = document.getElementById('inputBulanRekap');
+      inputBulanRekap.value = inputTanggal.value.substring(0, 7); 
+      
       renderLayarBulanan();
+  });
+
+  // EVENT LISTENER UBAH BULAN REKAP
+  document.getElementById('inputBulanRekap').addEventListener('change', () => {
+      renderLayarBulanan(); 
   });
 
   btnKembali.addEventListener('click', () => {
@@ -498,19 +528,20 @@
       }
   }
 
+  // FUNGSI RENDER LAYAR BULANAN (SUDAH DIPERBAIKI)
   function renderLayarBulanan() {
       const konten = document.getElementById('kontenBulanan');
-      const tglPilih = inputTanggal.value;
-      const blnPilih = tglPilih.substring(0, 7); 
       
-      const namaBulan = new Date(tglPilih).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
-      document.getElementById('judulBulanan').innerText = `Rekap ${modeAktif === 'catatan' ? 'Catatan' : 'Pengeluaran'} - ${namaBulan}`;
+      const blnPilih = document.getElementById('inputBulanRekap').value; 
+      
+      document.getElementById('judulBulanan').innerText = `Rekap ${modeAktif === 'catatan' ? 'Catatan' : 'Pengeluaran'}`;
 
       let dataSumber = modeAktif === 'catatan' ? dataCatatanPribadi : dataPengeluaranPribadi;
       let dataBulanIni = dataSumber.filter(d => d.tanggal_db && d.tanggal_db.startsWith(blnPilih));
 
       if (dataBulanIni.length === 0) {
-          konten.innerHTML = `<div class="pesan-kosong">Belum ada data di bulan ini.</div>`;
+          const namaBulan = new Date(blnPilih + "-01").toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+          konten.innerHTML = `<div class="pesan-kosong">Belum ada data di bulan ${namaBulan}.</div>`;
           return;
       }
 
