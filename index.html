@@ -38,7 +38,7 @@
         .btn-logout { background: transparent; border: none; color: #adb5bd; padding: 5px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
         .btn-logout:hover { color: #ff6b6b; }
         
-        /* --- Navigasi Tab (Diubah agar muat 3 menu di HP) --- */
+        /* --- Navigasi Tab --- */
         .nav-menu { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; align-items: center; }
         .grup-tab { display: flex; gap: 8px; width: 100%; }
         .btn-tab { flex: 1; background: #f8f9fa; color: #495057; border: 1px solid #ced4da; padding: 10px 5px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; text-align: center; font-size: 14px; white-space: nowrap; }
@@ -130,6 +130,7 @@
         #overlayModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; backdrop-filter: blur(2px); }
         #modalEdit { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; width: 90%; max-width: 400px; margin: 0; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .btn-batal-modal { padding: 0 15px; border-radius: 8px; border: none; background: #e9ecef; color: #495057; cursor: pointer; font-weight: bold; transition: 0.3s; height: 44px; }
+        .btn-batal-modal:hover { background: #dee2e6; }
         .grup-tombol-modal { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
 
         /* --- Tampilan Mobile (Responsive) --- */
@@ -263,7 +264,7 @@
                     </div>
                     <div class="input-group">
                         <input type="text" id="inputPasswordAkun" placeholder="Masukkan Password Akun...">
-                        <button id="btnSimpanAkun" class="btn-simpan" style="background-color:#20c997; width: 100%;">Simpan Terenkripsi</button>
+                        <button id="btnSimpanAkun" class="btn-simpan" style="background-color:#20c997;">Simpan Terenkripsi</button>
                     </div>
                 </div>
             </div>
@@ -317,12 +318,12 @@
   
   let dataCatatanPribadi = [];
   let dataPengeluaranPribadi = [];
-  let dataAkunPribadi = []; // Array Penyimpanan Data Akun
+  let dataAkunPribadi = []; 
 
   const inputTanggal = document.getElementById('inputTanggalPilih');
   const inputCari = document.getElementById('inputCariItem'); 
   const wadahCari = document.getElementById('wadahCari');
-  const wadahNavTanggal = document.getElementById('wadahNavTanggal'); // Untuk sembunyikan kalender di menu akun
+  const wadahNavTanggal = document.getElementById('wadahNavTanggal'); 
   const btnBukaSebulan = document.getElementById('btnBukaSebulan');
   const inputCatatan = document.getElementById('inputCatatan'); 
   const inputEditCatatan = document.getElementById('inputEditCatatan');
@@ -338,7 +339,7 @@
           const bytes = CryptoJS.AES.decrypt(teksAcak, pin);
           const originalText = bytes.toString(CryptoJS.enc.Utf8);
           return originalText;
-      } catch (e) { return ""; } // Mengembalikan kosong jika PIN salah atau data rusak
+      } catch (e) { return ""; } 
   }
 
   function autoResize() {
@@ -410,7 +411,6 @@
               if(areaUtama.style.display !== 'none') renderLayarUtama(); else renderLayarBulanan(); 
           });
 
-          // PANGGILAN DATABASE UNTUK AKUN TERENKRIPSI
           onValue(ref(database, 'akun_pribadi/' + user.uid), (snapshot) => {
               dataAkunPribadi = []; snapshot.forEach(child => { dataAkunPribadi.push({ id: child.key, ...child.val() }) });
               if(areaUtama.style.display !== 'none') renderLayarUtama(); 
@@ -439,7 +439,6 @@
       
       if (inputCari) inputCari.value = ""; 
       
-      // Logika Menyembunyikan Tanggal/Tombol Sebulan Khusus Saat di Menu Akun
       if (tab === 'akun') {
           wadahNavTanggal.style.display = 'none';
           btnBukaSebulan.style.display = 'none';
@@ -514,10 +513,8 @@
           else daftar.innerHTML = htmlHariIni;
 
       } else if (modeAktif === "akun") {
-          // --- RENDER TAB AKUN BARU ---
           let htmlAkun = ""; let jumlahTampilAkun = 0;
           dataAkunPribadi.forEach(data => {
-              // Untuk Akun, kita abaikan filter kalender, tampilkan semua, kecuali dicari
               let teksCari = data.platform.toLowerCase() + " " + data.username.toLowerCase();
               let tampilkan = kataKunci !== "" ? teksCari.includes(kataKunci) : true;
               
@@ -617,24 +614,21 @@
       if (!pinMaster) { alert("PIN Master wajib diisi untuk mengunci Password Anda!"); return; }
       if (platform && username && password && currentUser) {
           
-          // Proses Pengacakan Password sebelum dikirim ke Firebase
           const passwordTerenkripsi = enkripsi(password, pinMaster);
           
           push(ref(database, 'akun_pribadi/' + currentUser.uid), { 
               platform: platform, 
               username: username, 
-              password_enc: passwordTerenkripsi, // Yang dikirim adalah teks acak
+              password_enc: passwordTerenkripsi, 
               jam_input: formatWaktuDetail() 
           });
           
-          // Kosongkan form setelah simpan, biarkan PIN Master tetap terisi
           document.getElementById('inputNamaPlatform').value = ""; 
           document.getElementById('inputUsername').value = ""; 
           document.getElementById('inputPasswordAkun').value = "";
       }
   });
 
-  // FUNGSI UMUM KLIK TOMBOL DALAM DAFTAR (HAPUS, EDIT, LIHAT PASSWORD)
   document.getElementById('daftarItem').addEventListener('click', function(e) {
       const target = e.target;
       const btn = target.closest('button');
@@ -643,7 +637,6 @@
       const idItem = btn.getAttribute('data-id');
       const jenis = btn.getAttribute('data-jenis'); 
       
-      // FUNGSI HAPUS 
       if(btn.classList.contains('btn-hapus')) {
           let folder = '';
           if(jenis === 'catatan') folder = 'catatan_pribadi/';
@@ -653,7 +646,6 @@
           remove(ref(database, folder + currentUser.uid + '/' + idItem));
       }
       
-      // FUNGSI EDIT (Khusus Catatan)
       if(btn.classList.contains('btn-edit') && jenis === 'catatan') {
           const teksLama = btn.closest('li').querySelector('.isi-teks').innerText;
           inputEditCatatan.value = teksLama;
@@ -664,7 +656,6 @@
           idCatatanEditAktif = idItem; 
       }
 
-      // FUNGSI MELIHAT/DEKRIPSI PASSWORD AKUN
       if(btn.classList.contains('btn-lihat')) {
           const teksAcak = btn.getAttribute('data-pass');
           const pinMaster = document.getElementById('inputPinMaster').value;
@@ -673,7 +664,6 @@
           if (!pinMaster) { alert("Silakan isi PIN Master Anda di kotak kuning paling atas!"); return; }
 
           if (btn.innerText.includes('Lihat')) {
-              // Mencoba Membuka Gembok
               const hasilDekripsi = dekripsi(teksAcak, pinMaster);
               if (hasilDekripsi) {
                   elemenRahasia.innerText = hasilDekripsi;
@@ -684,7 +674,6 @@
                   alert("Gagal dibuka! PIN Master yang Anda masukkan salah.");
               }
           } else {
-              // Menutup Kembali
               elemenRahasia.innerText = "••••••••";
               elemenRahasia.style.color = "#868e96";
               elemenRahasia.style.letterSpacing = "3px";
