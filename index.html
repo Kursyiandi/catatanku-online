@@ -136,6 +136,11 @@
             background: white;
             box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
         }
+
+        /* --- KOTAK TOTAL REKAP PENGELUARAN --- */
+        .box-total-rekap { background: #fff5f5; border: 2px solid #ff8787; color: #e03131; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+        .label-total-rekap { font-size: 14px; font-weight: bold; margin-bottom: 5px; color: #e03131; }
+        .angka-total-rekap { font-size: 24px; font-weight: bold; }
         
         /* --- Modal Edit Kustom --- */
         #overlayModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; backdrop-filter: blur(2px); }
@@ -377,7 +382,6 @@
   
   inputCari.addEventListener('input', () => renderLayarUtama());
 
-  // EVENT LISTENER BUKA SEBULAN (SUDAH DIPERBAIKI)
   btnBukaSebulan.addEventListener('click', () => {
       areaUtama.style.display = 'none';
       areaBulanan.style.display = 'block';
@@ -388,7 +392,6 @@
       renderLayarBulanan();
   });
 
-  // EVENT LISTENER UBAH BULAN REKAP
   document.getElementById('inputBulanRekap').addEventListener('change', () => {
       renderLayarBulanan(); 
   });
@@ -528,10 +531,8 @@
       }
   }
 
-  // FUNGSI RENDER LAYAR BULANAN (SUDAH DIPERBAIKI)
   function renderLayarBulanan() {
       const konten = document.getElementById('kontenBulanan');
-      
       const blnPilih = document.getElementById('inputBulanRekap').value; 
       
       document.getElementById('judulBulanan').innerText = `Rekap ${modeAktif === 'catatan' ? 'Catatan' : 'Pengeluaran'}`;
@@ -547,13 +548,30 @@
 
       dataBulanIni.sort((a, b) => a.tanggal_db.localeCompare(b.tanggal_db));
 
+      let totalRekapBulan = 0;
       const dataDikelompokkan = {};
+      
       dataBulanIni.forEach(item => {
           if (!dataDikelompokkan[item.tanggal_db]) dataDikelompokkan[item.tanggal_db] = [];
           dataDikelompokkan[item.tanggal_db].push(item);
+          
+          // Kalkulasi total pengeluaran untuk rekap ini
+          if (modeAktif === 'pengeluaran') {
+              totalRekapBulan += item.harga;
+          }
       });
 
       let htmlRekap = "";
+      
+      // Tambahkan Kotak Total Pengeluaran di Paling Atas (Khusus Tab Pengeluaran)
+      if (modeAktif === 'pengeluaran') {
+          htmlRekap += `
+          <div class="box-total-rekap">
+              <div class="label-total-rekap">Total Pengeluaran Bulan Ini</div>
+              <div class="angka-total-rekap">${formatRupiah(totalRekapBulan)}</div>
+          </div>`;
+      }
+
       for (const tgl in dataDikelompokkan) {
           htmlRekap += `<div class="grup-tanggal">`;
           htmlRekap += `<div class="tgl-kecil">📅 ${tgl}</div>`; 
