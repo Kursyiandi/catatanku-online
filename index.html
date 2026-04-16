@@ -30,7 +30,6 @@
         .btn-google { background: #db4437; color: white; border: none; padding: 12px 35px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin: 10px 0; transition: 0.3s; }
         .btn-google:hover { background: #c53929; box-shadow: 0 4px 8px rgba(219,68,55,0.3); transform: translateY(-2px); }
         
-        /* --- Header App & Tombol Logout --- */
         .header-app { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .info-user { margin-bottom: 0; font-weight: bold; color: #1864ab; font-size: 18px; }
         .header-kanan { display: flex; align-items: center; gap: 10px; }
@@ -38,13 +37,11 @@
         .btn-logout { background: transparent; border: none; color: #adb5bd; padding: 5px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
         .btn-logout:hover { color: #ff6b6b; }
         
-        /* --- Navigasi Tab --- */
         .nav-menu { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; align-items: center; }
         .grup-tab { display: flex; gap: 8px; width: 100%; }
         .btn-tab { flex: 1; background: #f8f9fa; color: #495057; border: 1px solid #ced4da; padding: 10px 5px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; text-align: center; font-size: 14px; white-space: nowrap; }
         .btn-tab.aktif { background: #4dabf7; color: white; border-color: #4dabf7; box-shadow: 0 4px 6px rgba(77, 171, 247, 0.2); }
         
-        /* --- Kontrol: Date Picker, Navigasi Tanggal, Search --- */
         .kontrol-tanggal { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; width: 100%; }
         .grup-nav-tanggal { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
         .btn-nav-tgl { background: #f8f9fa; border: 2px solid #ced4da; border-radius: 8px; width: 36px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #495057; font-size: 14px; font-weight: bold; transition: 0.3s; padding: 0; }
@@ -58,11 +55,11 @@
         .kotak-cari-ikon:focus-within { border-color: #4dabf7; background: white; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
         .kotak-cari-ikon span { font-size: 14px; color: #868e96; }
         .kotak-cari-ikon input { border: none; background: transparent; padding: 10px 5px; width: 100%; outline: none; font-size: 14px; }
+        .kotak-cari-ikon input:focus { box-shadow: none; border: none; }
         
         .btn-mode-waktu { flex: 1; padding: 10px; border-radius: 8px; border: 2px solid #4dabf7; background: white; color: #4dabf7; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; white-space: nowrap; height: 44px; }
         .btn-mode-waktu:hover { background: #e7f5ff; }
 
-        /* --- Kartu List --- */
         ul.daftar-kartu { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; align-items: start; }
         ul.daftar-kartu li { background: white; padding: 15px 20px; border-radius: 12px; border-top: 5px solid #4dabf7; box-shadow: 0 4px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; transition: all 0.2s; }
         ul.daftar-kartu li:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
@@ -80,7 +77,6 @@
         .item-akun { border-top-color: #20c997 !important; }
         .nominal-teks { font-size: 20px; font-weight: bold; color: #e03131; margin-top: 10px; }
         
-        /* --- Form & Input --- */
         .input-group { display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end; }
         input, textarea { flex: 1; padding: 12px; border: 1px solid #ced4da; border-radius: 8px; outline: none; font-size: 15px; transition: 0.3s; font-family: inherit; }
         input:focus, textarea:focus { border-color: #4dabf7; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); }
@@ -92,7 +88,6 @@
         .btn-simpan { background: #4dabf7; color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: bold; flex-shrink: 0; height: 44px; display: flex; align-items: center; justify-content: center; }
         .btn-simpan:hover { background: #3bc9db; }
         
-        /* --- Area Ringkasan Pengeluaran --- */
         .area-ringkasan { display: flex; gap: 15px; margin-bottom: 20px; }
         .kotak-ringkasan { flex: 1; padding: 15px; border-radius: 8px; text-align: center; border: 2px solid transparent; }
         .kotak-bulan { background: #e7f5ff; border-color: #74c0fc; color: #1864ab; }
@@ -100,7 +95,6 @@
         .label-ringkasan { font-size: 13px; font-weight: bold; margin-bottom: 5px; }
         .angka-ringkasan { font-size: 22px; font-weight: bold; }
 
-        /* --- Area Peringatan Akun --- */
         .box-peringatan { background: #fff9db; border: 1px solid #fcc419; color: #b08100; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; font-weight: bold; display: flex; flex-direction: column; gap: 10px; }
         .input-pin-master { width: 100%; border: 2px dashed #fcc419 !important; text-align: center; font-size: 18px; letter-spacing: 5px; background: white; }
 
@@ -108,7 +102,6 @@
         .bagian-aplikasi.aktif { display: block; }
         .pesan-kosong { text-align: center; color: #868e96; font-style: italic; width: 100%; grid-column: 1 / -1; margin-top: 20px; }
 
-        /* Halaman Rekap Bulanan */
         #areaBulanan { display: none; }
         .header-bulanan { display: flex; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; gap: 15px; }
         .btn-kembali { background: #f8f9fa; border: 1px solid #ced4da; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: 0.2s; height: 40px; }
@@ -126,14 +119,12 @@
         .label-total-rekap { font-size: 15px; font-weight: bold; color: #495057; text-transform: uppercase; letter-spacing: 0.5px; }
         .angka-total-rekap { font-size: 22px; font-weight: bold; color: #e03131; }
         
-        /* Modal Edit Kustom */
         #overlayModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; backdrop-filter: blur(2px); }
         #modalEdit { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; width: 90%; max-width: 400px; margin: 0; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .btn-batal-modal { padding: 0 15px; border-radius: 8px; border: none; background: #e9ecef; color: #495057; cursor: pointer; font-weight: bold; transition: 0.3s; height: 44px; }
         .btn-batal-modal:hover { background: #dee2e6; }
         .grup-tombol-modal { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
 
-        /* --- Tampilan Mobile (Responsive) --- */
         @media (max-width: 500px) {
             body { padding: 10px; padding-bottom: 85px; } 
             .kotak-utama { padding: 20px; margin-bottom: 20px; }
@@ -249,7 +240,7 @@
                         <input type="text" id="inputNamaPengeluaran" placeholder="Nama Barang (Misal: Kopi)">
                         <input type="number" id="inputNominalPengeluaran" placeholder="Harga (Misal: 15000)">
                     </div>
-                    <button id="btnSimpanPengeluaran" class="btn-simpan" style="width: 100%; margin-bottom: 10px; background-color:#ff8787;">Catat Pengeluaran</button>
+                    <button id="btnSimpanPengeluaran" class="btn-simpan" style="background-color:#ff8787;">Catat Pengeluaran</button>
                 </div>
 
                 <div id="halamanAkun" class="bagian-aplikasi">
@@ -332,13 +323,11 @@
   const areaBulanan = document.getElementById('areaBulanan');
   const teksTanggalHeader = document.getElementById('teksTanggalHeader');
 
-  // --- FUNGSI KRIPTOGRAFI PINTAR ---
   function enkripsi(teks, pin) { return CryptoJS.AES.encrypt(teks, pin).toString(); }
   function dekripsi(teksAcak, pin) {
       try {
           const bytes = CryptoJS.AES.decrypt(teksAcak, pin);
-          const originalText = bytes.toString(CryptoJS.enc.Utf8);
-          return originalText;
+          return bytes.toString(CryptoJS.enc.Utf8);
       } catch (e) { return ""; } 
   }
 
@@ -467,7 +456,8 @@
       if (modeAktif === "catatan") {
           let htmlCatatan = ""; let jumlahTampil = 0;
           dataCatatanPribadi.forEach(data => {
-              let tampilkan = kataKunci !== "" ? data.isi.toLowerCase().includes(kataKunci) : data.tanggal_db === tglPilih;
+              let isi = data.isi || "";
+              let tampilkan = kataKunci !== "" ? isi.toLowerCase().includes(kataKunci) : data.tanggal_db === tglPilih;
               if (tampilkan) {
                   jumlahTampil++;
                   const infoTanggal = kataKunci !== "" ? `<div style="font-size:12px; color:#4dabf7; font-weight:bold; margin-bottom:5px;">📅 ${data.tanggal_db}</div>` : "";
@@ -481,7 +471,7 @@
                                   <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="catatan">🗑️ Hapus</button>
                               </div>
                           </div>
-                          <span class="isi-teks">${bersihkanTeks(data.isi)}</span>
+                          <span class="isi-teks">${bersihkanTeks(isi)}</span>
                       </li>`;
               }
           });
@@ -494,6 +484,7 @@
               if (data.tanggal_db && data.tanggal_db.startsWith(blnPilih)) totalBulan += data.harga;
               if (data.tanggal_db === tglPilih) {
                   totalHari += data.harga; jumlahTampilPengeluaran++;
+                  let namaItem = data.nama_item || "";
                   htmlHariIni += `
                       <li class="item-pengeluaran">
                           <div class="header-kartu">
@@ -502,7 +493,7 @@
                                   <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="pengeluaran">🗑️ Hapus</button>
                               </div>
                           </div>
-                          <span class="isi-teks">${bersihkanTeks(data.nama_item)}</span>
+                          <span class="isi-teks">${bersihkanTeks(namaItem)}</span>
                           <div class="nominal-teks">${formatRupiah(data.harga)}</div>
                       </li>`;
               }
@@ -515,7 +506,9 @@
       } else if (modeAktif === "akun") {
           let htmlAkun = ""; let jumlahTampilAkun = 0;
           dataAkunPribadi.forEach(data => {
-              let teksCari = data.platform.toLowerCase() + " " + data.username.toLowerCase();
+              let p = data.platform || "";
+              let u = data.username || "";
+              let teksCari = p.toLowerCase() + " " + u.toLowerCase();
               let tampilkan = kataKunci !== "" ? teksCari.includes(kataKunci) : true;
               
               if (tampilkan) {
@@ -523,12 +516,12 @@
                   htmlAkun += `
                       <li class="item-akun">
                           <div class="header-kartu">
-                              <div class="waktu-teks" style="font-weight:bold; color:#20c997; font-size:14px;">💻 ${bersihkanTeks(data.platform)}</div>
+                              <div class="waktu-teks" style="font-weight:bold; color:#20c997; font-size:14px;">💻 ${bersihkanTeks(p)}</div>
                               <div class="grup-tombol-kecil">
                                   <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="akun">🗑️ Hapus</button>
                               </div>
                           </div>
-                          <div style="font-size:14px; margin-bottom:5px; color:#495057;">👤 ${bersihkanTeks(data.username)}</div>
+                          <div style="font-size:14px; margin-bottom:5px; color:#495057;">👤 ${bersihkanTeks(u)}</div>
                           
                           <div style="display:flex; justify-content:space-between; align-items:center; background:#f8f9fa; padding:8px 10px; border-radius:6px; border:1px solid #ced4da;">
                               <span class="teks-rahasia" style="font-family:monospace; letter-spacing:3px; color:#868e96; font-size:16px;">••••••••</span>
@@ -537,7 +530,7 @@
                       </li>`;
               }
           });
-          if (jumlahTampilAkun === 0) daftar.innerHTML = `<div class='pesan-kosong'>Belum ada akun yang tersimpan.</div>`;
+          if (jumlahTampilAkun === 0) daftar.innerHTML = kataKunci !== "" ? `<div class='pesan-kosong'>Pencarian tidak ditemukan.</div>` : `<div class='pesan-kosong'>Belum ada akun yang tersimpan.</div>`;
           else daftar.innerHTML = htmlAkun;
       }
   }
@@ -572,8 +565,8 @@
       for (const tgl in dataDikelompokkan) {
           htmlRekap += `<div class="grup-tanggal"><div class="tgl-kecil">📅 ${tgl}</div><ul class="list-simple">`; 
           dataDikelompokkan[tgl].forEach(item => {
-              if (modeAktif === 'catatan') htmlRekap += `<li>${bersihkanTeks(item.isi)}</li>`;
-              else htmlRekap += `<li>${bersihkanTeks(item.nama_item)} : <strong>${formatRupiah(item.harga)}</strong></li>`;
+              if (modeAktif === 'catatan') htmlRekap += `<li>${bersihkanTeks(item.isi || "")}</li>`;
+              else htmlRekap += `<li>${bersihkanTeks(item.nama_item || "")} : <strong>${formatRupiah(item.harga)}</strong></li>`;
           });
           htmlRekap += `</ul></div>`;
       }
@@ -584,13 +577,22 @@
       konten.innerHTML = htmlRekap;
   }
 
+  // --- KODE SIMPAN DENGAN PENANGANAN ERROR (TIDAK HILANG JIKA GAGAL) ---
+
   document.getElementById('btnSimpanCatatan').addEventListener('click', () => {
       const teks = inputCatatan.value;
       const tanggalDipilih = document.getElementById('inputTanggalPilih').value;
       if (teks && currentUser) {
-          push(ref(database, 'catatan_pribadi/' + currentUser.uid), { isi: teks, tanggal_db: tanggalDipilih, jam_input: formatWaktuDetail() });
-          inputCatatan.value = ""; inputCatatan.style.height = "44px"; 
-          if (inputCari) inputCari.value = ""; 
+          push(ref(database, 'catatan_pribadi/' + currentUser.uid), { 
+              isi: teks, tanggal_db: tanggalDipilih, jam_input: formatWaktuDetail() 
+          }).then(() => {
+              inputCatatan.value = ""; inputCatatan.style.height = "44px"; 
+              if (inputCari) inputCari.value = ""; 
+          }).catch((error) => {
+              alert("Gagal menyimpan data ke Firebase! Periksa koneksi atau Aturan Firebase (Rules) Anda. \nError: " + error.message);
+          });
+      } else {
+          alert("Harap isi catatan terlebih dahulu!");
       }
   });
 
@@ -599,12 +601,19 @@
       const nominal = document.getElementById('inputNominalPengeluaran').value;
       const tanggalDipilih = document.getElementById('inputTanggalPilih').value;
       if (nama && nominal && currentUser) {
-          push(ref(database, 'pengeluaran_pribadi/' + currentUser.uid), { nama_item: nama, harga: Number(nominal), tanggal_db: tanggalDipilih, jam_input: formatWaktuDetail() });
-          document.getElementById('inputNamaPengeluaran').value = ""; document.getElementById('inputNominalPengeluaran').value = ""; 
+          push(ref(database, 'pengeluaran_pribadi/' + currentUser.uid), { 
+              nama_item: nama, harga: Number(nominal), tanggal_db: tanggalDipilih, jam_input: formatWaktuDetail() 
+          }).then(() => {
+              document.getElementById('inputNamaPengeluaran').value = ""; 
+              document.getElementById('inputNominalPengeluaran').value = ""; 
+          }).catch((error) => {
+              alert("Gagal menyimpan data ke Firebase! Periksa koneksi atau Aturan Firebase (Rules) Anda. \nError: " + error.message);
+          });
+      } else {
+          alert("Harap isi Nama Barang dan Harga!");
       }
   });
 
-  // SIMPAN AKUN DENGAN ENKRIPSI
   document.getElementById('btnSimpanAkun').addEventListener('click', () => {
       const platform = document.getElementById('inputNamaPlatform').value;
       const username = document.getElementById('inputUsername').value;
@@ -612,8 +621,8 @@
       const pinMaster = document.getElementById('inputPinMaster').value;
 
       if (!pinMaster) { alert("PIN Master wajib diisi untuk mengunci Password Anda!"); return; }
+      
       if (platform && username && password && currentUser) {
-          
           const passwordTerenkripsi = enkripsi(password, pinMaster);
           
           push(ref(database, 'akun_pribadi/' + currentUser.uid), { 
@@ -621,11 +630,17 @@
               username: username, 
               password_enc: passwordTerenkripsi, 
               jam_input: formatWaktuDetail() 
+          }).then(() => {
+              // Hanya menghapus isian kotak JIKA SUKSES masuk ke database
+              document.getElementById('inputNamaPlatform').value = ""; 
+              document.getElementById('inputUsername').value = ""; 
+              document.getElementById('inputPasswordAkun').value = "";
+          }).catch((error) => {
+              // Jika gagal (Misal: Firebase Rules expired), ini akan muncul
+              alert("Gagal menyimpan data ke Firebase! Periksa koneksi atau Aturan Firebase (Rules) Anda. \nError: " + error.message);
           });
-          
-          document.getElementById('inputNamaPlatform').value = ""; 
-          document.getElementById('inputUsername').value = ""; 
-          document.getElementById('inputPasswordAkun').value = "";
+      } else {
+          alert("Pastikan Platform, Username, dan Password sudah terisi semua!");
       }
   });
 
@@ -693,10 +708,13 @@
       if (teksBaru.trim() !== "" && idCatatanEditAktif !== null && currentUser) {
           update(ref(database, `catatan_pribadi/${currentUser.uid}/${idCatatanEditAktif}`), { 
               isi: teksBaru, jam_input: formatWaktuDetail() + " (Diedit)" 
+          }).then(() => {
+              document.getElementById('overlayModal').style.display = 'none';
+              document.getElementById('modalEdit').style.display = 'none';
+              idCatatanEditAktif = null;
+          }).catch((error) => {
+              alert("Gagal menyimpan perubahan ke Firebase! Error: " + error.message);
           });
-          document.getElementById('overlayModal').style.display = 'none';
-          document.getElementById('modalEdit').style.display = 'none';
-          idCatatanEditAktif = null;
       }
   });
 
