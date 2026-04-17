@@ -513,8 +513,8 @@
                           <div class="header-kartu">
                               <div class="waktu-teks">🕒 Jam: ${data.jam_input || '-'}</div>
                               <div class="grup-tombol-kecil">
-                                  <button class="btn-aksi btn-edit" data-id="${data.id}" data-jenis="catatan">✏️ Edit</button>
-                                  <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="catatan">🗑️ Hapus</button>
+                                  <button class="btn-aksi btn-edit" data-id="${data.id}" data-jenis="catatan" title="Edit">✏️</button>
+                                  <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="catatan" title="Hapus">🗑️</button>
                               </div>
                           </div>
                           <span class="isi-teks">${bersihkanTeks(isi)}</span>
@@ -536,7 +536,7 @@
                           <div class="header-kartu">
                               <div class="waktu-teks">🕒 Jam: ${data.jam_input || '-'}</div>
                               <div class="grup-tombol-kecil">
-                                  <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="pengeluaran">🗑️ Hapus</button>
+                                  <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="pengeluaran" title="Hapus">🗑️</button>
                               </div>
                           </div>
                           <span class="isi-teks">${bersihkanTeks(namaItem)}</span>
@@ -564,7 +564,7 @@
                           <div class="header-kartu">
                               <div class="waktu-teks" style="font-weight:bold; color:#20c997; font-size:14px;">💻 ${bersihkanTeks(p)}</div>
                               <div class="grup-tombol-kecil">
-                                  <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="akun">🗑️ Hapus</button>
+                                  <button class="btn-aksi btn-hapus" data-id="${data.id}" data-jenis="akun" title="Hapus">🗑️</button>
                               </div>
                           </div>
                           <div style="font-size:14px; margin-bottom:5px; color:#495057;">👤 ${bersihkanTeks(u)}</div>
@@ -572,8 +572,8 @@
                           <div style="display:flex; justify-content:space-between; align-items:center; background:#f8f9fa; padding:8px 10px; border-radius:6px; border:1px solid #ced4da; margin-top:8px;">
                               <span class="teks-rahasia" style="font-family:monospace; letter-spacing:3px; color:#868e96; font-size:16px;">••••••••</span>
                               <div style="display:flex; gap:5px;">
-                                  <button class="btn-aksi btn-copy" data-pass="${data.password_enc}">📋 Salin</button>
-                                  <button class="btn-aksi btn-lihat" data-pass="${data.password_enc}">👁️ Lihat</button>
+                                  <button class="btn-aksi btn-copy" data-pass="${data.password_enc}" title="Salin">📋</button>
+                                  <button class="btn-aksi btn-lihat" data-pass="${data.password_enc}" title="Lihat">👁️</button>
                               </div>
                           </div>
                       </li>`;
@@ -734,13 +734,14 @@
           
           if (!pinMaster) { showToast("Isi PIN Master terlebih dahulu!", "error"); return; }
 
-          if (btn.innerText.includes('Lihat')) {
+          if (btn.innerText.includes('👁️')) {
               const hasilDekripsi = dekripsi(teksAcak, pinMaster);
               if (hasilDekripsi) {
                   elemenRahasia.innerText = hasilDekripsi;
                   elemenRahasia.style.color = "#333";
                   elemenRahasia.style.letterSpacing = "normal";
-                  btn.innerText = "Tutup";
+                  btn.innerText = "🔒"; // Berubah jadi gembok saat password terbuka
+                  btn.setAttribute("title", "Tutup");
               } else {
                   showToast("Gagal dibuka! PIN Master salah.", "error");
               }
@@ -748,7 +749,8 @@
               elemenRahasia.innerText = "••••••••";
               elemenRahasia.style.color = "#868e96";
               elemenRahasia.style.letterSpacing = "3px";
-              btn.innerHTML = "👁️ Lihat";
+              btn.innerText = "👁️"; // Kembali jadi mata saat password ditutup
+              btn.setAttribute("title", "Lihat");
           }
       }
 
