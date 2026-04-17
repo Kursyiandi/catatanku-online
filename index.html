@@ -67,12 +67,12 @@
         .header-kartu { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #f1f3f5; padding-bottom: 8px; margin-bottom: 10px; }
         .waktu-teks { font-size: 11px; color: #adb5bd; }
         .grup-tombol-kecil { display: flex; gap: 5px; }
-        .btn-aksi { padding: 4px 8px; font-size: 11px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 3px; transition: 0.2s; }
+        .btn-aksi { padding: 4px 8px; font-size: 14px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 3px; transition: 0.2s; }
         .btn-edit { background: #fff3bf; color: #e67700; }
         .btn-hapus { background: #ffe3e3; color: #c92a2a; }
         .btn-lihat { background: #e7f5ff; color: #1864ab; }
-        .btn-copy { background: #e9ecef; color: #495057; } /* Tambahan tombol Copy */
-        .btn-aksi:active { transform: scale(0.9); } /* Efek klik */
+        .btn-copy { background: #e9ecef; color: #495057; } 
+        .btn-aksi:active { transform: scale(0.9); } 
         
         .isi-teks { width: 100%; word-break: break-word; white-space: pre-wrap; line-height: 1.6; color: #495057; font-size: 15px; }
         .item-pengeluaran { border-top-color: #ff8787 !important; } 
@@ -89,6 +89,12 @@
         button { cursor: pointer; transition: 0.3s; }
         .btn-simpan { background: #4dabf7; color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: bold; flex-shrink: 0; height: 44px; display: flex; align-items: center; justify-content: center; }
         .btn-simpan:hover { background: #3bc9db; }
+
+        /* --- TOMBOL MIKROFON --- */
+        .btn-suara { background: white; border: 2px solid #ced4da; border-radius: 8px; font-size: 20px; padding: 0 15px; cursor: pointer; transition: 0.3s; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .btn-suara:hover { border-color: #4dabf7; background: #e7f5ff; }
+        .btn-suara.merekam { background: #ffe3e3; border-color: #fa5252; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         
         .area-ringkasan { display: flex; gap: 15px; margin-bottom: 20px; }
         .kotak-ringkasan { flex: 1; padding: 15px; border-radius: 8px; text-align: center; border: 2px solid transparent; }
@@ -160,6 +166,7 @@
             .kotak-utama { padding: 20px; margin-bottom: 20px; }
             
             .input-group { flex-direction: column; align-items: stretch; }
+            .btn-suara { width: 100%; margin-bottom: 5px; } /* Sesuaikan mic di HP */
             .btn-simpan { width: 100%; padding: 0; }
             
             .grup-tombol-modal { flex-direction: column-reverse; gap: 8px; }
@@ -250,6 +257,7 @@
                 
                 <div id="halamanCatatan" class="bagian-aplikasi aktif">
                     <div class="input-group">
+                        <button id="btnSuaraCatatan" class="btn-suara" title="Ketikan dengan Suara">🎤</button>
                         <textarea id="inputCatatan" placeholder="Tulis catatan"></textarea>
                         <button id="btnSimpanCatatan" class="btn-simpan">Simpan</button>
                     </div>
@@ -363,7 +371,6 @@
       if (tipe === "error") toast.classList.add("error");
       if (tipe === "success") toast.classList.add("success");
       
-      // Hilangkan otomatis setelah 3 detik
       setTimeout(function(){ 
           toast.className = toast.className.replace("show", ""); 
       }, 3000);
@@ -626,6 +633,64 @@
       konten.innerHTML = htmlRekap;
   }
 
+  // --- INTEGRASI WEB SPEECH API (MICROPHONE) ---
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const btnSuara = document.getElementById('btnSuaraCatatan');
+  const inputTeksCatatan = document.getElementById('inputCatatan');
+
+  if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'id-ID'; // Mengatur pengenalan suara ke Bahasa Indonesia
+      recognition.interimResults = false;
+
+      btnSuara.addEventListener('click', () => {
+          if (btnSuara.classList.contains('merekam')) {
+              recognition.stop();
+          } else {
+              recognition.start();
+              btnSuara.classList.add('merekam');
+              btnSuara.innerText = "🔴";
+              showToast("Silakan bicara...", "normal");
+          }
+      });
+
+      recognition.onresult = (event) => {
+          const hasilSuara = event.results[0][0].transcript;
+          
+          // Jika kotak teks sudah ada isinya, tambahkan spasi lalu kalimat baru
+          if (inputTeksCatatan.value !== "") {
+              inputTeksCatatan.value += " " + hasilSuara;
+          } else {
+              inputTeksCatatan.value = hasilSuara;
+          }
+
+          // Otomatis atur tinggi textarea
+          inputTeksCatatan.dispatchEvent(new Event('input'));
+          
+          btnSuara.classList.remove('merekam');
+          btnSuara.innerText = "🎤";
+          showToast("Suara ditangkap! ✅", "success");
+      };
+
+      recognition.onerror = (event) => {
+          btnSuara.classList.remove('merekam');
+          btnSuara.innerText = "🎤";
+          // Cegah error "no-speech" mengganggu jika user lama tidak bicara
+          if(event.error !== 'no-speech') {
+              showToast("Gagal mendengar: " + event.error, "error");
+          }
+      };
+
+      recognition.onspeechend = () => {
+          recognition.stop();
+          btnSuara.classList.remove('merekam');
+          btnSuara.innerText = "🎤";
+      };
+  } else {
+      // Sembunyikan tombol mic jika browser (seperti Firefox lama) tidak mendukung
+      btnSuara.style.display = 'none';
+  }
+
   // --- KODE SIMPAN ---
 
   document.getElementById('btnSimpanCatatan').addEventListener('click', () => {
@@ -694,7 +759,7 @@
       }
   });
 
-  // --- EVENT KLIK ITEM (Hapus, Edit, Lihat, Copy) ---
+  // --- EVENT KLIK ITEM ---
   document.getElementById('daftarItem').addEventListener('click', function(e) {
       const target = e.target;
       const btn = target.closest('button');
@@ -703,7 +768,6 @@
       const idItem = btn.getAttribute('data-id');
       const jenis = btn.getAttribute('data-jenis'); 
       
-      // FITUR BARU: Konfirmasi Hapus
       if(btn.classList.contains('btn-hapus')) {
           if(confirm("Apakah Anda yakin ingin menghapus data ini?")) {
               let folder = '';
@@ -740,7 +804,7 @@
                   elemenRahasia.innerText = hasilDekripsi;
                   elemenRahasia.style.color = "#333";
                   elemenRahasia.style.letterSpacing = "normal";
-                  btn.innerText = "🔒"; // Berubah jadi gembok saat password terbuka
+                  btn.innerText = "🔒";
                   btn.setAttribute("title", "Tutup");
               } else {
                   showToast("Gagal dibuka! PIN Master salah.", "error");
@@ -749,12 +813,11 @@
               elemenRahasia.innerText = "••••••••";
               elemenRahasia.style.color = "#868e96";
               elemenRahasia.style.letterSpacing = "3px";
-              btn.innerText = "👁️"; // Kembali jadi mata saat password ditutup
+              btn.innerText = "👁️";
               btn.setAttribute("title", "Lihat");
           }
       }
 
-      // FITUR BARU: Copy Password
       if(btn.classList.contains('btn-copy')) {
           const teksAcak = btn.getAttribute('data-pass');
           const pinMaster = document.getElementById('inputPinMaster').value;
@@ -763,7 +826,6 @@
           
           const hasilDekripsi = dekripsi(teksAcak, pinMaster);
           if (hasilDekripsi) {
-              // Menyalin ke clipboard memori HP/Laptop
               navigator.clipboard.writeText(hasilDekripsi).then(() => {
                   showToast("Password disalin! 📋", "success");
               }).catch(err => {
