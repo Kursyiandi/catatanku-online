@@ -67,10 +67,12 @@
         .header-kartu { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #f1f3f5; padding-bottom: 8px; margin-bottom: 10px; }
         .waktu-teks { font-size: 11px; color: #adb5bd; }
         .grup-tombol-kecil { display: flex; gap: 5px; }
-        .btn-aksi { padding: 4px 8px; font-size: 11px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 3px; }
+        .btn-aksi { padding: 4px 8px; font-size: 11px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 3px; transition: 0.2s; }
         .btn-edit { background: #fff3bf; color: #e67700; }
         .btn-hapus { background: #ffe3e3; color: #c92a2a; }
         .btn-lihat { background: #e7f5ff; color: #1864ab; }
+        .btn-copy { background: #e9ecef; color: #495057; } /* Tambahan tombol Copy */
+        .btn-aksi:active { transform: scale(0.9); } /* Efek klik */
         
         .isi-teks { width: 100%; word-break: break-word; white-space: pre-wrap; line-height: 1.6; color: #495057; font-size: 15px; }
         .item-pengeluaran { border-top-color: #ff8787 !important; } 
@@ -124,6 +126,34 @@
         .btn-batal-modal { padding: 0 15px; border-radius: 8px; border: none; background: #e9ecef; color: #495057; cursor: pointer; font-weight: bold; transition: 0.3s; height: 44px; }
         .btn-batal-modal:hover { background: #dee2e6; }
         .grup-tombol-modal { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
+
+        /* --- TOAST NOTIFICATION CSS --- */
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 12px 20px;
+            position: fixed;
+            z-index: 3000;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: opacity 0.4s, bottom 0.4s;
+            opacity: 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 40px;
+        }
+        .toast.error { background-color: #e03131; }
+        .toast.success { background-color: #20c997; }
 
         @media (max-width: 500px) {
             body { padding: 10px; padding-bottom: 85px; } 
@@ -284,6 +314,8 @@
     </div>
 </div>
 
+<div id="toastNotification" class="toast">Notifikasi</div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
   import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
@@ -322,6 +354,20 @@
   const areaUtama = document.getElementById('areaUtama');
   const areaBulanan = document.getElementById('areaBulanan');
   const teksTanggalHeader = document.getElementById('teksTanggalHeader');
+
+  // --- FUNGSI TOAST NOTIFICATION ---
+  function showToast(pesan, tipe = "normal") {
+      const toast = document.getElementById("toastNotification");
+      toast.innerText = pesan;
+      toast.className = "toast show"; 
+      if (tipe === "error") toast.classList.add("error");
+      if (tipe === "success") toast.classList.add("success");
+      
+      // Hilangkan otomatis setelah 3 detik
+      setTimeout(function(){ 
+          toast.className = toast.className.replace("show", ""); 
+      }, 3000);
+  }
 
   function enkripsi(teks, pin) { return CryptoJS.AES.encrypt(teks, pin).toString(); }
   function dekripsi(teksAcak, pin) {
@@ -523,9 +569,12 @@
                           </div>
                           <div style="font-size:14px; margin-bottom:5px; color:#495057;">👤 ${bersihkanTeks(u)}</div>
                           
-                          <div style="display:flex; justify-content:space-between; align-items:center; background:#f8f9fa; padding:8px 10px; border-radius:6px; border:1px solid #ced4da;">
+                          <div style="display:flex; justify-content:space-between; align-items:center; background:#f8f9fa; padding:8px 10px; border-radius:6px; border:1px solid #ced4da; margin-top:8px;">
                               <span class="teks-rahasia" style="font-family:monospace; letter-spacing:3px; color:#868e96; font-size:16px;">••••••••</span>
-                              <button class="btn-aksi btn-lihat" data-pass="${data.password_enc}">👁️ Lihat</button>
+                              <div style="display:flex; gap:5px;">
+                                  <button class="btn-aksi btn-copy" data-pass="${data.password_enc}">📋 Salin</button>
+                                  <button class="btn-aksi btn-lihat" data-pass="${data.password_enc}">👁️ Lihat</button>
+                              </div>
                           </div>
                       </li>`;
               }
@@ -577,7 +626,7 @@
       konten.innerHTML = htmlRekap;
   }
 
-  // --- KODE SIMPAN DENGAN PENANGANAN ERROR (TIDAK HILANG JIKA GAGAL) ---
+  // --- KODE SIMPAN ---
 
   document.getElementById('btnSimpanCatatan').addEventListener('click', () => {
       const teks = inputCatatan.value;
@@ -588,11 +637,12 @@
           }).then(() => {
               inputCatatan.value = ""; inputCatatan.style.height = "44px"; 
               if (inputCari) inputCari.value = ""; 
+              showToast("Catatan tersimpan!", "success");
           }).catch((error) => {
-              alert("Gagal menyimpan data ke Firebase! Periksa koneksi atau Aturan Firebase (Rules) Anda. \nError: " + error.message);
+              showToast("Gagal menyimpan data! Cek rules Firebase.", "error");
           });
       } else {
-          alert("Harap isi catatan terlebih dahulu!");
+          showToast("Harap isi catatan terlebih dahulu!", "error");
       }
   });
 
@@ -606,11 +656,12 @@
           }).then(() => {
               document.getElementById('inputNamaPengeluaran').value = ""; 
               document.getElementById('inputNominalPengeluaran').value = ""; 
+              showToast("Pengeluaran dicatat!", "success");
           }).catch((error) => {
-              alert("Gagal menyimpan data ke Firebase! Periksa koneksi atau Aturan Firebase (Rules) Anda. \nError: " + error.message);
+              showToast("Gagal menyimpan data! Cek rules Firebase.", "error");
           });
       } else {
-          alert("Harap isi Nama Barang dan Harga!");
+          showToast("Harap isi Nama Barang dan Harga!", "error");
       }
   });
 
@@ -620,7 +671,7 @@
       const password = document.getElementById('inputPasswordAkun').value;
       const pinMaster = document.getElementById('inputPinMaster').value;
 
-      if (!pinMaster) { alert("PIN Master wajib diisi untuk mengunci Password Anda!"); return; }
+      if (!pinMaster) { showToast("PIN Master wajib diisi!", "error"); return; }
       
       if (platform && username && password && currentUser) {
           const passwordTerenkripsi = enkripsi(password, pinMaster);
@@ -631,19 +682,19 @@
               password_enc: passwordTerenkripsi, 
               jam_input: formatWaktuDetail() 
           }).then(() => {
-              // Hanya menghapus isian kotak JIKA SUKSES masuk ke database
               document.getElementById('inputNamaPlatform').value = ""; 
               document.getElementById('inputUsername').value = ""; 
               document.getElementById('inputPasswordAkun').value = "";
+              showToast("Akun dikunci dan disimpan! 🔒", "success");
           }).catch((error) => {
-              // Jika gagal (Misal: Firebase Rules expired), ini akan muncul
-              alert("Gagal menyimpan data ke Firebase! Periksa koneksi atau Aturan Firebase (Rules) Anda. \nError: " + error.message);
+              showToast("Gagal menyimpan data! Cek rules Firebase.", "error");
           });
       } else {
-          alert("Pastikan Platform, Username, dan Password sudah terisi semua!");
+          showToast("Isi semua data akun!", "error");
       }
   });
 
+  // --- EVENT KLIK ITEM (Hapus, Edit, Lihat, Copy) ---
   document.getElementById('daftarItem').addEventListener('click', function(e) {
       const target = e.target;
       const btn = target.closest('button');
@@ -652,13 +703,18 @@
       const idItem = btn.getAttribute('data-id');
       const jenis = btn.getAttribute('data-jenis'); 
       
+      // FITUR BARU: Konfirmasi Hapus
       if(btn.classList.contains('btn-hapus')) {
-          let folder = '';
-          if(jenis === 'catatan') folder = 'catatan_pribadi/';
-          else if(jenis === 'pengeluaran') folder = 'pengeluaran_pribadi/';
-          else if(jenis === 'akun') folder = 'akun_pribadi/';
-          
-          remove(ref(database, folder + currentUser.uid + '/' + idItem));
+          if(confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+              let folder = '';
+              if(jenis === 'catatan') folder = 'catatan_pribadi/';
+              else if(jenis === 'pengeluaran') folder = 'pengeluaran_pribadi/';
+              else if(jenis === 'akun') folder = 'akun_pribadi/';
+              
+              remove(ref(database, folder + currentUser.uid + '/' + idItem)).then(() => {
+                  showToast("Data berhasil dihapus!", "success");
+              });
+          }
       }
       
       if(btn.classList.contains('btn-edit') && jenis === 'catatan') {
@@ -676,7 +732,7 @@
           const pinMaster = document.getElementById('inputPinMaster').value;
           const elemenRahasia = btn.closest('li').querySelector('.teks-rahasia');
           
-          if (!pinMaster) { alert("Silakan isi PIN Master Anda di kotak kuning paling atas!"); return; }
+          if (!pinMaster) { showToast("Isi PIN Master terlebih dahulu!", "error"); return; }
 
           if (btn.innerText.includes('Lihat')) {
               const hasilDekripsi = dekripsi(teksAcak, pinMaster);
@@ -686,13 +742,33 @@
                   elemenRahasia.style.letterSpacing = "normal";
                   btn.innerText = "Tutup";
               } else {
-                  alert("Gagal dibuka! PIN Master yang Anda masukkan salah.");
+                  showToast("Gagal dibuka! PIN Master salah.", "error");
               }
           } else {
               elemenRahasia.innerText = "••••••••";
               elemenRahasia.style.color = "#868e96";
               elemenRahasia.style.letterSpacing = "3px";
               btn.innerHTML = "👁️ Lihat";
+          }
+      }
+
+      // FITUR BARU: Copy Password
+      if(btn.classList.contains('btn-copy')) {
+          const teksAcak = btn.getAttribute('data-pass');
+          const pinMaster = document.getElementById('inputPinMaster').value;
+          
+          if (!pinMaster) { showToast("Isi PIN Master terlebih dahulu!", "error"); return; }
+          
+          const hasilDekripsi = dekripsi(teksAcak, pinMaster);
+          if (hasilDekripsi) {
+              // Menyalin ke clipboard memori HP/Laptop
+              navigator.clipboard.writeText(hasilDekripsi).then(() => {
+                  showToast("Password disalin! 📋", "success");
+              }).catch(err => {
+                  showToast("Browser tidak mendukung auto-copy", "error");
+              });
+          } else {
+              showToast("Gagal menyalin! PIN Master salah.", "error");
           }
       }
   });
@@ -712,8 +788,9 @@
               document.getElementById('overlayModal').style.display = 'none';
               document.getElementById('modalEdit').style.display = 'none';
               idCatatanEditAktif = null;
+              showToast("Perubahan disimpan!", "success");
           }).catch((error) => {
-              alert("Gagal menyimpan perubahan ke Firebase! Error: " + error.message);
+              showToast("Gagal menyimpan perubahan!", "error");
           });
       }
   });
